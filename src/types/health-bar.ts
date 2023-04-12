@@ -7,8 +7,11 @@ export default class Healthbar {
         this.current = maxHealth;
     }
 
-    increase(amount: number) {
+    increase(amount: number): number {
+        const oldAMount = this.current
         this.current = Math.min(this.current + amount, this.max)
+
+        return this.current - oldAMount
     }
 
     decrease(amount: number) {

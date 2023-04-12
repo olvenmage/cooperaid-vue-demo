@@ -1,14 +1,15 @@
-import Character from '../character'
+import type Character from '../character'
 import Skill, { TargetType } from '../skill';
 import PlayerIdentity, { PlayerClass } from '../player-identity'
 import ClassBar from '../class-bar';
 import Enrage from '../buffs/enrage';
 import DamageType from '../damage-type';
+import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
 
 export default class Barbarian extends PlayerIdentity {
     public name = "Barbarian"
-    public maxHealth = 35
+    public maxHealth = 40
     public imagePath = "/src/assets/classes/barbarian.png"
     public playerClass = PlayerClass.BARBARIAN
     public classBar = new ClassBar(100, 'red',)
@@ -22,74 +23,93 @@ export default class Barbarian extends PlayerIdentity {
     ]
 
     override onCreated(character: Character) {
-        this.onDamageTakenTriggers.push((damage: number, character: Character, damagedBy: Character|null) => {
-            if (character.classBar == null || character.classBar.activated || character.dead) {
-                return
-            }
-
-            const currentPercentage = character.healthBar.current / character.healthBar.max
-            const rage = ((damage / character.healthBar.max) * 100) * (2 - currentPercentage)
-            character.classBar.increase(
-                Math.floor(rage)
-            )
-
-            if (character.classBar.current >= character.classBar.max) {
+        if (character.classBar != null) {
+            character.classBar.onFilled = () => {
+                if (character.classBar == null || character.classBar.activated) return
                 character.addBuff(new Enrage())
             }
-        })
+        }
+     
+        this.onDamageTakenTriggers.push(this.generateRageOnDamage)
+    }
+
+    generateRageOnDamage({character, actualDamage, damagedBy}: OnDamageTrigger) {
+        if (character.classBar == null || character.dead || actualDamage == 0) {
+            return
+        }
+
+        const ragePercentagePenalty = damagedBy?.id != character.id ? 0.35 : 0.15
+
+        const currentPercentage = character.healthBar.current / character.healthBar.max
+        const rage = ((actualDamage / character.healthBar.max) * 100) * (2 - currentPercentage - ragePercentagePenalty)
+        
+        
+        character.classBar.increase(
+            Math.floor(rage)
+        )
     }
 }
 
 class RecklessStrike extends Skill {
     name: string = "Reckless Strike";
     energyCost: number = 2;
-    cooldown: number = 1000;
+    cooldown: number = 0;
     targetType: TargetType = TargetType.TARGET_ENEMY
+    castTime = 1000
 
-    selfDamageAmount = 5
+    selfDamageAmount = 4
 
     castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => target.takeDamage(10, castBy, DamageType.PHYSICAL, 0.8))
+    }
+
+    beforeCast(castBy: Character, targets: Character[]): void {
         castBy.takeDamage(this.selfDamageAmount, castBy, DamageType.BLEED);
-        targets.forEach((target) => target.takeDamage(10, castBy, DamageType.PHYSICAL))
     }
 
     override canCast(castBy: Character): boolean {
-        if (castBy.healthBar.current < this.selfDamageAmount) {
+        if (castBy.healthBar.current <= this.selfDamageAmount) {
             return false
         }
 
         return super.canCast(castBy)
+    }
+
+    override getCastPriority(castBy: Character, target: Character) {
+        if (castBy.healthBar.current / castBy.healthBar.max < 0.4) {
+            return -1
+        }
+
+        return 1
     }
 }
 
 class RagingBlow extends Skill {
     name: string = "Raging Blow";
     energyCost: number = 4;
-    cooldown: number = 4 * 1000;
+    cooldown: number = 1 * 1000;
     targetType: TargetType = TargetType.TARGET_ENEMY
+    castTime = 2500
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => target.takeDamage(14, castBy, DamageType.PHYSICAL))
+        targets.forEach((target) => target.takeDamage(12, castBy, DamageType.PHYSICAL))
 
         if (castBy.classBar != null) {
-            castBy.classBar.increase(14)
-
-            if (castBy.classBar.current >= castBy.classBar.max) {
-                castBy.addBuff(new Enrage())
-            }
+            castBy.classBar.increase(12)
         }
     }
 }
 
 class Rampage extends Skill {
     name: string = "Rampage";
-    energyCost: number = 6;
-    cooldown: number = 6 * 1000;
+    energyCost: number = 5;
+    cooldown: number = 8 * 1000;
     targetType: TargetType = TargetType.TARGET_ENEMY
+    castTime = 1500
 
     castSkill(castBy: Character, targets: Character[]): void {
         const missingHealthPercentage = (castBy.healthBar.current / castBy.healthBar.max);
-        const damageToDeal = Math.ceil(16 * (2 - missingHealthPercentage))
+        const damageToDeal = Math.ceil(10 * (2 - missingHealthPercentage))
         const threatModifier = 3 * missingHealthPercentage
 
         targets.forEach((target) => target.takeDamage(damageToDeal, castBy, DamageType.PHYSICAL, threatModifier))

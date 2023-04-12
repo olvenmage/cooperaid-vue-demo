@@ -2,7 +2,8 @@
 import type Healthbar from '@/types/health-bar';
 import { ref, watchEffect } from 'vue';
 const props = defineProps<{
-    healthBar: Healthbar
+    healthBar: Healthbar,
+    savingGrace: boolean
 }>()
 
 
@@ -26,7 +27,10 @@ watchEffect(() => {
 <template>
     <div class="health-bar">
         <div class="bar" :style="{ width: barWidth}"></div>
-        <span style="color: black; position: absolute; bottom: 0px; right: 80px; text-align: center">{{ healthBar.current }}/{{ healthBar.max }}</span>
+        <span
+          style="position: absolute; bottom: 0px; right: 80px; text-align: center"
+          :style="{ color: savingGrace ? 'darkgoldenrod' : 'black'}"
+        >{{ healthBar.current }}/{{ healthBar.max }}</span>
     </div>
 </template>
 
@@ -35,7 +39,7 @@ watchEffect(() => {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  width: 200px;
+  width: 220px;
   height: 20px;
   padding: 5px;
   background: #ddd;

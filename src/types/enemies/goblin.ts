@@ -22,7 +22,7 @@ class GoblinClobber extends Skill {
     name: string = "Clobber"
     energyCost: number = 8;
     cooldown: number = 10 * 1000;
-    castTime = 3000;
+    castTime = 8000;
     targetType: TargetType = TargetType.TARGET_ENEMY
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -34,11 +34,11 @@ class GoblinClobber extends Skill {
 class GoblinBite extends Skill {
     name: string = "Bite"
     energyCost: number = 3;
-    castTime = 5000;
+    castTime = 4000;
     cooldown: number = 0;
     targetType: TargetType = TargetType.TARGET_ENEMY
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => target.takeDamage(4, castBy, DamageType.PHYSICAL))
+        targets.forEach((target) => target.takeDamage(5, castBy, DamageType.PHYSICAL))
     }
 }

@@ -1,9 +1,12 @@
-import Character from './character';
+import GameSettings from '@/core/settings';
+import type Character from './character';
 
 enum TargetType {
     TARGET_ENEMY,
     TARGET_FRIENDLY,
-    TARGET_ALL
+    TARGET_NONE,
+    TARGET_ANY,
+    TARGET_ALL_ENEMIES
 }
 
 export default abstract class Skill {
@@ -22,8 +25,10 @@ export default abstract class Skill {
     public onCooldownTimer = 0
     public onCooldown = false;
 
+    public readonly castingIncrementer = 100
+
     canCast(castBy: Character): boolean {
-        if (castBy.casting) {
+        if (castBy.castingSkill != null) {
             return false;
         }
 
@@ -50,7 +55,7 @@ export default abstract class Skill {
         }
 
         setTimeout(() => {
-            this.onCooldownTimer += 1000
+            this.onCooldownTimer += 1000 * GameSettings.speedFactor
             this.incrementCooldown()
         }, 990)
     }
@@ -60,7 +65,7 @@ export default abstract class Skill {
             this.castingTimer = 0
             this.casting = false
             this.castingTargets = []
-            castBy.casting = false
+            castBy.castingSkill = null
            
             return
         }
@@ -77,12 +82,13 @@ export default abstract class Skill {
         }
 
         setTimeout(() => {
-            this.castingTimer += 1000
+            this.castingTimer += this.castingIncrementer * GameSettings.speedFactor
             this.incrementCastTime(castBy, targets)
-        }, 990)
+        }, this.castingIncrementer)
     }
 
     areTargetsValid(targets: Character[]) {
+        if (this.targetType == TargetType.TARGET_NONE) return true
         return targets.some((char) => !char.dead)
     }
 
@@ -95,18 +101,29 @@ export default abstract class Skill {
             return false;
         }
 
+        this.beforeCast(castBy, targets)
         castBy.energyBar.current -= this.energyCost;
 
-        castBy.casting = true
-        this.incrementCastTime(castBy, targets)
+        castBy.castingSkill = this
+        setTimeout(() => {
+            this.incrementCastTime(castBy, targets)
+        }, 50)
+    }
+
+    beforeCast(castBy: Character, targets: Character[]) {
+
     }
 
     doCast(castBy: Character, targets: Character[]) {
         this.castSkill(castBy, targets);
 
         this.onCooldown = true
-        castBy.casting = false
+        castBy.castingSkill = null
         this.incrementCooldown()
+    }
+
+    getCastPriority(castBy: Character, target: Character): number {
+        return 0
     }
 
     abstract castSkill(castBy: Character, targets: Character[]): void

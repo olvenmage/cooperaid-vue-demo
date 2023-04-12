@@ -15,11 +15,8 @@ let targetColor = ref("black")
 let barWidth = ref("100%");
 
 watchEffect(() => {
-  const characterSkillThatsCasting = props.character.identity.skills.find((sk) => sk.casting)
-
-  if (characterSkillThatsCasting != null) {
-    castingSkill.value = characterSkillThatsCasting
-    target.value = characterSkillThatsCasting.castingTargets[0] ?? null
+  if (props.character.castingSkill != null) {
+    target.value = props.character.castingSkill.castingTargets[0] ?? null
 
     if (target.value instanceof Player) {
       targetColor.value = target.value.playerColor
@@ -27,7 +24,7 @@ watchEffect(() => {
       targetColor.value = "black"
     }
 
-    barWidth.value = ((1 - (castingSkill.value.castingTimer / castingSkill.value.castTime)) * 100) + "%"
+    barWidth.value = ((1 - (props.character.castingSkill.castingTimer / props.character.castingSkill.castTime)) * 100) + "%"
   } else {
     barWidth.value = "0%"
   }
@@ -39,7 +36,7 @@ watchEffect(() => {
 <template>
     <div class="cast-bar">
         <div class="bar" :style="{ width: barWidth}"></div>
-        <span class="skill-name" :style="{ color: targetColor }">{{ castingSkill?.name }}</span>
+        <span class="skill-name" :style="{ color: targetColor }">{{ props.character.castingSkill?.name }}</span>
     </div>
 </template>
 
@@ -48,7 +45,7 @@ watchEffect(() => {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  width: 200px;
+  width: 220px;
   height: 30px;
   padding: 5px;
   background: #ddd;
@@ -58,21 +55,22 @@ watchEffect(() => {
   position: relative;
 }
 .bar {
-  background: gray;
+  background: #cdcdcd;
   width: 100%;
   height: 20px;
   position: relative;
   
-  transition: width .5s linear;
+  transition: width .05s linear;
 }
 
 .skill-name {
   position: absolute;
-  text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+  text-shadow: 0.5px 0 0 #000, 0 -0.5px 0 #000, 0 0.5px 0 #000, -0.5px 0 0 #000;
   bottom: 0px;
-  right: 80px;
+  width: 100%;
   text-align: center;
   font-size: 18px;
+  font-weight: 600;
   bottom: 2px;
 }
 </style>

@@ -19,7 +19,7 @@ const barWidth = computed(() => {
 </script>
 
 <template>
-    <div class="class-bar">
+    <div class="class-bar" :class="{'active-class-bar': classBar.activated }">
         <div class="bar" :style="{ width: barWidth + '%', background: classBar.color }"></div>
         <span style="color: black; position: absolute; bottom: 0px; right: 80px; text-align: center">{{ classBar.current }}/{{ classBar.max }}</span>
     </div>
@@ -30,7 +30,7 @@ const barWidth = computed(() => {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  width: 200px;
+  width: 220px;
   height: 20px;
   padding: 5px;
   background: #ddd;
@@ -56,5 +56,19 @@ const barWidth = computed(() => {
   width: 0px;
   
   transition: width .5s linear;
+}
+
+
+.active-class-bar {
+  animation: glow 0.5s infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 6px -6px #ddd;
+  }
+  to {
+    box-shadow: 0 0 6px 6px #ddd;
+  }
 }
 </style>

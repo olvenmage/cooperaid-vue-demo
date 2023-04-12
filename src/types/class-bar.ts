@@ -14,14 +14,22 @@ export default class ClassBar {
     }
 
     increase(amount: number) {
+        // if (this.activated) {
+        //     return
+        // }
+
         this.current = Math.min(this.current + amount, this.max);
 
-        if (this.current >= this.max && this.onFilled) {
+        if (this.isFull() && this.onFilled) {
             this.onFilled()
         }
     }
 
     decrease(amount: number) {
         this.current = Math.max(this.current - amount, 0);
+    }
+
+    isFull() {
+        return this.current >= this.max
     }
 }

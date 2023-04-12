@@ -26,9 +26,12 @@ watchEffect(() => {
 
 <template>
     <div class="energy-bar">
-      
-        <div class="bar" :style="{ width: barWidth}">
-          <span style="color: black; position: absolute; bottom: -7px; text-align: center">{{ energyBar.current }}</span>
+        <div class="bar" :style="{ width: barWidth}"  :class="{'full-energy-bar': energyBar.max == energyBar.current}">
+          <div class="energy-icon-wrapper float-left">
+            <img src="/src/assets/energy-icon.png">
+        </div>
+          <span style="color: black; position: absolute; bottom: -4px; text-align: center; float: left" 
+          >{{ energyBar.current }}</span>
         </div>
         
     </div>
@@ -39,8 +42,8 @@ watchEffect(() => {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  width: 200px;
-  height: 20px;
+  width: 220px;
+  height: 24px;
   padding: 5px;
   background: #ddd;
   -webkit-border-radius: 5px;
@@ -51,20 +54,26 @@ watchEffect(() => {
 .bar {
   background: lightsteelblue;
   width: 100%;
-  height: 10px;
+  height: 14px;
   position: relative;
   
   transition: width .5s linear;
 }
 
-.hit {
-  background: rgba(255,255,255,0.6);
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 0px;
-  
-  transition: width .5s linear;
+.full-energy-bar {
+  background-color: #2790C5;
+  background-image: radial-gradient(ellipse at 75% -25%, rgb(14, 102, 150) 0%, transparent 50%);
+  background-size: 100% 100%;
+}
+
+
+.energy-icon-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 16px;
+  height: 20px;
+  float: left;
+  padding-bottom: 6px;
+  padding-top: 1px
 }
 </style>

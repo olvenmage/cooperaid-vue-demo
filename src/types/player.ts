@@ -1,4 +1,5 @@
 import Character from './character';
+import CharacterAI from './character-ai';
 import Faction from './faction';
 import type Identity from './identity';
 import type PlayerIdentity from './player-identity';
@@ -10,7 +11,9 @@ abstract class PlayerNumberRegistry {
         'lightskyblue',
         'green',
         'purple',
-        'brown'
+        'brown',
+        'teal',
+        'pink'
     ]
 
     static getColor(num: number): string {
@@ -34,7 +37,11 @@ class Player extends Character {
         this.playerNumber = PlayerNumberRegistry.getNumber()
         this.playerColor = PlayerNumberRegistry.getColor(this.playerNumber)
         this.classBar = playerIdentity.classBar
-        this.identity.onCreated(this)
+    }
+    
+    enableAI(): this {
+        this.ai = new CharacterAI(this.identity)
+        return this
     }
 }
 

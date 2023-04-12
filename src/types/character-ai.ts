@@ -27,6 +27,7 @@ export default class CharacterAI {
         this.threatMap.forEach(entry => {
             if (entry.character.dead) {
                 entry.threat = 0;
+                return
             }
 
             if (highestThreatTarget == null) {

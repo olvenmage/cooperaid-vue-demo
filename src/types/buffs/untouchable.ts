@@ -1,16 +1,18 @@
 import GameSettings from '@/core/settings';
 import type Character from '../character';
 import TickBuff from '../tick-buff';
+import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
-export default class Enrage extends TickBuff {
+export default class Untouchable extends TickBuff {
     // interval in miliseconds (1000 = every second)
-    public baseTickInterval: number = 750
+    public baseTickInterval: number = 1000
 
     START_DURATION = 1
-    CONSUME_AMOUNT = 25
+    CONSUME_AMOUNT = 8
 
     duration: number = this.START_DURATION
-   
+
+    callback = this.returnDamage.bind(this)
 
     tickEffect(character: Character) {
         if (character.classBar) {
@@ -19,19 +21,15 @@ export default class Enrage extends TickBuff {
             const consumeEffectiveness = (this.CONSUME_AMOUNT / consumedAmount)
 
             this.duration += this.tickInterval / consumeEffectiveness
-
-            character.restoreHealth(
-                Math.floor((0.05 / consumeEffectiveness) * character.healthBar.max),
-                character,
-                0.35
-            )
         }
     }
 
     override startEffect(character: Character): void {
+        character.identity.onDamageTakenTriggers.push(this.callback)
+        character.currentArmor += 2
+
         if (character.classBar) {
             character.classBar.activated = true
-            character.energyBar.energyRegenAmount = Math.ceil(GameSettings.defaultEnergyRegenAmount * 2)
         }
 
         super.startEffect(character)
@@ -39,7 +37,14 @@ export default class Enrage extends TickBuff {
 
     override endEffect(character: Character): void {
         this.duration = this.START_DURATION
-        character.energyBar.energyRegenAmount = GameSettings.defaultEnergyRegenAmount
+
+        const index = character.identity.onDamageTakenTriggers.findIndex((trigger) => trigger == this.callback)
+        
+        if (index != -1) {
+            character.identity.onDamageTakenTriggers.splice(index, 1)
+        }
+
+        character.currentArmor -= 2
 
         if (character.classBar) {
             //character.classBar.current = 0
@@ -47,5 +52,13 @@ export default class Enrage extends TickBuff {
         }
 
         super.endEffect(character)
+    }
+
+    returnDamage(params: OnDamageTrigger) {
+        params.damagedBy?.takeDamage(
+            params.originalDamage - params.actualDamage,
+            params.character,
+            1.5
+        )
     }
 }
