@@ -4,7 +4,7 @@ import PlayerIdentity, { PlayerClass } from '../player-identity'
 import ClassBar from '../class-bar';
 import DamageType from '../damage-type';
 import Game from '@/core/game';
-import { characterDiedEvent } from '@/core/events';
+import { characterDiedEvent, globalThreatEvent } from '@/core/events';
 import SavingGrace from '../buffs/saving-grace';
 import BlessingOfProtectionBuff from '../buffs/blessing-of-protection'
 import SmittenBuff from '../buffs/smitten';
@@ -42,7 +42,7 @@ export default class Paladin extends PlayerIdentity {
     ]
 }
 
-class HolyShock extends Skill {
+export class HolyShock extends Skill {
     name: string = "Holy Shock";
     energyCost: number = 2;
     cooldown: number = 0;
@@ -78,7 +78,7 @@ class HolyShock extends Skill {
     }
 }
 
-class Smite extends Skill {
+export class Smite extends Skill {
     name: string = "Smite";
     energyCost: number = 5;
     cooldown: number = 5 * 1000;
@@ -97,7 +97,7 @@ class Smite extends Skill {
     }
 }
 
-class BlessingOfProtection extends Skill {
+export class BlessingOfProtection extends Skill {
     name: string = "Blessing of Protection";
     energyCost: number = 4;
     cooldown: number = 12 * 1000;
@@ -105,7 +105,10 @@ class BlessingOfProtection extends Skill {
     targetType: TargetType = TargetType.TARGET_FRIENDLY
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => target.addBuff(new BlessingOfProtectionBuff(), castBy))
+        targets.forEach((target) => { 
+            target.addBuff(new BlessingOfProtectionBuff(), castBy)
+            Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 15}))
+        })
     }
 
     override getCastPriority(castBy: Character, target: Character) {

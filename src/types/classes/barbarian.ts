@@ -50,7 +50,7 @@ export default class Barbarian extends PlayerIdentity {
     }
 }
 
-class RecklessStrike extends Skill {
+export class RecklessStrike extends Skill {
     name: string = "Reckless Strike";
     energyCost: number = 2;
     cooldown: number = 0;
@@ -84,7 +84,7 @@ class RecklessStrike extends Skill {
     }
 }
 
-class RagingBlow extends Skill {
+export class RagingBlow extends Skill {
     name: string = "Raging Blow";
     energyCost: number = 4;
     cooldown: number = 1 * 1000;
@@ -100,7 +100,7 @@ class RagingBlow extends Skill {
     }
 }
 
-class Rampage extends Skill {
+export class Rampage extends Skill {
     name: string = "Rampage";
     energyCost: number = 5;
     cooldown: number = 8 * 1000;

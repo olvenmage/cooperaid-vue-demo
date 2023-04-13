@@ -48,7 +48,7 @@ export default class Juggernaut extends PlayerIdentity {
     }
 }
 
-class Bash extends Skill {
+export class Bash extends Skill {
     name: string = "Bash";
     energyCost: number = 2;
     cooldown: number = 0;
@@ -68,7 +68,7 @@ class Bash extends Skill {
     }
 }
 
-class ShieldBlock extends Skill {
+export class ShieldBlock extends Skill {
     name: string = "Shield Block";
     energyCost: number = 4;
     cooldown: number = 6 * 1000;
@@ -80,7 +80,7 @@ class ShieldBlock extends Skill {
     }
 }
 
-class BodySlam extends Skill {
+export class BodySlam extends Skill {
     name: string = "Body Slam";
     energyCost: number = 3;
     cooldown: number = 1 * 1000;

@@ -27,7 +27,7 @@ export default class Rogue extends PlayerIdentity {
     ]
 }
 
-class BladeFlurry extends Skill {
+export class BladeFlurry extends Skill {
     name: string = "Blade Flurry";
     energyCost: number = 3;
     cooldown: number = 1.5 * 1000;
@@ -56,7 +56,7 @@ class BladeFlurry extends Skill {
     }
 }
 
-class ExposeArmor extends Skill {
+export class ExposeArmor extends Skill {
     name: string = "Expose Armor";
     energyCost: number = 5;
     cooldown: number = 12 * 1000;
@@ -71,7 +71,7 @@ class ExposeArmor extends Skill {
     }
 }
 
-class Kick extends Skill {
+export class Kick extends Skill {
     name: string = "Kick";
     energyCost: number = 4;
     cooldown: number = 8 * 1000;
@@ -89,7 +89,7 @@ class Kick extends Skill {
     }
 }
 
-class Sap extends Skill {
+export class Sap extends Skill {
     name: string = "Sap";
     energyCost: number = 6;
     cooldown: number = 12 * 1000;
@@ -100,6 +100,7 @@ class Sap extends Skill {
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             target.addBuff(new SappedBuff(), castBy)
+            target.ai?.raiseThreat(castBy, 25)
         })
     }
 }

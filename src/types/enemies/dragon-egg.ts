@@ -10,7 +10,7 @@ import ClassBar from '../class-bar';
 
 export default class DragonEgg extends Identity {
     public name = "Dragon Egg"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: -2 })
+    public baseStats = CharacterStats.fromObject({ maxHealth: 50, armor: -1 })
     public imagePath = "/src/assets/dragon-egg.png"
 
     public skills = [
@@ -23,7 +23,7 @@ export default class DragonEgg extends Identity {
         if (character.classBar != null) {
             character.classBar.onFilled = () => {
                 this.name = "Dragon Whelp"
-                this.baseStats = CharacterStats.fromObject({ maxHealth: 50, armor: 1 })
+                this.baseStats = CharacterStats.fromObject({ maxHealth: 75, armor: 1 })
                 character.recalculateStats()
                 character.healthBar.current = character.healthBar.max
                 this.imagePath = "/src/assets/dragon-whelp.png"
@@ -54,7 +54,7 @@ class Stir extends Skill {
     }
 }
 
-class WhelpBite extends Skill {
+export class WhelpBite extends Skill {
     name: string = "Bite"
     energyCost: number = 3;
     castTime = 3000;
@@ -66,7 +66,7 @@ class WhelpBite extends Skill {
     }
 }
 
-class Ember extends Skill {
+export class Ember extends Skill {
     name: string = "Ember"
     energyCost: number = 8;
     castTime = 4000;

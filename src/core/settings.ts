@@ -1,6 +1,6 @@
 export default abstract class GameSettings {
-    static readonly defaultEnergyRegenAmount = 100
-    static readonly speedFactor = 1
-    static readonly startingEnergy = 0
-    static readonly generateEnergyWhileCasting = true
+    static defaultEnergyRegenAmount = 100
+    static speedFactor = 1
+    static startingEnergy = 0
+    static generateEnergyWhileCasting = true
 }

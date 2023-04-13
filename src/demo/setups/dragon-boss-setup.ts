@@ -8,17 +8,12 @@ import Rogue from "@/types/classes/rogue";
 import DragonBoss from "@/types/enemies/dragon-boss";
 import DragonEgg from "@/types/enemies/dragon-egg";
 import Enemy from "@/types/enemy";
-import Player from "@/types/player";
+import type Player from "@/types/player";
 import Taunt from "@/types/skills/taunt";
 
-export default function dragonBossSetup() {
+export default function dragonBossSetup(...players: Player[]) {
     Game.startGame({
-        players: [
-            new Player(new Paladin()).enableAI(),
-            new Player(new Juggernaut()).enableAI(),
-            new Player(new Rogue()).enableAI(),
-            new Player(new Mage())
-        ],
+        players,
         route: [
           new CombatEncounter([
             new Enemy(new DragonEgg()),

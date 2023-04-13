@@ -35,7 +35,7 @@ export default class Mage extends PlayerIdentity {
     ]
 }
 
-class FrostBolt extends Skill implements EmpowerableSKill {
+export class FrostBolt extends Skill implements EmpowerableSKill {
     name: string = "FrostBolt";
     energyCost: number = 2;
     cooldown: number = 0 * 1000;

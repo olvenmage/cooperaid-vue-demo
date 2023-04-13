@@ -29,6 +29,7 @@ export default abstract class Skill {
 
     public onCooldownTimer = 0
     public onCooldown = false;
+    public casted = false
     public aiTargetting = AiTargetting.HIGHEST_THREAT
 
     public readonly castingIncrementer = 100
@@ -71,7 +72,7 @@ export default abstract class Skill {
     }
 
     incrementCastTime(castBy: Character, getTargets: () => Character[]) {
-        if (castBy.dead) {
+        if (castBy.dead || this.casted) {
             this.castingTimer = 0
             this.casting = false
             this.currentTargets = []
@@ -84,10 +85,12 @@ export default abstract class Skill {
             setTimeout(() => {
                 this.incrementCastTime(castBy, getTargets)
             }, 200)
+            return
         }
 
         if (this.interupted) {
             this.interupted = false;
+            this.onCooldownTimer = Math.round(this.cooldown / 2)
             this.startCooldown(castBy)
             return;
         }
@@ -95,6 +98,7 @@ export default abstract class Skill {
         this.casting = true
 
         if (this.castingTimer >= this.castTime) {
+            this.casted = true
             this.castingTimer = 0
             this.casting = false
             this.doCast(castBy, this.currentTargets)
@@ -124,6 +128,7 @@ export default abstract class Skill {
             return false;
         }
 
+        this.casted = false
         this.currentTargets = getTargets()
         this.beforeCast(castBy)
         castBy.energyBar.current -= this.energyCost

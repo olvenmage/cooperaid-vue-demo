@@ -7,14 +7,14 @@ import type StatMutatingBuff from '../stat-mutating-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
 export default class SappedBuff extends Buff implements StatMutatingBuff {
-    duration: number = 10 * 1000
+    duration: number = 6 * 1000
 
     triggered = false
 
     callback = this.breakSap.bind(this)
 
     override startEffect(character: Character): void {
-        this.duration = randomRange(4, 10) * 1000
+        this.duration = randomRange(4, 8) * 1000
         character.identity.onDamageTakenTriggers.push(this.callback)
 
         super.startEffect(character)

@@ -9,7 +9,7 @@ import CharacterStats from '../character-stats';
 
 export default class DragonBoss extends Identity {
     public name = "Dragon"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 250, armor: 3 })
+    public baseStats = CharacterStats.fromObject({ maxHealth: 400, armor: 3, magicalArmor: 2 })
     public imagePath = "/src/assets/dragonboss.png"
 
     public stackingFireDamage = 0
@@ -22,7 +22,7 @@ export default class DragonBoss extends Identity {
     ]
 }
 
-class DragonThrash extends Skill {
+export class DragonThrash extends Skill {
     name: string = "Thrash"
     energyCost: number = 3;
     cooldown: number = 0;
@@ -34,19 +34,22 @@ class DragonThrash extends Skill {
     }
 }
 
-class DragonSwipe extends Skill {
+export class DragonSwipe extends Skill {
     name: string = "Swipe"
-    energyCost: number = 6;
+    energyCost: number = 5;
     cooldown: number = 10 * 1000;
     castTime = 2 * 1000;
     targetType: TargetType = TargetType.TARGET_ALL_ENEMIES
 
     castSkill(castBy: Character, targets: Character[]): void {
+
+        console.log("SWIPE!")
+        console.log(targets)
         targets.forEach((target) => castBy.dealDamageTo({ amount: 12, target, type: DamageType.PHYSICAL }))
     }
 }
 
-class DragonRoar extends Skill {
+export class DragonRoar extends Skill {
     name: string = "Roar"
     energyCost: number = 0;
     cooldown: number = 15 * 1000;
@@ -55,6 +58,7 @@ class DragonRoar extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (castBy.identity instanceof DragonBoss) {
+            castBy.skills.forEach((skill) => skill.castTime = Math.max(skill.castTime - 200, 0))
             castBy.energyBar.energyRegenAmount += 25
             castBy.identity.stackingFireDamage += 2
         }
@@ -62,7 +66,7 @@ class DragonRoar extends Skill {
 }
 
 
-class FireBreath extends Skill {
+export class FireBreath extends Skill {
     name: string = "Fire Breath"
     energyCost: number = 10;
     castTime = 4 * 1000;
