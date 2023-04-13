@@ -74,7 +74,7 @@ export class HolyShock extends Skill {
     }
 
     override getCastPriority(castBy: Character, target: Character) {
-        return Math.max(((target.healthBar.max - target.healthBar.current) - this.HEAL_AMOUNT) + 1, 5)
+        return 95 - (target.healthBar.current / target.healthBar.max * 100)
     }
 }
 

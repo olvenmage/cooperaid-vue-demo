@@ -41,7 +41,7 @@ export default class Battle {
     public startCombat() {        
         this.runAiInterval = setInterval(() => {
             this.runAI()
-        }, (settings.enemyInteractSpeed / GameSettings.speedFactor) * 1000)
+        }, (GameSettings.aiInteractDelay / GameSettings.speedFactor) * 1000)
 
         this.checkAliveInterval = setInterval(() => {
             this.checkAlive()

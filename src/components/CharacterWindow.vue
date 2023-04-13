@@ -97,12 +97,12 @@ function addDamageFloat(trigger: OnDamageTrigger) {
   justify-content: center;
   color: black;
   background-color: rgba(200, 200, 200, 0.5);
-  border: 1px solid rgba(100, 100, 100, 0.5)
+  border: 4px solid rgba(150, 150, 150, 0.5)
 }
 
 .saving-graced.char-window {
   background-color: rgba(255, 215, 0, 0.3);
-  border: 1px solid rgba(151, 129, 0, 0.5)
+  border: 4px solid rgba(151, 129, 0, 0.5)
 }
 
 .char-window.casting-skill:hover {

@@ -4,7 +4,7 @@ import PlayerIdentity, { PlayerClass } from '../player-identity'
 import ClassBar from '../class-bar';
 import DamageType from '../damage-type';
 import CharacterStats from '../character-stats';
-import ExposeArmorBuff from '../buffs/expose-armor';
+import DismantleBuff from '../buffs/dismantle';
 import type EmpowerableSKill from '../empowerable-skill';
 import Empowered from '../buffs/empowered';
 import FrozenBuff from '../buffs/frozen'

@@ -4,7 +4,7 @@ import PlayerIdentity, { PlayerClass } from '../player-identity'
 import ClassBar from '../class-bar';
 import DamageType from '../damage-type';
 import CharacterStats from '../character-stats';
-import ExposeArmorBuff from '../buffs/expose-armor';
+import DismantleBuff from '../buffs/dismantle';
 import SappedBuff from '../buffs/sapped';
 
 export default class Rogue extends PlayerIdentity {
@@ -21,8 +21,8 @@ export default class Rogue extends PlayerIdentity {
 
     public skills = [
         new BladeFlurry(),
-        new ExposeArmor(),
-        new Kick(),
+        new Dismantle(),
+        new CheapShot(),
         new Sap()
     ]
 }
@@ -56,8 +56,8 @@ export class BladeFlurry extends Skill {
     }
 }
 
-export class ExposeArmor extends Skill {
-    name: string = "Expose Armor";
+export class Dismantle extends Skill {
+    name: string = "Dismantle";
     energyCost: number = 5;
     cooldown: number = 12 * 1000;
     castTime = 500
@@ -66,13 +66,13 @@ export class ExposeArmor extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            target.addBuff(new ExposeArmorBuff(), castBy)
+            target.addBuff(new DismantleBuff(), castBy)
         })
     }
 }
 
-export class Kick extends Skill {
-    name: string = "Kick";
+export class CheapShot extends Skill {
+    name: string = "Cheap Shot";
     energyCost: number = 4;
     cooldown: number = 8 * 1000;
     castTime = 250

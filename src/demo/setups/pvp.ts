@@ -8,11 +8,12 @@ import Player from "@/types/player";
 export default function pvpSetup(playerClass: any, enemyClass: any) {
     Game.startGame({
         players: [
-            new Player(new (playerClass as any)()),
+           
+            playerClass instanceof Player ? playerClass : new Player(new (playerClass as any)()),
         ],
         route: [
           new CombatEncounter([
-            new Enemy(new (enemyClass as any)()),
+            enemyClass instanceof Enemy ? enemyClass : new Enemy(new (enemyClass as any)()),
           ]),
           new ShopEncounter([])
         ]

@@ -14,4 +14,8 @@ export default class Bandage extends Skill {
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => target.restoreHealth(6, castBy, 0.6))
     }
+
+    override getCastPriority(castBy: Character, target: Character) {
+        return 95 - (target.healthBar.current / target.healthBar.max * 100)
+    }
 }
