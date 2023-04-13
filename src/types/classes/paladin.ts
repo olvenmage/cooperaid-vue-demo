@@ -8,14 +8,14 @@ import { characterDiedEvent } from '@/core/events';
 import SavingGrace from '../buffs/saving-grace';
 import BlessingOfProtectionBuff from '../buffs/blessing-of-protection'
 import SmittenBuff from '../buffs/smitten';
+import CharacterStats from '../character-stats';
 
 
 export default class Paladin extends PlayerIdentity {
     public name = "Paladin"
-    public maxHealth = 40
+    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 3})
     public imagePath = "/src/assets/classes/paladin.png"
     public playerClass = PlayerClass.PALADIN
-    public armor = 3
 
     override onCreated(character: Character) {
         character.classBar = new ClassBar(100, 'gold')

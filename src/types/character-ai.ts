@@ -16,9 +16,8 @@ export default class CharacterAI {
         this.identity = identity
     }
 
-    getSkillToCast(castBy: Character): Skill|null {
-        shuffleArray(this.identity.skills)
-        return this.identity.skills.find((skill) => skill.canCast(castBy)) || null
+    getCastableSkills(castBy: Character): Skill[] {
+        return this.identity.skills.filter((skill) => skill.canCast(castBy))
     }
     
     getHighestThreatTarget(): Character|null {

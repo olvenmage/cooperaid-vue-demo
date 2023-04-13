@@ -4,10 +4,10 @@ import type ClassBar from './class-bar'
 enum PlayerClass {
     BARBARIAN = 0,
     JUGGERNAUT = 1,
-    PRIEST = 2,
+    MAGE = 2,
     PALADIN = 3,
-    DISRUPTOR = 4,
-    DEADEYE = 5
+    DRUID = 4,
+    ROGUE = 5
 }
 
 abstract class PlayerIdentity extends Identity {

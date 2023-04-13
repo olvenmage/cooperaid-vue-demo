@@ -9,6 +9,12 @@ enum TargetType {
     TARGET_ALL_ENEMIES
 }
 
+enum AiTargetting {
+    HIGHEST_THREAT,
+    RANDOM,
+    MOST_HEALING,
+}
+
 export default abstract class Skill {
     abstract name: string
     abstract energyCost: number
@@ -24,6 +30,7 @@ export default abstract class Skill {
 
     public onCooldownTimer = 0
     public onCooldown = false;
+    public aiTargetting = AiTargetting.HIGHEST_THREAT
 
     public readonly castingIncrementer = 100
 
@@ -129,4 +136,4 @@ export default abstract class Skill {
     abstract castSkill(castBy: Character, targets: Character[]): void
 }
 
-export { TargetType }
+export { TargetType, AiTargetting }

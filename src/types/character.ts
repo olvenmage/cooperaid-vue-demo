@@ -14,6 +14,7 @@ import { globalThreatEvent, characterDiedEvent } from '@/core/events';
 import Player from './player';
 import type Skill from './skill';
 import type OnDamageTrigger from './triggers/on-damage-trigger';
+import type CharacterStats from './character-stats';
 
 
 export default abstract class Character {
@@ -26,20 +27,40 @@ export default abstract class Character {
     public energyBar: EnergyBar
     public classBar: ClassBar|null = null
     public ai: CharacterAI|null = null
-    public currentArmor
+    public currentMagicalArmor: number = 0
+
     public buffs = new CharacterBuffs(this)
+
+    public stats: CharacterStats
 
     constructor(identity: Identity, factions: Faction[]) {
         this.id = "char" + Math.random().toString(16).slice(2)
         this.identity = identity;
-        this.healthBar = new Healthbar(identity.maxHealth)
+        this.healthBar = new Healthbar(identity.baseStats.maxHealth.value)
         this.energyBar = new EnergyBar(identity.maxEnergy)
         this.factions = factions;
-        this.currentArmor = identity.armor
-        
+        this.stats = identity.baseStats.clone()
+
+        this.buffs.onBuffsChanged(() => this.recalculateStats())
+        this.recalculateStats()
+
         if (!(this instanceof Player)) {
             this.ai = new CharacterAI(identity)
         }
+    }
+
+    recalculateStats() {
+        this.stats.recalculateBasedOn(this.identity.baseStats)
+        this.buffs.mutateStats(
+            this.stats
+        )
+
+        this.healthBar.max = this.stats.maxHealth.value
+    }
+
+
+    get skills() {
+        return this.identity.skills
     }
 
     dealDamage(amount: number, target: Character, damageType: DamageType, threatModifier: number = 1) {
@@ -63,7 +84,9 @@ export default abstract class Character {
         let actualDamage: number
 
         if (damageType == DamageType.PHYSICAL) {
-            actualDamage = Math.max(amount - this.currentArmor, 0)
+            actualDamage = Math.max(amount - this.stats.armor.value, 0)
+        } else if (damageType == DamageType.MAGICAL) {
+            actualDamage = Math.max(amount - this.stats.magicalArmor.value, 0)
         } else {
             actualDamage = amount
         }
@@ -73,6 +96,7 @@ export default abstract class Character {
         }
 
         const damageTrigger: OnDamageTrigger = {
+            id: "dmg" + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
             character: this,
             actualDamage,
             originalDamage: amount,
@@ -145,6 +169,6 @@ export default abstract class Character {
 
     initializeCombat(): void {
         this.identity.onCreated(this)
-        this.energyBar.start()
+        this.energyBar.start(this)
     }
 }

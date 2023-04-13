@@ -9,7 +9,9 @@ import Barbarian from '../types/classes/barbarian';
 import Juggernaut from '../types/classes/juggernaut';
 import Game from '@/core/game';
 import Paladin from '@/types/classes/paladin';
+import Rogue from '@/types/classes/rogue';
 import DragonBoss from '@/types/enemies/dragon-boss';
+import DragonEgg from '@/types/enemies/dragon-egg';
 import Shop from './Shop.vue'
 
 import { CombatEncounter, ShopEncounter } from '@/core/encounter'
@@ -17,17 +19,14 @@ import GameoverScreen from './GameoverScreen.vue';
 
 Game.startGame({
     players: [
-        new Player(new Paladin()).enableAI(),
-        new Player(new Juggernaut()).enableAI(),
-        new Player(new Paladin()).enableAI(),
+        new Player(new Paladin()),
+        new Player(new Juggernaut()),
     ],
     route: [
       new CombatEncounter([
+        new Enemy(new DragonEgg()),
         new Enemy(new DragonBoss()),
-      ]),
-      new CombatEncounter([
-        new Enemy(new Goblin()),
-        new Enemy(new Goblin()),
+        new Enemy(new DragonEgg()),
       ]),
       new ShopEncounter([])
     ]

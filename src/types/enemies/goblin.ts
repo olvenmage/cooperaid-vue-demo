@@ -5,12 +5,12 @@ import Skill, { TargetType } from '../skill';
 import EnergyBar from '../energy-bar';
 import Healthbar from '../health-bar';
 import DamageType from '../damage-type';
+import CharacterStats from '../character-stats';
 
 export default class Goblin extends Identity {
     public name = "Goblin"
-    public maxHealth = 40
+    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 1 })
     public imagePath = "/src/assets/goblin.png"
-    public armor = 1
 
     public skills = [
         new GoblinBite(),

@@ -15,6 +15,6 @@ export default class Healthbar {
     }
 
     decrease(amount: number) {
-        this.current = Math.max(this.current - amount, 0)
+        this.current -= amount
     }
 }

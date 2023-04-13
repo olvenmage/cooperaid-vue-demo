@@ -21,7 +21,6 @@ function startCast(skill: Skill) {
   <div>
     <h1 class="player-name" :style="{color: player.playerColor}">Player {{ player.playerNumber }}</h1>
     <BattlefieldCharacter :casting-skill="castingSkill" :character="player" @start-cast="startCast"></BattlefieldCharacter>
-
   </div>
 
 </template>

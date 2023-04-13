@@ -5,15 +5,15 @@ import ClassBar from '../class-bar';
 import Enrage from '../buffs/enrage';
 import DamageType from '../damage-type';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
+import CharacterStats from '../character-stats';
 
 
 export default class Barbarian extends PlayerIdentity {
     public name = "Barbarian"
-    public maxHealth = 40
+    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 2})
     public imagePath = "/src/assets/classes/barbarian.png"
     public playerClass = PlayerClass.BARBARIAN
     public classBar = new ClassBar(100, 'red',)
-    public armor = 2
 
     public skills = [
         new RecklessStrike(),
@@ -110,7 +110,7 @@ class Rampage extends Skill {
     castSkill(castBy: Character, targets: Character[]): void {
         const missingHealthPercentage = (castBy.healthBar.current / castBy.healthBar.max);
         const damageToDeal = Math.ceil(10 * (2 - missingHealthPercentage))
-        const threatModifier = 3 * missingHealthPercentage
+        const threatModifier = 2.5 * missingHealthPercentage
 
         targets.forEach((target) => target.takeDamage(damageToDeal, castBy, DamageType.PHYSICAL, threatModifier))
     }

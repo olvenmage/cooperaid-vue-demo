@@ -5,12 +5,12 @@ import Skill, { TargetType } from '../skill';
 import DamageType from '../damage-type';
 import randomRange from '@/utils/randomRange';
 import MeltedArmorBuff from '../buffs/melted-armor';
+import CharacterStats from '../character-stats';
 
 export default class DragonBoss extends Identity {
     public name = "Dragon"
-    public maxHealth = 400
+    public baseStats = CharacterStats.fromObject({ maxHealth: 250, armor: 3 })
     public imagePath = "/src/assets/dragonboss.png"
-    public armor = 3
 
     public stackingFireDamage = 0
 
@@ -26,7 +26,7 @@ class DragonThrash extends Skill {
     name: string = "Thrash"
     energyCost: number = 3;
     cooldown: number = 0;
-    castTime = 4000;
+    castTime = 3 * 1000;
     targetType: TargetType = TargetType.TARGET_ENEMY
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -37,12 +37,12 @@ class DragonThrash extends Skill {
 class DragonSwipe extends Skill {
     name: string = "Swipe"
     energyCost: number = 6;
-    cooldown: number = 8 * 1000;
-    castTime = 2000;
+    cooldown: number = 10 * 1000;
+    castTime = 2 * 1000;
     targetType: TargetType = TargetType.TARGET_ALL_ENEMIES
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => target.takeDamage(10, castBy, DamageType.PHYSICAL))
+        targets.forEach((target) => target.takeDamage(12, castBy, DamageType.PHYSICAL))
     }
 }
 
@@ -50,7 +50,7 @@ class DragonRoar extends Skill {
     name: string = "Roar"
     energyCost: number = 0;
     cooldown: number = 15 * 1000;
-    castTime = 1000;
+    castTime = 1 * 1000;
     targetType: TargetType = TargetType.TARGET_FRIENDLY
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -65,7 +65,7 @@ class DragonRoar extends Skill {
 class FireBreath extends Skill {
     name: string = "Fire Breath"
     energyCost: number = 10;
-    castTime = 4000;
+    castTime = 4 * 1000;
     cooldown: number = 4 * 1000;
     targetType: TargetType = TargetType.TARGET_ENEMY
 

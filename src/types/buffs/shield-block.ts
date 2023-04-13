@@ -1,10 +1,13 @@
 import Buff from '../buff';
 import type Character from '../character';
-import TickBuff from '../tick-buff';
+import type CharacterStats from '../character-stats';
+import type StatMutatingBuff from '../stat-mutating-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
-export default class ShieldBlockBuff extends Buff {
+export default class ShieldBlockBuff extends Buff implements StatMutatingBuff {
     duration: number = 5 * 1000
+
+    ARMOR_VALUE = 8
 
     callback = this.shieldBlock.bind(this)
 
@@ -24,16 +27,16 @@ export default class ShieldBlockBuff extends Buff {
         super.endEffect(character)
     }
 
-    shieldBlock(trigger: OnDamageTrigger): number {
-        if (trigger.actualDamage > 0) {
-            if (trigger.damagedBy) {
-                trigger.damagedBy.takeDamage(5, trigger.character, 2)
-            }
+    mutateStats(stats: CharacterStats): CharacterStats {
+        stats.armor.set(stats.armor.value + this.ARMOR_VALUE)
+        return stats
+    }
 
+    shieldBlock(trigger: OnDamageTrigger): number {
+        if (trigger.originalDamage > (trigger.character.stats.armor.value - this.ARMOR_VALUE)) {
             this.endEffect(trigger.character)
-            return Math.floor(trigger.actualDamage / 2)
         }
 
-        return 0
+        return trigger.actualDamage
     }
 }

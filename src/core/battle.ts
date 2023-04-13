@@ -4,12 +4,13 @@ import Faction from "@/types/faction"
 import type Player from "@/types/player"
 import { TargetType } from "@/types/skill"
 import shuffleArray from "@/utils/shuffleArray"
+import CharacterAIBrain from "./ai"
 import { globalThreatEvent } from "./events"
 import Game from "./game"
 import GameSettings from "./settings"
 
 const settings = {
-    enemyInteractSpeed: 0.5
+    enemyInteractSpeed: 1
 }
 
 export interface CombatFinishedParameters {
@@ -17,12 +18,12 @@ export interface CombatFinishedParameters {
 }
 
 export default class Battle {
-    public enemies: Enemy[]
+    private enemies: Enemy[]
 
     private runAiInterval = 0
     private checkAliveInterval = 0
 
-    private combatants: Character[] = [];
+    public combatants: Character[] = [];
     private onCombatFinishedListeners: ((params: CombatFinishedParameters) => void)[] = []
 
     constructor(enemies: Enemy[]) {
@@ -74,12 +75,9 @@ export default class Battle {
     }
 
     private checkAlive() {
-        console.log("check alive")
-
         const anyPlayersAlive = Game.players.some((player) => !player.dead)
         
         if (!anyPlayersAlive) {
-            console.log("no players alive")
             this.stopCombat({
                 playersWon: false
             })
@@ -88,7 +86,6 @@ export default class Battle {
         const anyEnemiesAlive = this.enemies.some((enemy) => !enemy.dead)
 
         if (!anyEnemiesAlive) {
-            console.log("no enemies alive")
             this.stopCombat({
                 playersWon: true
             })
@@ -102,57 +99,7 @@ export default class Battle {
             }
     
             if (character.ai != null) {
-                if (Math.round(Math.random()) && character.energyBar.current < 8) {
-                    return
-                }
-                const skill = character.ai.getSkillToCast(character);
-    
-                if (skill != null) {
-                    let targettingMethod = skill.targetType
-
-                    if (targettingMethod == TargetType.TARGET_ANY) {
-                        const friendlyNeedsHelp = this.combatants.some((c) => !character.isEnemyTo(c) && skill.getCastPriority(character, c) > 10)
-                        // coinflip
-                        if (friendlyNeedsHelp && Math.round(Math.random())) {
-                            targettingMethod = TargetType.TARGET_FRIENDLY
-                        } else {
-                            targettingMethod = TargetType.TARGET_ENEMY
-                        }
-                    }
-
-                    let target: Character|null = null
-
-                    if (targettingMethod == TargetType.TARGET_ENEMY) {
-                        target = character.ai.getHighestThreatTarget();
-    
-                        if (target == null) {
-                            shuffleArray(this.combatants)
-                            this.combatants.forEach((char2) => {
-                                if (character.isEnemyTo(char2)) {
-                                    target = char2;
-                                }
-                            })
-                        }
-                    } else if (targettingMethod == TargetType.TARGET_FRIENDLY) {
-                        shuffleArray(this.combatants)
-                        const friendlies = this.combatants.filter((char2) => !character.isEnemyTo(char2))
-                        target = friendlies[0]
-
-                        friendlies.forEach((c) =>{
-                            if (target == null || skill.getCastPriority(character, c) > skill.getCastPriority(character, target)) {
-                                target = c
-                            }
-                        })      
-                    } else if (targettingMethod == TargetType.TARGET_ALL_ENEMIES) {
-                        skill.cast(character, this.combatants.filter((char) => character.isEnemyTo(char)))
-                    }
-    
-                    if (target == null || target.dead) {
-                      return;
-                    }
-    
-                    skill.cast(character, [target])
-                }
+                CharacterAIBrain.act(character, this)
             }
         })
     }
