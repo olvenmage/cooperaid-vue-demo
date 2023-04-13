@@ -56,8 +56,15 @@ class Bash extends Skill {
     targetType: TargetType = TargetType.TARGET_ENEMY
     aiTargetting = AiTargetting.RANDOM
 
+    BASE_DAMAGE = 3
+
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => target.takeDamage(3 + castBy.stats.armor.value, castBy, DamageType.PHYSICAL, 2))
+        targets.forEach((target) => castBy.dealDamageTo({
+            amount: this.BASE_DAMAGE + castBy.stats.armor.value,
+            target,
+            type: DamageType.PHYSICAL,
+            threatModifier: 1.2
+        }))
     }
 }
 
@@ -82,8 +89,8 @@ class BodySlam extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            target.takeDamage(5 + castBy.stats.armor.value, castBy, DamageType.PHYSICAL)
-            castBy.takeDamage(5 + target.stats.armor.value, target, DamageType.PHYSICAL)
+            castBy.dealDamageTo({ amount: 5 + castBy.stats.armor.value, target, type: DamageType.PHYSICAL, threatModifier: 1.2})
+            target.dealDamageTo({ amount: 5 + target.stats.armor.value, target: castBy, type: DamageType.PHYSICAL, threatModifier: 1.2})
         })
     }
 }

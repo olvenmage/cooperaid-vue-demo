@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Game from '@/core/game';
-import PlayerCharacter from './PlayerCharacter.vue';
+import type CharacterWindowVue from './CharacterWindow.vue';
+import CharacterWindow from './CharacterWindow.vue';
 
 const players = Game.players
 
@@ -10,13 +11,13 @@ const players = Game.players
   <section class="shop">
     <img class="background" src="/src/assets/shop-background.png">
     <div class="player-box">
-<PlayerCharacter
+<CharacterWindow
       v-for="player in players"
       :key="player.id"
-      :player="player"
+      :character="player"
       :casting-skill="null"
     >
-   </PlayerCharacter>
+   </CharacterWindow>
     </div>
    
    </section>

@@ -13,7 +13,7 @@ import CharacterStats from '../character-stats';
 
 export default class Paladin extends PlayerIdentity {
     public name = "Paladin"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 3})
+    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 2, magicalArmor: 1 })
     public imagePath = "/src/assets/classes/paladin.png"
     public playerClass = PlayerClass.PALADIN
 
@@ -56,13 +56,19 @@ class HolyShock extends Skill {
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             if (castBy.isEnemyTo(target)) {
-                target.takeDamage(this.DAMAGE_AMOUNT, castBy, DamageType.MAGICAL, 1.0)
+                castBy.dealDamageTo({ amount: this.DAMAGE_AMOUNT, target, type: DamageType.MAGICAL})
             } else {
                 target.restoreHealth(this.HEAL_AMOUNT, castBy, 1.0)
             }
 
             if (castBy.classBar != null) {
-                castBy.classBar.increase(10)
+                let holyPowerAmount = 9
+
+                if (target.id == castBy.id) {
+                    holyPowerAmount += 3
+                }
+
+                castBy.classBar.increase(holyPowerAmount)
             }
         })
     }
@@ -85,7 +91,7 @@ class Smite extends Skill {
         }
    
         targets.forEach((target) => {
-            target.takeDamage(10, castBy, DamageType.MAGICAL)
+            castBy.dealDamageTo({ amount: 10, target, type: DamageType.MAGICAL})
             target.addBuff(new SmittenBuff())
         })
     }

@@ -7,7 +7,6 @@ import Enemy from '../types/enemy';
 import BattlefieldCharacter from './BattlefieldCharacter.vue';
 import { TargetType } from '@/types/skill';
 import Game from '@/core/game';
-import PlayerCharacter from './PlayerCharacter.vue';
 
 
 let castingSkill = ref<Skill|null>(null);
@@ -43,17 +42,18 @@ function castAtAllEnemies(skill: Skill, character: Character) {
   const combatants: Character[] = []
 
   for (const enemy of enemies) {
-    combatants.push(enemy.value)
+    combatants.push(enemy)
   }
 
   for (const player of players) {
-    combatants.push(player.value)
+    combatants.push(player)
   }
 
 
+  console.log("cast @ all")
   skill.cast(
     character,
-    combatants.filter((char) => character.isEnemyTo(char))
+    () => combatants.filter((char) => character.isEnemyTo(char))
   )
 }
 
@@ -76,7 +76,7 @@ function selectCharacter(selectedCharacter: Character) {
 
    const castSuccesful = castingSkill.value.cast(
       castingCharacter.value,
-      [selectedCharacter]
+      () => [selectedCharacter]
     )
 
     castingSkill.value = null
@@ -92,24 +92,24 @@ function selectCharacter(selectedCharacter: Character) {
         v-for="enemy in enemies"
         :key="enemy.id"
         :character="enemy"
-        @click.capture="() => selectCharacter(enemy)"
-        :class="{'casting-character': enemy.id == castingCharacter?.id }"
         :casting-skill="castingSkill"
+        :casting="enemy.id == castingCharacter?.id"
+        @click.capture="() => selectCharacter(enemy)"
     >
     </BattlefieldCharacter>
     </div>
     <div class="player-box">
-<PlayerCharacter
+<BattlefieldCharacter
       v-for="player in players"
       :key="player.id"
-      :player="player"
+      :character="player"
+      :casting-skill="castingSkill"
+      :casting="player.id == castingCharacter?.id"
       @start-cast="(skill) => startCast(skill, player)"
       @cast-at-all-enemies="(skill) => castAtAllEnemies(skill, player)"
       @click.capture="() => selectCharacter(player)"
-      :class="{'casting-character': player.id == castingCharacter?.id }"
-      :casting-skill="castingSkill"
     >
-   </PlayerCharacter>
+   </BattlefieldCharacter>
     </div>
    
    </section>

@@ -1,6 +1,7 @@
 import Buff from '../buff';
 import type Character from '../character';
 import type CharacterStats from '../character-stats';
+import DamageType from '../damage-type';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
@@ -8,6 +9,8 @@ export default class ShieldBlockBuff extends Buff implements StatMutatingBuff {
     duration: number = 5 * 1000
 
     ARMOR_VALUE = 8
+
+    triggered = false
 
     callback = this.shieldBlock.bind(this)
 
@@ -29,11 +32,23 @@ export default class ShieldBlockBuff extends Buff implements StatMutatingBuff {
 
     mutateStats(stats: CharacterStats): CharacterStats {
         stats.armor.set(stats.armor.value + this.ARMOR_VALUE)
+        stats.magicalArmor.set(stats.magicalArmor.value + stats.armor.value)
+
+        // transform armor to +mag armor
+        stats.armor.onChange((newVal, oldVal) => {
+            stats.magicalArmor.set(stats.magicalArmor.value - oldVal)
+            stats.magicalArmor.set(stats.magicalArmor.value + newVal)
+        })
+    
         return stats
     }
 
     shieldBlock(trigger: OnDamageTrigger): number {
-        if (trigger.originalDamage > (trigger.character.stats.armor.value - this.ARMOR_VALUE)) {
+        if (!this.triggered && trigger.originalDamage > (trigger.character.stats.armor.value - this.ARMOR_VALUE)) {
+           console.log(`${trigger.character.identity.name} BY : ${trigger.damagedBy?.identity.name}`)
+            // bugs when turned on TODO FIX
+            //trigger.damagedBy?.dealDamage(Math.ceil(trigger.character.stats.armor.value / 2), trigger.character, DamageType.PHYSICAL, 2)
+            this.triggered = true
             this.endEffect(trigger.character)
         }
 

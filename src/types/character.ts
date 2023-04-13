@@ -15,6 +15,9 @@ import Player from './player';
 import type Skill from './skill';
 import type OnDamageTrigger from './triggers/on-damage-trigger';
 import type CharacterStats from './character-stats';
+import CharacterSkills from './character-skills';
+import type { DealDamageToParams, TakeDamageParams } from './damage';
+import { reactive } from 'vue';
 
 
 export default abstract class Character {
@@ -30,16 +33,18 @@ export default abstract class Character {
     public currentMagicalArmor: number = 0
 
     public buffs = new CharacterBuffs(this)
+    private characterSkills: CharacterSkills
 
     public stats: CharacterStats
 
     constructor(identity: Identity, factions: Faction[]) {
         this.id = "char" + Math.random().toString(16).slice(2)
         this.identity = identity;
+        this.characterSkills = new CharacterSkills(this)
         this.healthBar = new Healthbar(identity.baseStats.maxHealth.value)
         this.energyBar = new EnergyBar(identity.maxEnergy)
         this.factions = factions;
-        this.stats = identity.baseStats.clone()
+        this.stats = reactive(identity.baseStats.clone()) as CharacterStats
 
         this.buffs.onBuffsChanged(() => this.recalculateStats())
         this.recalculateStats()
@@ -60,49 +65,61 @@ export default abstract class Character {
 
 
     get skills() {
-        return this.identity.skills
+        return this.characterSkills.skills
     }
 
-    dealDamage(amount: number, target: Character, damageType: DamageType, threatModifier: number = 1) {
+    get actionable() {
+        return !this.stats.stunned && !this.dead
+    }
+
+    removeSkill(skillClass: typeof Skill): this {
+        this.characterSkills.removeSkill(skillClass)
+        return this
+    }
+
+    addSkill(skill: Skill): this {
+        this.characterSkills.addSkill(skill)
+        return this
+    }
+
+    dealDamageTo(damage: DealDamageToParams) {
         if (this.dead) {
             return
         }
 
-        target.takeDamage(amount, this, damageType, threatModifier)
+        damage.target.takeDamage({
+            ...damage,
+            damagedBy: this
+        })
     }
 
-    takeDamage(
-        amount: number,
-        damagedBy: Character|null,
-        damageType: DamageType, 
-        threatModifier: number = 1
-    ) {
+    takeDamage(damage: TakeDamageParams) {
         if (this.dead) {
             return
         }
 
         let actualDamage: number
 
-        if (damageType == DamageType.PHYSICAL) {
-            actualDamage = Math.max(amount - this.stats.armor.value, 0)
-        } else if (damageType == DamageType.MAGICAL) {
-            actualDamage = Math.max(amount - this.stats.magicalArmor.value, 0)
+        if (damage.type == DamageType.PHYSICAL) {
+            actualDamage = Math.max(damage.amount - this.stats.armor.value, damage.minAmount ?? 0)
+        } else if (damage.type == DamageType.MAGICAL) {
+            actualDamage = Math.max(damage.amount - this.stats.magicalArmor.value, damage.minAmount ?? 0)
         } else {
-            actualDamage = amount
+            actualDamage = damage.amount
         }
-        
-        if (damagedBy?.id != this.id) {
-            this.raiseThreat(damagedBy, actualDamage * threatModifier)
+
+        if (damage.damagedBy?.id != this.id) {
+            this.raiseThreat(damage.damagedBy, actualDamage * (damage.threatModifier || 1))
         }
 
         const damageTrigger: OnDamageTrigger = {
             id: "dmg" + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
             character: this,
             actualDamage,
-            originalDamage: amount,
-            damagedBy,
-            damageType,
-            threatModifier
+            originalDamage: damage.amount,
+            damagedBy: damage.damagedBy,
+            damageType: damage.type,
+            threatModifier: damage.threatModifier ?? 1
         }
 
         for (const beforeDamageTrigger of this.identity.beforeDamageTakenTriggers) {

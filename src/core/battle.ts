@@ -18,7 +18,7 @@ export interface CombatFinishedParameters {
 }
 
 export default class Battle {
-    private enemies: Enemy[]
+    public enemies: Enemy[]
 
     private runAiInterval = 0
     private checkAliveInterval = 0
@@ -78,9 +78,12 @@ export default class Battle {
         const anyPlayersAlive = Game.players.some((player) => !player.dead)
         
         if (!anyPlayersAlive) {
-            this.stopCombat({
-                playersWon: false
-            })
+            setTimeout(() => {
+                this.stopCombat({
+                    playersWon: false
+                })
+            }, 2000)
+           
         }
 
         const anyEnemiesAlive = this.enemies.some((enemy) => !enemy.dead)

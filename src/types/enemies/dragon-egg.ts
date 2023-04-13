@@ -30,10 +30,9 @@ export default class DragonEgg extends Identity {
                 character.classBar = null
                 character.energyBar.current = character.energyBar.max
 
-                this.skills = [
-                    new WhelpBite(),
-                    new Ember()
-                ]
+                character.removeSkill(Stir)
+                character.addSkill(new WhelpBite())
+                character.addSkill(new Ember())
             }
         }
       
@@ -63,7 +62,7 @@ class WhelpBite extends Skill {
     targetType: TargetType = TargetType.TARGET_ENEMY
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => target.takeDamage(5, castBy, DamageType.PHYSICAL))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: 5, target, type: DamageType.PHYSICAL }))
     }
 }
 
@@ -75,6 +74,6 @@ class Ember extends Skill {
     targetType: TargetType = TargetType.TARGET_ENEMY
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => target.takeDamage(8, castBy, DamageType.MAGICAL))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: 8, target, type: DamageType.MAGICAL }))
     }
 }

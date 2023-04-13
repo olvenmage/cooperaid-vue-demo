@@ -4,7 +4,6 @@ import Player from '@/types/player';
 import type OnDamageTrigger from '@/types/triggers/on-damage-trigger';
 import randomRange from '@/utils/randomRange';
 import { onMounted, ref } from 'vue';
-import PlayerCharacter from './PlayerCharacter.vue';
 
 const props = defineProps<{
   damage: OnDamageTrigger

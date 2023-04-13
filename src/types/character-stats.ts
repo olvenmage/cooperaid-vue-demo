@@ -34,6 +34,7 @@ export default class CharacterStats {
     public maxHealth = new CharacterStat()
     public armor = new CharacterStat()
     public magicalArmor = new CharacterStat()
+    public stunned = false
 
     constructor(maxHealth: number, armor = 0, magicalArmor = 0) {
         this.maxHealth.set(maxHealth)
@@ -53,7 +54,8 @@ export default class CharacterStats {
         return new CharacterStats(
             this.maxHealth.value,
             this.armor.value,
-            this.magicalArmor.value
+            this.magicalArmor.value,
+            this.stunned
         )
     }
 
@@ -61,5 +63,6 @@ export default class CharacterStats {
         this.armor.recalculate(stats.armor.value)
         this.magicalArmor.recalculate(stats.magicalArmor.value)
         this.maxHealth.recalculate(stats.maxHealth.value)
+        this.stunned = false
     }
 }

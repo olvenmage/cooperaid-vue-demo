@@ -2,11 +2,12 @@ import GameSettings from '@/core/settings';
 import type Character from '../character';
 import type CharacterStats from '../character-stats';
 import DamageType from '../damage-type';
+import { isEmpowerableSkil } from '../empowerable-skill';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import TickBuff from '../tick-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
-export default class Untouchable extends TickBuff implements StatMutatingBuff {
+export default class Empowered extends TickBuff {
     // interval in miliseconds (1000 = every second)
     public baseTickInterval: number = 1000
 
@@ -14,8 +15,6 @@ export default class Untouchable extends TickBuff implements StatMutatingBuff {
     CONSUME_AMOUNT = 15
 
     duration: number = this.START_DURATION
-
-    private returnDamageCallback = this.returnDamage.bind(this)
 
     tickEffect(character: Character) {
         if (character.classBar) {
@@ -27,23 +26,15 @@ export default class Untouchable extends TickBuff implements StatMutatingBuff {
         }
     }
 
-    mutateStats(stats: CharacterStats): CharacterStats {
-        stats.magicalArmor.set(stats.magicalArmor.value + stats.armor.value)
-
-        // transform armor to +mag armor
-        stats.armor.onChange((newVal, oldVal) => {
-            stats.magicalArmor.set(stats.magicalArmor.value - oldVal)
-            stats.magicalArmor.set(stats.magicalArmor.value + newVal)
-        })
-
-        return stats
-    }
-
     override startEffect(character: Character): void {
-        character.identity.onDamageTakenTriggers.push(this.returnDamageCallback)
-
         if (character.classBar) {
             character.classBar.activated = true
+
+            for (const skill of character.skills) {
+                if (isEmpowerableSkil(skill)) {
+                    skill.empower(character)
+                }
+            }
         }
 
         super.startEffect(character)
@@ -52,30 +43,17 @@ export default class Untouchable extends TickBuff implements StatMutatingBuff {
     override endEffect(character: Character): void {
         this.duration = this.START_DURATION
 
-        const returnDmgIndex = character.identity.onDamageTakenTriggers.findIndex((trigger) => trigger == this.returnDamageCallback)
-        
-        if (returnDmgIndex != -1) {
-            character.identity.onDamageTakenTriggers.splice(returnDmgIndex, 1)
-        }
-
         if (character.classBar) {
             //character.classBar.current = 0
             character.classBar.activated = false
+
+            for (const skill of character.skills) {
+                if (isEmpowerableSkil(skill)) {
+                    skill.unempower(character)
+                }
+            }
         }
 
         super.endEffect(character)
-    }
-
-    returnDamage(params: OnDamageTrigger) {
-        if (!params.damagedBy) {
-            return
-        }
-
-        params.character.dealDamageTo({
-            amount: params.originalDamage - params.actualDamage,
-            target: params.damagedBy,
-            type: DamageType.PHYSICAL,
-            threatModifier: 2
-        })
     }
 }

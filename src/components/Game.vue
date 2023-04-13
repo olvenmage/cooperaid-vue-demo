@@ -16,21 +16,10 @@ import Shop from './Shop.vue'
 
 import { CombatEncounter, ShopEncounter } from '@/core/encounter'
 import GameoverScreen from './GameoverScreen.vue';
+import Taunt from '@/types/skills/taunt';
+import main from '@/demo/entry/main';
 
-Game.startGame({
-    players: [
-        new Player(new Paladin()),
-        new Player(new Juggernaut()),
-    ],
-    route: [
-      new CombatEncounter([
-        new Enemy(new DragonEgg()),
-        new Enemy(new DragonBoss()),
-        new Enemy(new DragonEgg()),
-      ]),
-      new ShopEncounter([])
-    ]
-})
+main()
 
 let inCombat = ref(Game.inCombat)
 let inShop = ref(Game.inShop)

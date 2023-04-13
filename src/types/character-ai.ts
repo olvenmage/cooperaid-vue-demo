@@ -16,10 +16,6 @@ export default class CharacterAI {
         this.identity = identity
     }
 
-    getCastableSkills(castBy: Character): Skill[] {
-        return this.identity.skills.filter((skill) => skill.canCast(castBy))
-    }
-    
     getHighestThreatTarget(): Character|null {
         let highestThreatTarget: ThreatEntry|null = null;
 

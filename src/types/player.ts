@@ -7,13 +7,14 @@ import type PlayerIdentity from './player-identity';
 abstract class PlayerNumberRegistry {
     static currentPlayerIndex = 0
     static playerColors = [
-        'red',
-        'lightskyblue',
-        'green',
-        'purple',
-        'brown',
-        'teal',
-        'pink'
+        '#F52E2e',
+        '#5463FF',
+        '#FFC717',
+        '#1F9E40',
+        '#24D4C4',
+        '#D41CE5',
+        '#4A4559',
+        '#FFBF00'
     ]
 
     static getColor(num: number): string {

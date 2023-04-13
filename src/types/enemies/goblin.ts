@@ -26,7 +26,7 @@ class GoblinClobber extends Skill {
     targetType: TargetType = TargetType.TARGET_ENEMY
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => target.takeDamage(14, castBy, DamageType.PHYSICAL))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: 14, target, type: DamageType.PHYSICAL }))
     }
 }
 
@@ -39,6 +39,6 @@ class GoblinBite extends Skill {
     targetType: TargetType = TargetType.TARGET_ENEMY
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => target.takeDamage(5, castBy, DamageType.PHYSICAL))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: 5, target, type: DamageType.PHYSICAL }))
     }
 }

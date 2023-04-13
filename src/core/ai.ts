@@ -10,10 +10,14 @@ export default class CharacterAIBrain {
             return
         }
 
+        if (!character.actionable) {
+            return
+        }
+
         this.castBestSkill(character, battle)
     }
 
-    private static castBestSkill(character: Character, battle: Battle) {
+    private static castBestSkill(character: Character, battle: Battle): void {
         const skills = character.skills
         shuffleArray(skills)
 
@@ -48,12 +52,12 @@ export default class CharacterAIBrain {
         }
 
         if (bestSkill.targetType == TargetType.TARGET_NONE) {
-            bestSkill.cast(character, [])
+            bestSkill.cast(character, () => [])
             return
         }
 
         if (bestSkill.targetType == TargetType.TARGET_ALL_ENEMIES) {
-            bestSkill.cast(character, battle.combatants.filter((combatant) => character.isEnemyTo(combatant)))
+            bestSkill.cast(character, () => battle.combatants.filter((combatant) => character.isEnemyTo(combatant)))
             return
         }
 
@@ -72,42 +76,49 @@ export default class CharacterAIBrain {
         let aiPreferredTarget = bestSkill.aiTargetting
 
         let validTargets = battle.combatants
+        shuffleArray(validTargets)
 
         if (targettingMethod == TargetType.TARGET_FRIENDLY) {
             validTargets = battle.combatants.filter((c) => !character.isEnemyTo(c))
 
-            let mostDireFriendly = null
-            for (const friendly of validTargets) {
-                if (mostDireFriendly == null || bestSkill.getCastPriority(character, friendly) > bestSkill.getCastPriority(character, mostDireFriendly)) {
-                    mostDireFriendly = friendly
+            const getMostDireFriendly = (skill: Skill) => {
+                let mostDireFriendly = null
+                for (const friendly of validTargets) {
+                    if (mostDireFriendly == null || skill.getCastPriority(character, friendly) > skill.getCastPriority(character, mostDireFriendly)) {
+                        mostDireFriendly = friendly
+                    }
                 }
+
+                return mostDireFriendly
             }
 
-            if (mostDireFriendly == null) {
+            if (getMostDireFriendly(bestSkill) == null) {
                 return this.castBestSkill(character, battle)
             }
 
-            bestSkill.cast(character, [mostDireFriendly])
+            bestSkill.cast(character, () => {
+                return [getMostDireFriendly(bestSkill!) || validTargets[0]]
+            })
             return
         } else if (targettingMethod == TargetType.TARGET_ENEMY){
             validTargets = battle.combatants.filter((c) => character.isEnemyTo(c))
         }
 
         if (aiPreferredTarget == AiTargetting.HIGHEST_THREAT) {
-            const target = character.ai!.getHighestThreatTarget()
+            bestSkill.cast(character, () => {
+                let target = character.ai!.getHighestThreatTarget()
 
-            if (!target) {
-                aiPreferredTarget = AiTargetting.RANDOM
-            } else {
-                bestSkill.cast(character, [target])
-                return
-            }
+                if (!target) {
+                    target = pickRandom(validTargets) as Character
+                }
+
+                return [target]
+            })
+            return
         }
         
         if (aiPreferredTarget == AiTargetting.RANDOM) {
-            const target: Character = pickRandom(validTargets) as Character
-
-            bestSkill.cast(character, [target])
+            bestSkill.cast(character,  () => [pickRandom(validTargets) as Character])
             return
         }
     }

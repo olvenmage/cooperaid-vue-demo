@@ -15,7 +15,9 @@ export class CombatEncounter extends Encounter {
 
         return new Promise((resolve, reject) => {
             if (!result.playersWon) {
-                Game.gameover()
+                setTimeout(() => {
+                    Game.gameover()
+                }, 2000)
             }
 
             resolve(result.playersWon)

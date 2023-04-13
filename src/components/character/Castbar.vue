@@ -16,7 +16,7 @@ let barWidth = ref("100%");
 
 watchEffect(() => {
   if (props.character.castingSkill != null) {
-    target.value = props.character.castingSkill.castingTargets[0] ?? null
+    target.value = props.character.castingSkill.currentTargets[0] ?? null
 
     if (target.value instanceof Player) {
       targetColor.value = target.value.playerColor

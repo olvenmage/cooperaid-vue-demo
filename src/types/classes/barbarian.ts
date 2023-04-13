@@ -60,11 +60,11 @@ class RecklessStrike extends Skill {
     selfDamageAmount = 4
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => target.takeDamage(10, castBy, DamageType.PHYSICAL, 0.8))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: 10, type: DamageType.PHYSICAL, threatModifier: 0.8, target }))
     }
 
-    beforeCast(castBy: Character, targets: Character[]): void {
-        castBy.takeDamage(this.selfDamageAmount, castBy, DamageType.BLEED);
+    beforeCast(castBy: Character): void {
+        castBy.takeDamage({ amount: this.selfDamageAmount, damagedBy: castBy, type: DamageType.BLEED });
     }
 
     override canCast(castBy: Character): boolean {
@@ -92,7 +92,7 @@ class RagingBlow extends Skill {
     castTime = 2500
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => target.takeDamage(12, castBy, DamageType.PHYSICAL))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: 12, target, type: DamageType.PHYSICAL }))
 
         if (castBy.classBar != null) {
             castBy.classBar.increase(12)
@@ -112,6 +112,6 @@ class Rampage extends Skill {
         const damageToDeal = Math.ceil(10 * (2 - missingHealthPercentage))
         const threatModifier = 2.5 * missingHealthPercentage
 
-        targets.forEach((target) => target.takeDamage(damageToDeal, castBy, DamageType.PHYSICAL, threatModifier))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: damageToDeal, target, type: DamageType.PHYSICAL, threatModifier }))
     }
 }
