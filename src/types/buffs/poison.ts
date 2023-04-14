@@ -9,7 +9,7 @@ export default class PoisonBuff extends TickBuff implements StackingBuff {
 
     stackAmount = 1
 
-    constructor(private damagePerStack: number, newDuration: number) {
+    constructor(private damagePerStack: number, newDuration: number, private maxStack: number) {
         super()
         this.duration = newDuration
     }
@@ -23,6 +23,10 @@ export default class PoisonBuff extends TickBuff implements StackingBuff {
     }
 
     addStack(amount: number) {
+        if (this.stackAmount == this.maxStack) {
+            return
+        }
+
         this.stackAmount += amount
     }
 }

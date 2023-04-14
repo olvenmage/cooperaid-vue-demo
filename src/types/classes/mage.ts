@@ -19,6 +19,7 @@ export default class Mage extends PlayerIdentity {
     public baseStats = CharacterStats.fromObject({ maxHealth: 30, armor: 1, magicalArmor: 1})
     public imagePath = "/src/assets/classes/mage.png"
     public playerClass = PlayerClass.MAGE
+    public basicSkill: Skill = new FrostBolt()
 
     override onCreated(character: Character) {
         character.classBar = new ClassBar(100, 'blue')
@@ -30,9 +31,7 @@ export default class Mage extends PlayerIdentity {
         }
     }
 
-    public skills = [
-        new FrostBolt()
-    ]
+    public skills = []
 }
 
 export class FrostBolt extends Skill implements EmpowerableSKill {

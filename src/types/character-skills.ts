@@ -1,4 +1,6 @@
 import type Character from "./character";
+import Player from "./player";
+import PlayerIdentity from "./player-identity";
 import type Skill from "./skill";
 
 export default class CharacterSkills {
@@ -9,9 +11,16 @@ export default class CharacterSkills {
 
     constructor(character: Character) {
         this.character = character
-        this.collection = character.identity.skills
-    }
 
+        const basicSkill = null
+
+        if (character.identity instanceof PlayerIdentity) {
+            this.collection.push(character.identity.basicSkill)
+        }
+
+        this.collection = this.collection.concat(character.identity.skills)
+    }
+ 
     get skills() {
         return this.collection
     }

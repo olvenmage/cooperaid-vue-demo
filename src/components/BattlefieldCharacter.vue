@@ -94,6 +94,11 @@ function startCast(skill: Skill) {
   padding-top: 6px;
 }
 
+.spell-item {
+  font-size: 16px;
+  padding: 2px;
+}
+
 .spell-item:not(.selected):hover {
   background: lightblue;
   cursor: pointer;

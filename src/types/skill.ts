@@ -1,5 +1,7 @@
 import GameSettings from '@/core/settings';
 import type Character from './character';
+import DamageType from './damage-type';
+import type OnDamageTrigger from './triggers/on-damage-trigger';
 
 enum TargetType {
     TARGET_ENEMY,
@@ -32,11 +34,15 @@ export default abstract class Skill {
     public casted = false
     public aiTargetting = AiTargetting.HIGHEST_THREAT
 
+    public interuptsOnDamageTaken = false
+
     public readonly castingIncrementer = 100
 
     private interupted = false
 
     currentTargets: Character[] = []
+
+    interuptsOnDamageTakenCallback = this.onDamageTaken.bind(this)
 
     canCast(castBy: Character): boolean {
         if (castBy.castingSkill != null) {
@@ -91,6 +97,8 @@ export default abstract class Skill {
         if (this.interupted) {
             this.interupted = false;
             this.onCooldownTimer = Math.round(this.cooldown / 2)
+            this.castingTimer = 0
+            this.removeDamageTakenCallback(castBy)
             this.startCooldown(castBy)
             return;
         }
@@ -102,6 +110,7 @@ export default abstract class Skill {
             this.castingTimer = 0
             this.casting = false
             this.doCast(castBy, this.currentTargets)
+            this.removeDamageTakenCallback(castBy)
             this.currentTargets = []
             return
         }
@@ -133,6 +142,10 @@ export default abstract class Skill {
         this.beforeCast(castBy)
         castBy.energyBar.current -= this.energyCost
 
+        if (this.interuptsOnDamageTaken) {
+            castBy.identity.onDamageTakenTriggers.push(this.interuptsOnDamageTakenCallback)
+        }
+
         castBy.castingSkill = this
         setTimeout(() => {
             this.incrementCastTime(castBy, getTargets)
@@ -157,6 +170,20 @@ export default abstract class Skill {
 
     delayCastingTime(miliseconds: number) {
         this.castingTimer = Math.min(this.castingTimer - miliseconds, 0)
+    }
+
+    removeDamageTakenCallback(character: Character) {
+        const index = character.identity.onDamageTakenTriggers.findIndex((cb) => cb == this.interuptsOnDamageTakenCallback)
+        
+        if (index != -1) {
+            character.identity.onDamageTakenTriggers.splice(index, 1)
+        }
+    }
+
+    onDamageTaken(trigger: OnDamageTrigger) {
+        if (trigger.actualDamage > 0 && trigger.damageType != DamageType.POISON) {
+            this.interupt()
+        }
     }
 
     interupt() {

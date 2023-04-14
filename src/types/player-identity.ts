@@ -1,5 +1,6 @@
 import Identity from './identity'
 import type ClassBar from './class-bar'
+import type Skill from './skill';
 
 enum PlayerClass {
     BARBARIAN = 0,
@@ -12,6 +13,7 @@ enum PlayerClass {
 
 abstract class PlayerIdentity extends Identity {
     abstract playerClass: PlayerClass
+    abstract basicSkill: Skill
 }
 
 export default PlayerIdentity;

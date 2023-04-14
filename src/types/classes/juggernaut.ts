@@ -15,6 +15,7 @@ export default class Juggernaut extends PlayerIdentity {
     public baseStats = CharacterStats.fromObject({ maxHealth: 52, armor: 3})
     public imagePath = "/src/assets/classes/juggernaut.png"
     public playerClass = PlayerClass.JUGGERNAUT
+    public basicSkill: Skill = new Bash()
 
     override onCreated(character: Character) {
         character.classBar = new ClassBar(100, 'silver')
@@ -28,7 +29,6 @@ export default class Juggernaut extends PlayerIdentity {
     }
 
     public skills = [
-        new Bash(),
         new BodySlam(),
         new ShieldBlock(),
     ]
@@ -56,14 +56,15 @@ export class Bash extends Skill {
     targetType: TargetType = TargetType.TARGET_ENEMY
     aiTargetting = AiTargetting.RANDOM
 
-    BASE_DAMAGE = 3
+    BASE_DAMAGE = 2
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => castBy.dealDamageTo({
             amount: this.BASE_DAMAGE + castBy.stats.armor.value,
             target,
             type: DamageType.PHYSICAL,
-            threatModifier: 1.2
+            threatModifier: 1.2,
+            minAmount: 1
         }))
     }
 }

@@ -14,9 +14,9 @@ export default class Barbarian extends PlayerIdentity {
     public imagePath = "/src/assets/classes/barbarian.png"
     public playerClass = PlayerClass.BARBARIAN
     public classBar = new ClassBar(100, 'red',)
+    public basicSkill: Skill = new RecklessStrike()
 
     public skills = [
-        new RecklessStrike(),
         new RagingBlow(),
         new Rampage(),
 
@@ -26,7 +26,7 @@ export default class Barbarian extends PlayerIdentity {
         if (character.classBar != null) {
             character.classBar.onFilled = () => {
                 if (character.classBar == null || character.classBar.activated) return
-                character.addBuff(new Enrage())
+                character.addBuff(new Enrage(), character)
             }
         }
      
@@ -38,7 +38,13 @@ export default class Barbarian extends PlayerIdentity {
             return
         }
 
-        const ragePercentagePenalty = damagedBy?.id != character.id ? 0.35 : 0.15
+        let ragePercentagePenalty = 0.35
+        
+        if (damagedBy?.id == character.id) {
+            ragePercentagePenalty = 0.15
+        } else if (damagedBy && !character.isEnemyTo(damagedBy)){
+            ragePercentagePenalty *= 2
+        }
 
         const currentPercentage = character.healthBar.current / character.healthBar.max
         const rage = ((actualDamage / character.healthBar.max) * 100) * (2 - currentPercentage - ragePercentagePenalty)
@@ -113,5 +119,17 @@ export class Rampage extends Skill {
         const threatModifier = 2.5 * missingHealthPercentage
 
         targets.forEach((target) => castBy.dealDamageTo({ amount: damageToDeal, target, type: DamageType.PHYSICAL, threatModifier }))
+    }
+}
+
+export class Shout extends Skill {
+    name: string = "Shout";
+    energyCost: number = 2;
+    cooldown: number = 6 * 1000;
+    targetType: TargetType = TargetType.TARGET_ALL_ENEMIES
+    castTime = 1000
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => castBy.dealDamageTo({ amount: 3, target, type: DamageType.PHYSICAL, threatModifier: 3.5, minAmount: 3 }))
     }
 }

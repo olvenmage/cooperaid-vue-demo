@@ -18,8 +18,7 @@ export default class CharacterAIBrain {
     }
 
     private static castBestSkill(character: Character, battle: Battle): void {
-        const skills = character.skills
-        shuffleArray(skills)
+        const skills = shuffleArray(character.skills)
 
         let bestSkill: Skill|null = null
 
@@ -75,8 +74,7 @@ export default class CharacterAIBrain {
 
         let aiPreferredTarget = bestSkill.aiTargetting
 
-        let validTargets = battle.combatants
-        shuffleArray(validTargets)
+        let validTargets = shuffleArray(battle.combatants)
 
         if (targettingMethod == TargetType.TARGET_FRIENDLY) {
             validTargets = battle.combatants.filter((c) => !character.isEnemyTo(c))

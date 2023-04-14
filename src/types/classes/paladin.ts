@@ -16,6 +16,7 @@ export default class Paladin extends PlayerIdentity {
     public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 2, magicalArmor: 1 })
     public imagePath = "/src/assets/classes/paladin.png"
     public playerClass = PlayerClass.PALADIN
+    public basicSkill: Skill = new HolyShock()
 
     override onCreated(character: Character) {
         character.classBar = new ClassBar(100, 'gold')
@@ -36,7 +37,6 @@ export default class Paladin extends PlayerIdentity {
     }
 
     public skills = [
-        new HolyShock(),
         new Smite(),
         new BlessingOfProtection()
     ]
@@ -78,6 +78,36 @@ export class HolyShock extends Skill {
     }
 }
 
+export class OverwhelmingLight extends Skill {
+    name: string = "Overwhelming Light";
+    energyCost: number = 5;
+    cooldown: number = 8 * 1000;
+    castTime = 2000
+    targetType: TargetType = TargetType.TARGET_ANY
+
+    DAMAGE_AMOUNT = 10
+    HEAL_AMOUNT = 20
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => {
+            castBy.dealDamageTo({ amount: this.DAMAGE_AMOUNT, type: DamageType.MAGICAL, target})
+            target.restoreHealth(this.HEAL_AMOUNT, castBy, 0.8)
+        })
+    }
+
+    override getCastPriority(castBy: Character, target: Character) {
+        if (!castBy.isEnemyTo(target) && target.healthBar.current < this.DAMAGE_AMOUNT) {
+            return -50
+        }
+
+        if (!castBy.isEnemyTo(target) && target.healthBar.current > this.DAMAGE_AMOUNT) {
+            return -50
+        }
+
+        return 95 - (target.healthBar.current / target.healthBar.max * 100)
+    }
+}
+
 export class Smite extends Skill {
     name: string = "Smite";
     energyCost: number = 5;
@@ -99,7 +129,7 @@ export class Smite extends Skill {
 
 export class BlessingOfProtection extends Skill {
     name: string = "Blessing of Protection";
-    energyCost: number = 4;
+    energyCost: number = 3;
     cooldown: number = 12 * 1000;
     castTime = 500
     targetType: TargetType = TargetType.TARGET_FRIENDLY

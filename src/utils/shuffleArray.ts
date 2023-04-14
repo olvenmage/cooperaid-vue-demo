@@ -1,7 +1,10 @@
-/* Randomize array in-place using Durstenfeld shuffle algorithm */
-export default function shuffleArray(array: unknown[]) {
-    for (let i = array.length - 1; i > 0; i--) {
+export default function shuffleArray<T>(arr: T[]): T[]  {
+    const newArray: T[] = [].concat(arr)
+
+    for (let i = newArray.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
     }
+
+    return newArray
 }

@@ -14,6 +14,7 @@ export default class Rogue extends PlayerIdentity {
     public maxHealth = 35
     public imagePath = "/src/assets/classes/rogue.png"
     public playerClass = PlayerClass.ROGUE
+    public basicSkill: Skill = new PoisonedStrike()
     public armor = 2
 
     override onCreated(character: Character) {
@@ -24,7 +25,7 @@ export default class Rogue extends PlayerIdentity {
         new BladeFlurry(),
         new Dismantle(),
         new CheapShot(),
-        new PoisonedStrike()
+        new Sap()
     ]
 }
 
@@ -74,16 +75,16 @@ export class Dismantle extends Skill {
 
 export class PoisonedStrike extends Skill {
     name: string = "Poisoned Strike";
-    energyCost: number = 3;
-    cooldown: number = 2 * 1000;
+    energyCost: number = 2;
+    cooldown: number = 0 * 1000;
     castTime = 1000
     targetType: TargetType = TargetType.TARGET_ENEMY
     aiTargetting = AiTargetting.RANDOM
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ target, type: DamageType.PHYSICAL, amount: 6 })
-            target.addBuff(new PoisonBuff(1, 5 * 1000), castBy)
+            castBy.dealDamageTo({ target, type: DamageType.PHYSICAL, amount: 4 })
+            target.addBuff(new PoisonBuff(1, 3 * 1000, 3), castBy)
         })
     }
 }

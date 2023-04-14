@@ -52,7 +52,7 @@ export default class CharacterBuffs {
         this.onBuffsChangedCallbacks.push(callback)
     }
 
-    removeBuffByType(buffClass: typeof Buff) {
+    removeBuffByType(buffClass: any) {
         const existingBuff = this.getExistingBuffByType(buffClass)
 
         if (existingBuff && existingBuff.attachedCharacter != null) {
@@ -68,7 +68,7 @@ export default class CharacterBuffs {
         }
     }
 
-    hasBuff(buffClass: typeof Buff): boolean {
+    hasBuff(buffClass: any): boolean {
         return this.getExistingBuffByType(buffClass) != null
     }
 
