@@ -21,7 +21,7 @@ export default class Juggernaut extends PlayerIdentity {
 
         character.classBar.onFilled = () => {
             if (character.classBar == null || character.classBar.activated) return
-            character.addBuff(new Untouchable())
+            character.addBuff(new Untouchable(), character)
         }
 
         this.onDamageTakenTriggers.push(this.generateResistanceOnDamage)
@@ -76,7 +76,7 @@ export class ShieldBlock extends Skill {
     targetType: TargetType = TargetType.TARGET_NONE
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.addBuff(new ShieldBlockBuff())
+        castBy.addBuff(new ShieldBlockBuff(), castBy)
     }
 }
 

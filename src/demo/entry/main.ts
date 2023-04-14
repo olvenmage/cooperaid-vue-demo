@@ -21,11 +21,9 @@ import Enemy from "@/types/enemy";
 import { WhelpBite } from "@/types/enemies/dragon-egg";
 
 export default function main() {
-    GameSettings.speedFactor = 0.5
+    GameSettings.speedFactor = 1
     GameSettings.aiInteractDelay = 0.1
-    dragonBossSetup(
-        new Player(new Rogue()).enableAI(),
-        new Player(new Paladin()).enableAI(),
-        new Player(new Juggernaut()).enableAI(),
+    testClassSetup(
+        Rogue,
     )
 }

@@ -83,7 +83,7 @@ export class FireBreath extends Skill {
                     type: DamageType.MAGICAL
                 })
 
-                target.addBuff(new MeltedArmorBuff())
+                target.addBuff(new MeltedArmorBuff(), castBy)
             })
         }
        

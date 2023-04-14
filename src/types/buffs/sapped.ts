@@ -31,6 +31,7 @@ export default class SappedBuff extends Buff implements StatMutatingBuff {
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
+        console.log("STUNNERONI 1")
         stats.stunned = true
     
         return stats

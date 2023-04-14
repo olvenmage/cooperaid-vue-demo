@@ -25,7 +25,7 @@ export default class Mage extends PlayerIdentity {
         if (character.classBar != null) {
             character.classBar.onFilled = () => {
                 if (character.classBar == null || character.classBar.activated) return
-                character.addBuff(new Empowered())
+                character.addBuff(new Empowered(), character)
             }
         }
     }
@@ -50,7 +50,7 @@ export class FrostBolt extends Skill implements EmpowerableSKill {
             castBy.dealDamageTo({ amount: 7, type: DamageType.MAGICAL, target})
 
             if (this.empowered) {
-                target.addBuff(new FrozenBuff())
+                target.addBuff(new FrozenBuff(), castBy)
             }
         })
 

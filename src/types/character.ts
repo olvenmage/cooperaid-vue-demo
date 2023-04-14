@@ -162,7 +162,7 @@ export default abstract class Character {
         this.energyBar.increase(amount)
     }
 
-    addBuff(buff: Buff, givenBy: Character|null = null) {
+    addBuff(buff: Buff, givenBy: Character|null) {
         this.buffs.addBuff(buff, givenBy)
     }
 

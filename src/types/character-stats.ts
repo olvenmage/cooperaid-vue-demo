@@ -55,7 +55,6 @@ export default class CharacterStats {
             this.maxHealth.value,
             this.armor.value,
             this.magicalArmor.value,
-            this.stunned
         )
     }
 

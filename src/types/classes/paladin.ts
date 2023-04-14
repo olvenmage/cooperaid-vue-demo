@@ -92,7 +92,7 @@ export class Smite extends Skill {
    
         targets.forEach((target) => {
             castBy.dealDamageTo({ amount: 10, target, type: DamageType.MAGICAL})
-            target.addBuff(new SmittenBuff())
+            target.addBuff(new SmittenBuff(), castBy)
         })
     }
 }
