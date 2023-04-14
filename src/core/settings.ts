@@ -4,4 +4,5 @@ export default abstract class GameSettings {
     static startingEnergy = 0
     static aiInteractDelay = 1.0
     static generateEnergyWhileCasting = true
+    static aiEnabled = true
 }

@@ -18,6 +18,7 @@ import type CharacterStats from './character-stats';
 import CharacterSkills from './character-skills';
 import type { DealDamageToParams, TakeDamageParams } from './damage';
 import { reactive } from 'vue';
+import GameSettings from '@/core/settings';
 
 
 export default abstract class Character {
@@ -49,7 +50,7 @@ export default abstract class Character {
         this.buffs.onBuffsChanged(() => this.recalculateStats())
         this.recalculateStats()
 
-        if (!(this instanceof Player)) {
+        if (GameSettings.aiEnabled && !(this instanceof Player)) {
             this.ai = new CharacterAI(identity)
         }
     }

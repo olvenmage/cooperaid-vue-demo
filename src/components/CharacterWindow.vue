@@ -8,6 +8,7 @@ import SavingGrace from '@/types/buffs/saving-grace';
 import type OnDamageTrigger from '@/types/triggers/on-damage-trigger';
 import FloatingDamage from './FloatingDamage.vue';
 import GameSettings from '@/core/settings';
+import CharacterAI from '@/types/character-ai';
 
 const props = defineProps<{
   character: Character,
@@ -15,6 +16,7 @@ const props = defineProps<{
 }>()
 
 const damageFloats = ref<OnDamageTrigger[]>([]);
+const aiEnabled = ref(props.character.ai != null)
 
 onMounted(() => {
   props.character.identity.onDamageTakenTriggers.push(addDamageFloat)
@@ -27,6 +29,14 @@ onUnmounted(() => {
     props.character.identity.onDamageTakenTriggers.splice(index, 1)
   }
 })
+
+function toggleAI() {
+  if (aiEnabled.value) {
+    props.character.ai = new CharacterAI(props.character.identity)
+  } else {
+    props.character.ai = null
+  }
+}
 
 function addDamageFloat(trigger: OnDamageTrigger) {
   if (trigger.actualDamage <= 0) {
@@ -56,6 +66,10 @@ function addDamageFloat(trigger: OnDamageTrigger) {
         <img class="sprite" :class="{ 'sprite-dead': character.dead }" :src="character.identity.imagePath" style="margin: auto">
         <img class="cross-image" src="/src/assets/red-cross.png" v-if="character.dead">
         <img class="stunned-image" src="/src/assets/stunned-effect.png" v-if="character.stats.stunned">
+        <div style="position: absolute; left: 2px; bottom: 0px">
+          AI
+          <input type="checkbox" v-model="aiEnabled" @change="toggleAI">
+        </div>
         <div class="armor-wrapper">
           <img class="armor" width="16" height="16" src="/src/assets/magical-armor-symbol.png" alt="">
           <span style="font-size: 20px; margin-right: 8px">{{ character.stats.magicalArmor.value }}</span>
