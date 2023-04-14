@@ -43,17 +43,41 @@ export default class CharacterBuffs {
         buff.startBuff(this.character, givenBy)
         this.onBuffsChangedCallbacks.forEach((cb) => cb())  
     }
+
+    forEach(callback: (buff: Buff) => void) {
+        this.collection.forEach(callback)
+    }
     
     onBuffsChanged(callback: () => void) {
         this.onBuffsChangedCallbacks.push(callback)
     }
 
+    removeBuffByType(buffClass: typeof Buff) {
+        const existingBuff = this.getExistingBuffByType(buffClass)
+
+        if (existingBuff && existingBuff.attachedCharacter != null) {
+            existingBuff.endEffect(existingBuff.attachedCharacter)
+        }
+    }
+
+    removeBuff(buff: Buff) {
+        const existingBuff = this.getExistingBuffForInstance(buff)
+
+        if (existingBuff && existingBuff.attachedCharacter != null) {
+            existingBuff.endEffect(existingBuff.attachedCharacter)
+        }
+    }
+
     hasBuff(buffClass: typeof Buff): boolean {
-        return this.collection.some((collectionBuff) => collectionBuff instanceof buffClass)
+        return this.getExistingBuffByType(buffClass) != null
     }
 
     getExistingBuffForInstance(buffInstance: Buff): Buff|null {
         return this.collection.find((collectionBuff) => collectionBuff.constructor == buffInstance.constructor) || null
+    }
+
+    private getExistingBuffByType(buffClass: typeof Buff) {
+        return this.collection.find((collectionBuff) => collectionBuff instanceof buffClass) || null
     }
 
     mutateStats(baseStats: CharacterStats): CharacterStats {

@@ -8,7 +8,7 @@ export default abstract class TickBuff extends Buff {
     public abstract baseTickInterval: number
     public durationCounter: number = 0
 
-    protected attachedCharacter: Character|null = null
+    public attachedCharacter: Character|null = null
 
     abstract tickEffect(character: Character): void
 

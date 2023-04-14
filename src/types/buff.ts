@@ -10,8 +10,8 @@ export default abstract class Buff {
 
     protected expiredTriggers: (() => void)[] = []
 
-    protected attachedCharacter: Character|null = null
-    protected givenBy: Character|null = null
+    public attachedCharacter: Character|null = null
+    public givenBy: Character|null = null
 
     private ended = false
 

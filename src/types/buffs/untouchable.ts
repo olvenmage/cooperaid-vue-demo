@@ -1,4 +1,5 @@
 import GameSettings from '@/core/settings';
+import type Buff from '../buff';
 import type Character from '../character';
 import type CharacterStats from '../character-stats';
 import DamageType from '../damage-type';
@@ -6,7 +7,7 @@ import type StatMutatingBuff from '../stat-mutating-buff';
 import TickBuff from '../tick-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
-export default class Untouchable extends TickBuff implements StatMutatingBuff {
+export default class Untouchable extends TickBuff {
     // interval in miliseconds (1000 = every second)
     public baseTickInterval: number = 1000
 
@@ -27,23 +28,16 @@ export default class Untouchable extends TickBuff implements StatMutatingBuff {
         }
     }
 
-    mutateStats(stats: CharacterStats): CharacterStats {
-        stats.magicalArmor.set(stats.magicalArmor.value + stats.armor.value)
-
-        // transform armor to +mag armor
-        stats.armor.onChange((newVal, oldVal) => {
-            stats.magicalArmor.set(stats.magicalArmor.value - oldVal)
-            stats.magicalArmor.set(stats.magicalArmor.value + newVal)
-        })
-
-        return stats
-    }
-
     override startEffect(character: Character): void {
         character.identity.onDamageTakenTriggers.push(this.returnDamageCallback)
 
         if (character.classBar) {
             character.classBar.activated = true
+            character.buffs.forEach((buff: Buff) => {
+                if (buff.givenBy != null && buff.givenBy.isEnemyTo(character)) {
+                    character.buffs.removeBuff(buff)
+                }
+            })
         }
 
         super.startEffect(character)
