@@ -12,7 +12,7 @@ export default class Rogue extends PlayerIdentity {
     public name = "Rogue"
     public baseStats = CharacterStats.fromObject({ maxHealth: 35, armor: 2})
     public maxHealth = 35
-    public imagePath = "/src/assets/classes/rogue.png"
+    public imagePath = "/classes/rogue.png"
     public playerClass = PlayerClass.ROGUE
     public basicSkill: Skill = new PoisonedStrike()
     public armor = 2
@@ -36,6 +36,7 @@ export class BladeFlurry extends Skill {
     castTime = 1000
     targetType: TargetType = TargetType.TARGET_ENEMY
     aiTargetting = AiTargetting.RANDOM
+    imagePath = "/rogue/blade-flurry.png"
 
     AMOUNT_OF_ATTACKS = 3
     DAMAGE_PER_ATTACK = 3
@@ -65,6 +66,7 @@ export class Dismantle extends Skill {
     castTime = 500
     targetType: TargetType = TargetType.TARGET_ENEMY
     aiTargetting = AiTargetting.HIGHEST_THREAT
+    imagePath = "/rogue/dismantle.png"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
@@ -79,6 +81,7 @@ export class PoisonedStrike extends Skill {
     cooldown: number = 0 * 1000;
     castTime = 1000
     targetType: TargetType = TargetType.TARGET_ENEMY
+    imagePath = "/rogue/poisoned-strike.png"
     aiTargetting = AiTargetting.RANDOM
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -90,11 +93,12 @@ export class PoisonedStrike extends Skill {
 }
 
 export class CheapShot extends Skill {
-    name: string = "Cheap Shot";
+    name: string = "Kick";
     energyCost: number = 4;
     cooldown: number = 8 * 1000;
     castTime = 250
     targetType: TargetType = TargetType.TARGET_ENEMY
+    imagePath = "/rogue/kick.png"
     aiTargetting = AiTargetting.RANDOM
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -114,6 +118,7 @@ export class Sap extends Skill {
     castTime = 1000
     targetType: TargetType = TargetType.TARGET_ENEMY
     aiTargetting = AiTargetting.RANDOM
+    imagePath = "/rogue/sap.png"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {

@@ -32,6 +32,7 @@ abstract class PlayerNumberRegistry {
 class Player extends Character {
     public playerColor: string
     public playerNumber: number
+    public connectedExternally = false
 
     constructor(playerIdentity: PlayerIdentity) {
         super(playerIdentity, [Faction.ALLIES])

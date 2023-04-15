@@ -11,7 +11,7 @@ import ClassBar from '../class-bar';
 export default class DragonEgg extends Identity {
     public name = "Dragon Egg"
     public baseStats = CharacterStats.fromObject({ maxHealth: 50, armor: -1 })
-    public imagePath = "/src/assets/dragon-egg.png"
+    public imagePath = "/enemies/dragon/dragon-egg.png"
 
     public skills = [
         new Stir(),
@@ -26,7 +26,7 @@ export default class DragonEgg extends Identity {
                 this.baseStats = CharacterStats.fromObject({ maxHealth: 75, armor: 1 })
                 character.recalculateStats()
                 character.healthBar.current = character.healthBar.max
-                this.imagePath = "/src/assets/dragon-whelp.png"
+                this.imagePath = "/enemies/dragon/dragon-whelp.png"
                 character.classBar = null
                 character.energyBar.current = character.energyBar.max
 

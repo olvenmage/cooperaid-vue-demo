@@ -10,7 +10,7 @@ import CharacterStats from '../character-stats';
 export default class TrainingDummy extends Identity {
     public name = "Training Dummy"
     public baseStats = CharacterStats.fromObject({ maxHealth: 200, armor: 1 })
-    public imagePath = "/src/assets/training-dummy.png"
+    public imagePath = "/enemies/training-dummy.png"
 
     public skills = []
 }

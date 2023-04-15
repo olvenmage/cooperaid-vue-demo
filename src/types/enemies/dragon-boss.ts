@@ -10,7 +10,7 @@ import CharacterStats from '../character-stats';
 export default class DragonBoss extends Identity {
     public name = "Dragon"
     public baseStats = CharacterStats.fromObject({ maxHealth: 400, armor: 3, magicalArmor: 2 })
-    public imagePath = "/src/assets/dragonboss.png"
+    public imagePath = "/enemies/dragon/dragonboss.png"
 
     public stackingFireDamage = 0
 

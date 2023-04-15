@@ -19,6 +19,7 @@ import CharacterSkills from './character-skills';
 import type { DealDamageToParams, TakeDamageParams } from './damage';
 import { reactive } from 'vue';
 import GameSettings from '@/core/settings';
+import type CharacterState from './state/character-state';
 
 
 export default abstract class Character {
@@ -188,5 +189,37 @@ export default abstract class Character {
     initializeCombat(): void {
         this.identity.onCreated(this)
         this.energyBar.start(this)
+    }
+
+    getState(): CharacterState {
+        const basicSkill = this.identity instanceof PlayerIdentity ? this.identity.basicSkill.getState(this) : null
+        return {
+            id: this.id,
+            skills: this.skills.filter((sk) => sk.name != basicSkill?.name).map((sk) => sk.getState(this)),
+            basicSkill: basicSkill,
+            imagePath: this.identity.imagePath,
+            healthBar: {
+                current: this.healthBar.current,
+                max: this.healthBar.max,
+            },
+            energyBar: {
+                current: this.energyBar.current,
+                max: this.energyBar.max
+            },
+            specialBar: this.classBar ? {
+                current: this.classBar.current,
+                max: this.classBar.max,
+                active: this.classBar.activated,
+                color: this.classBar.color
+            } : null,
+            stats: {
+                armor: this.stats.armor.value,
+                magicalArmor: this.stats.magicalArmor.value,
+                stunned: this.stats.stunned
+            },
+            buffs: [],
+            dead: this.dead
+        }
+        
     }
 }

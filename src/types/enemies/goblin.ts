@@ -10,7 +10,7 @@ import CharacterStats from '../character-stats';
 export default class Goblin extends Identity {
     public name = "Goblin"
     public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 1 })
-    public imagePath = "/src/assets/goblin.png"
+    public imagePath = "/enemies/goblin.png"
 
     public skills = [
         new GoblinBite(),

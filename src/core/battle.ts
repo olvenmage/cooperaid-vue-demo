@@ -1,9 +1,14 @@
+import presenterSocket from "@/client-socket/presenter-socket"
 import type Character from "@/types/character"
+import Player from "@/types/player"
 import type Enemy from "@/types/enemy"
+import type BattleState from "@/types/state/battle-state"
 import CharacterAIBrain from "./ai"
 import { globalThreatEvent } from "./events"
 import Game from "./game"
 import GameSettings from "./settings"
+import { pubUpdateBattleState } from "../client-socket/OutgoingMessages"
+import { subCastSkill } from "../client-socket/IncomingMessages"
 
 const settings = {
     enemyInteractSpeed: 1
@@ -18,6 +23,7 @@ export default class Battle {
 
     private runAiInterval = 0
     private checkAliveInterval = 0
+    private syncClientsInterval = 0
 
     public combatants: Character[] = [];
     private onCombatFinishedListeners: ((params: CombatFinishedParameters) => void)[] = []
@@ -43,12 +49,34 @@ export default class Battle {
             this.checkAlive()
         }, 1000)
 
+        this.syncClientsInterval  =setInterval(() => {
+            this.syncClients()
+        }, 200)
+
         const unsubscribe = Game.eventBus.subscribe(globalThreatEvent, event => {
             this.combatants
             .filter((char) => event.payload.healer.isEnemyTo(char))
             .forEach((enemy) => {
                 enemy.raiseThreat(event.payload.healer, event.payload.amount)
             })
+        })
+
+        presenterSocket.subscribe(subCastSkill, (event) => {
+            const player = Game.players.find((plr) => plr.id == event.body.playerId)
+
+            if (!player) {
+                return
+            }
+
+            const skill = player.skills.find((sk) => sk.name == event.body.skill)
+
+            if (!skill?.canCast(player)) {
+                return
+            }
+
+            const targets = this.combatants.filter((combatant) => event.body.targets.includes(combatant.id))
+
+            skill.cast(player, () => targets)
         })
 
         this.onCombatFinished(() => {
@@ -61,6 +89,7 @@ export default class Battle {
     public stopCombat(combatFinishedParams: CombatFinishedParameters) {
         clearInterval(this.checkAliveInterval)
         clearInterval(this.runAiInterval)
+        clearInterval(this.syncClientsInterval)
 
         this.onCombatFinishedListeners.forEach((cb) => cb(combatFinishedParams))
         this.onCombatFinishedListeners = [];
@@ -100,6 +129,26 @@ export default class Battle {
             if (character.ai != null) {
                 CharacterAIBrain.act(character, this)
             }
+        })
+    }
+
+    private syncClients() {
+        const allies = this.combatants.filter((c) => c instanceof Player)
+        const allyStates = allies.map((p) => p.getState())
+
+        const enemies = this.combatants.filter((c) => !allies.includes(c)).map((e) => e.getState())
+
+        Game.players.filter((player) => player.connectedExternally).forEach((player) => {
+            presenterSocket.publish(
+                pubUpdateBattleState({
+                    playerId: player.id,
+                    state: {
+                        enemies,
+                        allies: allyStates.filter((a) => a.id != player.id),
+                        self: allyStates.find((a) => a.id == player.id) || player.getState()
+                    }
+                })
+            )
         })
     }
 }

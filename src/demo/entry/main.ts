@@ -22,10 +22,11 @@ import { WhelpBite } from "@/types/enemies/dragon-egg";
 import Taunt from "@/types/skills/taunt";
 
 export default function main() {
-    GameSettings.speedFactor = 0.4
+    GameSettings.speedFactor = 0.5
     dragonBossSetup(
-        new Player(new Rogue()).removeSkill(BladeFlurry).addSkill(new Bandage()),
-        new Player(new Rogue()),
-        new Player(new Rogue()),
+        new Player(new Paladin()).addSkill(new OverwhelmingLight()),
+        new Player(new Rogue()).enableAI(),
+        new Player(new Juggernaut()).enableAI(),
+        new Player(new Barbarian()).enableAI()
     )
 }

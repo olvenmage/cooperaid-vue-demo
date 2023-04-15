@@ -11,7 +11,7 @@ import CharacterStats from '../character-stats';
 export default class Barbarian extends PlayerIdentity {
     public name = "Barbarian"
     public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 2})
-    public imagePath = "/src/assets/classes/barbarian.png"
+    public imagePath = "/classes/barbarian.png"
     public playerClass = PlayerClass.BARBARIAN
     public classBar = new ClassBar(100, 'red',)
     public basicSkill: Skill = new RecklessStrike()

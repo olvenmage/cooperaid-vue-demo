@@ -14,7 +14,7 @@ import CharacterStats from '../character-stats';
 export default class Paladin extends PlayerIdentity {
     public name = "Paladin"
     public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 2, magicalArmor: 1 })
-    public imagePath = "/src/assets/classes/paladin.png"
+    public imagePath = "/classes/paladin.png"
     public playerClass = PlayerClass.PALADIN
     public basicSkill: Skill = new HolyShock()
 
@@ -48,6 +48,7 @@ export class HolyShock extends Skill {
     cooldown: number = 0;
     castTime = 1750
     targetType: TargetType = TargetType.TARGET_ANY
+    imagePath = "/paladin/holy-shock.png"
 
 
     DAMAGE_AMOUNT = 6
@@ -84,6 +85,7 @@ export class OverwhelmingLight extends Skill {
     cooldown: number = 8 * 1000;
     castTime = 2000
     targetType: TargetType = TargetType.TARGET_ANY
+    imagePath = "/paladin/overwhelming-light.png"
 
     DAMAGE_AMOUNT = 10
     HEAL_AMOUNT = 20
@@ -114,6 +116,7 @@ export class Smite extends Skill {
     cooldown: number = 5 * 1000;
     castTime = 2000
     targetType: TargetType = TargetType.TARGET_ENEMY
+    imagePath = "/paladin/smite.png"
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (castBy.classBar) {
@@ -133,6 +136,7 @@ export class BlessingOfProtection extends Skill {
     cooldown: number = 12 * 1000;
     castTime = 500
     targetType: TargetType = TargetType.TARGET_FRIENDLY
+    imagePath = "/paladin/blessing-of-protection.png"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => { 

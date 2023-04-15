@@ -1,5 +1,6 @@
 import GameSettings from '@/core/settings';
 import type Character from './character';
+import type { CharacterSkill, CharacterSkillTargetType } from './state/character-state';
 import DamageType from './damage-type';
 import type OnDamageTrigger from './triggers/on-damage-trigger';
 
@@ -23,6 +24,8 @@ export default abstract class Skill {
     // cooldown in microseconds
     abstract cooldown: number
     abstract targetType: TargetType
+
+    public imagePath: string|null = null
 
     // cast time in microseconds
     castTime: number = 0
@@ -192,6 +195,17 @@ export default abstract class Skill {
 
     getCastPriority(castBy: Character, target: Character): number {
         return 0
+    }
+
+    getState(castBy: Character): CharacterSkill {
+        return {
+            name: this.name,
+            canCast: this.canCast(castBy),
+            energyCost: this.energyCost,
+            validTargets: [],
+            imagePath: this.imagePath,
+            targetType: this.targetType as unknown as CharacterSkillTargetType
+        }
     }
 
     abstract castSkill(castBy: Character, targets: Character[]): void

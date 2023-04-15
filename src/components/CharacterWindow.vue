@@ -63,7 +63,7 @@ function addDamageFloat(trigger: OnDamageTrigger) {
             <FloatingDamage v-for="damageFloat in damageFloats" :key="damageFloat.id" :damage="damageFloat"></FloatingDamage>
         </div>
         
-        <img class="sprite" :class="{ 'sprite-dead': character.dead }" :src="character.identity.imagePath" style="margin: auto">
+        <img class="sprite" :class="{ 'sprite-dead': character.dead }" :src="`/src/assets/sprites${character.identity.imagePath}`" style="margin: auto">
         <img class="cross-image" src="/src/assets/red-cross.png" v-if="character.dead">
         <img class="stunned-image" src="/src/assets/stunned-effect.png" v-if="character.stats.stunned">
         <div style="position: absolute; left: 2px; bottom: 0px">

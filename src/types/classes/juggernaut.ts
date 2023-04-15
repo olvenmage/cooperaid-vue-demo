@@ -13,7 +13,7 @@ import CharacterStats from '../character-stats';
 export default class Juggernaut extends PlayerIdentity {
     public name = "Juggernaut"
     public baseStats = CharacterStats.fromObject({ maxHealth: 52, armor: 3})
-    public imagePath = "/src/assets/classes/juggernaut.png"
+    public imagePath = "/classes/juggernaut.png"
     public playerClass = PlayerClass.JUGGERNAUT
     public basicSkill: Skill = new Bash()
 
@@ -55,6 +55,8 @@ export class Bash extends Skill {
     castTime = 1000
     targetType: TargetType = TargetType.TARGET_ENEMY
     aiTargetting = AiTargetting.RANDOM
+    imagePath = "/juggernaut/bash.png"
+    
 
     BASE_DAMAGE = 2
 
@@ -75,6 +77,7 @@ export class ShieldBlock extends Skill {
     cooldown: number = 6 * 1000;
     castTime = 500
     targetType: TargetType = TargetType.TARGET_NONE
+    imagePath = "/juggernaut/shield-block.png"
 
     castSkill(castBy: Character, targets: Character[]): void {
         castBy.addBuff(new ShieldBlockBuff(), castBy)
@@ -87,6 +90,7 @@ export class BodySlam extends Skill {
     cooldown: number = 1 * 1000;
     castTime = 1000
     targetType: TargetType = TargetType.TARGET_ENEMY
+    imagePath = "/juggernaut/body-slam.png"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {

@@ -4,6 +4,9 @@ import Battle, { type CombatFinishedParameters } from "./battle";
 import { EventBus } from "ts-bus";
 import { reactive } from "vue";
 import type Encounter from "./encounter";
+import type { AppSocket } from "@/app-socket/lib/core/types";
+import presenterSocket from '../client-socket/presenter-socket'
+import { pubUpdatePlayerState } from "@/client-socket/OutgoingMessages";
 
 interface StartGameParams {
     players: Player[],
@@ -14,6 +17,7 @@ export default abstract class Game {
     static currentBattle: Battle|null = null
     static eventBus = new EventBus()
     static players: Player[] = []
+    static webSocket: AppSocket = presenterSocket
     private static route: Encounter[]
     static isGameover = false
     static inShop = false
@@ -37,6 +41,35 @@ export default abstract class Game {
                 return
             }
         }
+    }
+
+    static joinPlayer(playerClass: string, playerId: string) {
+        const player = this.players.find((plr) => plr.identity.name == playerClass)
+        
+        if (!player) {
+            console.error(`Player with class ${playerClass} cant join`)
+            return
+        }   
+
+        console.log("PLAYER JOINED!")
+        player.id = playerId
+        player.connectedExternally = true
+    }
+
+    static updatePlayerState(player: Player) {
+        if (!player.connectedExternally) {
+            return
+        }
+
+        presenterSocket.publish(pubUpdatePlayerState ({
+            playerId: player.id,
+            state: player.getState()
+        }))
+    }
+
+    static getPlayer(playerId: string): Player|null {
+        return this.players.find((plr) => plr.id == playerId) || null
+        
     }
 
     static gameover(): void {

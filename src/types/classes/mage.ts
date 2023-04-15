@@ -17,7 +17,7 @@ abstract class MageSkill extends Skill {
 export default class Mage extends PlayerIdentity {
     public name = "Mage"
     public baseStats = CharacterStats.fromObject({ maxHealth: 30, armor: 1, magicalArmor: 1})
-    public imagePath = "/src/assets/classes/mage.png"
+    public imagePath = "/classes/mage.png"
     public playerClass = PlayerClass.MAGE
     public basicSkill: Skill = new FrostBolt()
 
