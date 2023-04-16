@@ -19,6 +19,7 @@ export default class Juggernaut extends PlayerIdentity {
     public color = "#7F513E";
 
     override onCreated(character: Character) {
+        this.onDamageTakenTriggers = []
         character.classBar = new ClassBar(100, 'silver')
 
         character.classBar.onFilled = () => {

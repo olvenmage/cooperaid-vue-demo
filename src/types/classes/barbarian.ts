@@ -13,7 +13,6 @@ export default class Barbarian extends PlayerIdentity {
     public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 2})
     public imagePath = "/classes/barbarian.png"
     public playerClass = PlayerClass.BARBARIAN
-    public classBar = new ClassBar(100, 'red',)
     public basicSkill: Skill = new RecklessStrike()
     public color = "#E7623E";
 
@@ -24,6 +23,9 @@ export default class Barbarian extends PlayerIdentity {
     ]
 
     override onCreated(character: Character) {
+        this.onDamageTakenTriggers = []
+
+        character.classBar = new ClassBar(100, 'red')
         if (character.classBar != null) {
             character.classBar.onFilled = () => {
                 if (character.classBar == null || character.classBar.activated) return

@@ -62,7 +62,7 @@ function start() {
     players: Game.players.value as Player[],
     route: [
       new CombatEncounter(
-        [new Enemy(new Paladin())]
+        [new Enemy(new Rogue())]
       )
     ]
   })
