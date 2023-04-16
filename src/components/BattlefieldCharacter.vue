@@ -14,7 +14,6 @@ import type OnDamageTrigger from '@/types/triggers/on-damage-trigger';
 import FloatingDamage from './FloatingDamage.vue';
 import GameSettings from '@/core/settings';
 import CharacterWindow from './CharacterWindow.vue';
-import Player from '@/types/player';
 
 const props = defineProps<{
   character: Character,
@@ -26,11 +25,7 @@ const emit = defineEmits(['start-cast', 'cast-at-all-enemies'])
 const hasSavingGrace = computed(() => props.character.buffs.hasBuff(SavingGrace))
 const isEnemy = props.character instanceof Enemy
 
-let color = 'black';
-
-if (props.character instanceof Player) {
-  color = props.character.playerColor
-}
+let color = props.character.identity.color
 
 function startCast(skill: Skill) {
   if (skill.targetType == TargetType.TARGET_NONE) {
@@ -77,11 +72,6 @@ function startCast(skill: Skill) {
 .char-spell-list {
   background: white;
   color: black;
-}
-
-
-.char-wrapper {
-  margin-left: 15px;
 }
 
 

@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import type Character from '@/types/character';
-import type Healthbar from '@/types/health-bar';
-import Player from '@/types/player';
 import type Skill from '@/types/skill'
 import { ref, watchEffect } from 'vue';
 const props = defineProps<{
@@ -18,11 +16,7 @@ watchEffect(() => {
   if (props.character.castingSkill != null) {
     target.value = props.character.castingSkill.currentTargets[0] ?? null
 
-    if (target.value instanceof Player) {
-      targetColor.value = target.value.playerColor
-    } else {
-      targetColor.value = "black"
-    }
+    targetColor.value = target.value?.identity?.color ?? "black"
 
     barWidth.value = ((1 - (props.character.castingSkill.castingTimer / props.character.castingSkill.castTime)) * 100) + "%"
   } else {
@@ -45,7 +39,7 @@ watchEffect(() => {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  width: 220px;
+  width: 100%;
   height: 30px;
   padding: 5px;
   background: #ddd;

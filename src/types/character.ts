@@ -11,7 +11,7 @@ import CharacterBuffs from './character-buffs';
 import SavingGrace from './buffs/saving-grace';
 import Game from '@/core/game';
 import { globalThreatEvent, characterDiedEvent } from '@/core/events';
-import Player from './player';
+import type Player from './player';
 import type Skill from './skill';
 import type OnDamageTrigger from './triggers/on-damage-trigger';
 import type CharacterStats from './character-stats';
@@ -22,10 +22,9 @@ import GameSettings from '@/core/settings';
 import type CharacterState from './state/character-state';
 
 
-export default abstract class Character {
+export default class Character {
     public id: string;
     public identity: Identity
-    public factions: Faction[]
     public dead = false
     public castingSkill: Skill|null = null
     public healthBar: Healthbar
@@ -39,21 +38,21 @@ export default abstract class Character {
 
     public stats: CharacterStats
 
-    constructor(identity: Identity, factions: Faction[]) {
+    public player: Player|null = null
+
+    public isFriendly: boolean
+
+    constructor(identity: Identity, isFriendly = false) {
         this.id = "char" + Math.random().toString(16).slice(2)
         this.identity = identity;
         this.characterSkills = new CharacterSkills(this)
         this.healthBar = new Healthbar(identity.baseStats.maxHealth.value)
         this.energyBar = new EnergyBar(identity.maxEnergy)
-        this.factions = factions;
         this.stats = reactive(identity.baseStats.clone()) as CharacterStats
+        this.isFriendly = isFriendly
 
         this.buffs.onBuffsChanged(() => this.recalculateStats())
         this.recalculateStats()
-
-        if (GameSettings.aiEnabled && !(this instanceof Player)) {
-            this.ai = new CharacterAI(identity)
-        }
     }
 
     recalculateStats() {
@@ -63,6 +62,10 @@ export default abstract class Character {
         )
 
         this.healthBar.max = this.stats.maxHealth.value
+    }
+
+    enableAI() {
+        this.ai = new CharacterAI(this.identity)
     }
 
 
@@ -179,11 +182,7 @@ export default abstract class Character {
     }
 
     isEnemyTo(character: Character): boolean {
-        if (character.factions.some((faction) => this.factions.includes(faction))) {
-            return false
-        }
-     
-        return true
+        return character.isFriendly != this.isFriendly
     }
 
     initializeCombat(): void {

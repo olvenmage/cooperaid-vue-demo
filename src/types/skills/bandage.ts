@@ -9,6 +9,7 @@ export default class Bandage extends Skill {
     castTime = 2000
     targetType: TargetType = TargetType.TARGET_FRIENDLY
     aiTargetting = AiTargetting.RANDOM
+    imagePath = "/neutral/bandage.png"
 
     override interuptsOnDamageTaken = true
 

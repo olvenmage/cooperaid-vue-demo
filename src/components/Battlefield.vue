@@ -2,8 +2,6 @@
 import { nextTick, ref, computed, onMounted, reactive } from 'vue';
 import type Skill from '@/types/skill';
 import type Character from '../types/character';
-import Player from '../types/player';
-import Enemy from '../types/enemy';
 import BattlefieldCharacter from './BattlefieldCharacter.vue';
 import { TargetType } from '@/types/skill';
 import Game from '@/core/game';
@@ -23,7 +21,7 @@ onMounted(() => {
 })
 
 let enemies = Game.currentBattle?.enemies ?? []
-let players = Game.players
+let players = Game.players.value
 
 
 function startCast(skill: Skill, character: Character) {
@@ -46,7 +44,7 @@ function castAtAllEnemies(skill: Skill, character: Character) {
   }
 
   for (const player of players) {
-    combatants.push(player)
+    combatants.push(player.combatCharacter)
   }
 
 
@@ -102,7 +100,7 @@ function selectCharacter(selectedCharacter: Character) {
 <BattlefieldCharacter
       v-for="player in players"
       :key="player.id"
-      :character="player"
+      :character="player.combatCharacter"
       :casting-skill="castingSkill"
       :casting="player.id == castingCharacter?.id"
       @start-cast="(skill) => startCast(skill, player)"
@@ -143,6 +141,11 @@ function selectCharacter(selectedCharacter: Character) {
   justify-content: start;
   left: 10px;
   top: 520px;
+}
+.char-wrapper {
+  width: 220px;
+  height: 220px;
+  margin-left: 15px;
 }
 
 .enemy-box {

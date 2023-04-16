@@ -17,6 +17,7 @@ export default class Paladin extends PlayerIdentity {
     public imagePath = "/classes/paladin.png"
     public playerClass = PlayerClass.PALADIN
     public basicSkill: Skill = new HolyShock()
+    public color = "#B59E54";
 
     override onCreated(character: Character) {
         character.classBar = new ClassBar(100, 'gold')

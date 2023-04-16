@@ -4,7 +4,7 @@ import type StackingBuff from '../stacking-buff';
 import TickBuff from '../tick-buff';
 
 export default class PoisonBuff extends TickBuff implements StackingBuff {
-    public baseTickInterval: number = 1000
+    public baseTickInterval: number = 2000
     public duration = 100
 
     stackAmount = 1

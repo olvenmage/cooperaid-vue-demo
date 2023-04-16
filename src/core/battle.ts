@@ -32,7 +32,7 @@ export default class Battle {
         this.enemies = enemies
         this.combatants = [
             ...this.enemies,
-            ...Game.players
+            ...Game.players.value.map((char) => char.createCharacter())
         ]
     }
 
@@ -62,21 +62,26 @@ export default class Battle {
         })
 
         presenterSocket.subscribe(subCastSkill, (event) => {
-            const player = Game.players.find((plr) => plr.id == event.body.playerId)
+            const player = Game.getPlayer(event.body.playerId)
 
-            if (!player) {
+            if (!player || !player.combatCharacter) {
                 return
             }
 
-            const skill = player.skills.find((sk) => sk.name == event.body.skill)
 
-            if (!skill?.canCast(player)) {
+            const skill = player.skills.find((sk) => sk.name == event.body.skill)
+            
+            console.log("SKILLLS!")
+            console.log(player.skills)
+
+            if (!skill?.canCast(player.combatCharacter)) {
+                console.log("cannot cast")
                 return
             }
 
             const targets = this.combatants.filter((combatant) => event.body.targets.includes(combatant.id))
 
-            skill.cast(player, () => targets)
+            skill.cast(player.combatCharacter, () => targets)
         })
 
         this.onCombatFinished(() => {
@@ -100,7 +105,7 @@ export default class Battle {
     }
 
     private checkAlive() {
-        const anyPlayersAlive = Game.players.some((player) => !player.dead)
+        const anyPlayersAlive = Game.players.value.some((player) => !player.combatCharacter?.dead)
         
         if (!anyPlayersAlive) {
             setTimeout(() => {
@@ -133,19 +138,19 @@ export default class Battle {
     }
 
     private syncClients() {
-        const allies = this.combatants.filter((c) => c instanceof Player)
+        const allies: Character[] = this.combatants.filter((c) => c.isFriendly)
         const allyStates = allies.map((p) => p.getState())
 
         const enemies = this.combatants.filter((c) => !allies.includes(c)).map((e) => e.getState())
 
-        Game.players.filter((player) => player.connectedExternally).forEach((player) => {
+        Game.players.value.filter((player) => player.controledExternally).forEach((player) => {
             presenterSocket.publish(
                 pubUpdateBattleState({
                     playerId: player.id,
                     state: {
                         enemies,
                         allies: allyStates.filter((a) => a.id != player.id),
-                        self: allyStates.find((a) => a.id == player.id) || player.getState()
+                        self: allyStates.find((a) => a.id == player.id) || player.combatCharacter!.getState()
                     }
                 })
             )

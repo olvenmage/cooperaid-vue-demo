@@ -8,6 +8,7 @@ export default class Taunt extends Skill {
     castTime = 500
     targetType: TargetType = TargetType.TARGET_ENEMY
     aiTargetting = AiTargetting.RANDOM
+    imagePath = "/neutral/taunt.png"
 
     BASE_DAMAGE = 3
 

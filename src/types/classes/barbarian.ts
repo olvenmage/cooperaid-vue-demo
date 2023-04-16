@@ -15,6 +15,7 @@ export default class Barbarian extends PlayerIdentity {
     public playerClass = PlayerClass.BARBARIAN
     public classBar = new ClassBar(100, 'red',)
     public basicSkill: Skill = new RecklessStrike()
+    public color = "#E7623E";
 
     public skills = [
         new RagingBlow(),
@@ -62,6 +63,7 @@ export class RecklessStrike extends Skill {
     cooldown: number = 0;
     targetType: TargetType = TargetType.TARGET_ENEMY
     castTime = 1000
+    imagePath = "/barbarian/reckless-strike.png"
 
     selfDamageAmount = 4
 
@@ -96,6 +98,7 @@ export class RagingBlow extends Skill {
     cooldown: number = 1 * 1000;
     targetType: TargetType = TargetType.TARGET_ENEMY
     castTime = 2500
+    imagePath = "/barbarian/raging-blow.png"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => castBy.dealDamageTo({ amount: 12, target, type: DamageType.PHYSICAL }))
@@ -112,6 +115,7 @@ export class Rampage extends Skill {
     cooldown: number = 8 * 1000;
     targetType: TargetType = TargetType.TARGET_ENEMY
     castTime = 1500
+    imagePath = "/barbarian/rampage.png"
 
     castSkill(castBy: Character, targets: Character[]): void {
         const missingHealthPercentage = (castBy.healthBar.current / castBy.healthBar.max);
@@ -128,6 +132,7 @@ export class Shout extends Skill {
     cooldown: number = 6 * 1000;
     targetType: TargetType = TargetType.TARGET_ALL_ENEMIES
     castTime = 1000
+    imagePath = "/barbarian/shout.png"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => castBy.dealDamageTo({ amount: 3, target, type: DamageType.PHYSICAL, threatModifier: 3.5, minAmount: 3 }))

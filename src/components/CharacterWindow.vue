@@ -5,6 +5,7 @@ import Healthbar from "./character/Healthbar.vue";
 import Energybar from "./character/Energybar.vue";
 import Classbar from "./character/Classbar.vue";
 import SavingGrace from '@/types/buffs/saving-grace';
+import CharacterSprite from './CharacterSprite.vue';
 import type OnDamageTrigger from '@/types/triggers/on-damage-trigger';
 import FloatingDamage from './FloatingDamage.vue';
 import GameSettings from '@/core/settings';
@@ -12,7 +13,8 @@ import CharacterAI from '@/types/character-ai';
 
 const props = defineProps<{
   character: Character,
-  color?: string
+  color?: string,
+  hideName?: boolean
 }>()
 
 const damageFloats = ref<OnDamageTrigger[]>([]);
@@ -57,16 +59,13 @@ function addDamageFloat(trigger: OnDamageTrigger) {
 
 <template>
   <div class="char-window">
-        <div class="char-name" :class="{'char-dead' : character.dead}" :style="{color: color}">{{ character.identity.name }}</div>
+        <div v-if="!hideName" class="char-name" :class="{'char-dead' : character.dead}" :style="{color: color}">{{ character.identity.name }}</div>
 
         <div class="damage-floats">
             <FloatingDamage v-for="damageFloat in damageFloats" :key="damageFloat.id" :damage="damageFloat"></FloatingDamage>
         </div>
-        
-        <img class="sprite" :class="{ 'sprite-dead': character.dead }" :src="`/src/assets/sprites${character.identity.imagePath}`" style="margin: auto">
-        <img class="cross-image" src="/src/assets/red-cross.png" v-if="character.dead">
-        <img class="stunned-image" src="/src/assets/stunned-effect.png" v-if="character.stats.stunned">
-        <div style="position: absolute; left: 2px; bottom: 0px">
+        <CharacterSprite :character="character"></CharacterSprite>
+        <div v-if="!hideName" style="position: absolute; left: 2px; bottom: 0px">
           AI
           <input type="checkbox" v-model="aiEnabled" @change="toggleAI">
         </div>
@@ -105,8 +104,7 @@ function addDamageFloat(trigger: OnDamageTrigger) {
 }
 
 .char-window {
-  width: 220px;
-  height: 220px;
+
   display: flex;
   justify-content: center;
   color: black;

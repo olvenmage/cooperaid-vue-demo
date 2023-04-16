@@ -42,7 +42,7 @@ watchEffect(() => {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  width: 220px;
+  width: 100%;
   height: 24px;
   padding: 5px;
   background: #ddd;

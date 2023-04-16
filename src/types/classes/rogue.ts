@@ -16,6 +16,7 @@ export default class Rogue extends PlayerIdentity {
     public playerClass = PlayerClass.ROGUE
     public basicSkill: Skill = new PoisonedStrike()
     public armor = 2
+    public color = "#AB6DAC";
 
     override onCreated(character: Character) {
         character.classBar = new ClassBar(100, 'black')
@@ -87,7 +88,7 @@ export class PoisonedStrike extends Skill {
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             castBy.dealDamageTo({ target, type: DamageType.PHYSICAL, amount: 4 })
-            target.addBuff(new PoisonBuff(1, 3 * 1000, 3), castBy)
+            target.addBuff(new PoisonBuff(1, 6 * 1000, 3), castBy)
         })
     }
 }

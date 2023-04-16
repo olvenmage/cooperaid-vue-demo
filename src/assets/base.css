@@ -72,3 +72,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@font-face {
+  font-family: "PressStart2P";
+  src: local("PressStart2P"),   url(./fonts/PressStart2P-Regular.ttf) format("truetype");}
+
+.game-font {
+  font-family: 'PressStart2P', sans-serif !important;
+}

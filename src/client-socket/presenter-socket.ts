@@ -10,9 +10,7 @@ const presenterSocket = createAppSocket({
 });
 
 presenterSocket.subscribe(playerJoinMessage, (event) => {
-    console.log("PLAYER ATTEMPTS TO JOIN")
-    console.log(event)
-    Game.joinPlayer(event.body.playerClass, event.body.playerId)
+    Game.joinPlayer(event.body.playerName, event.body.playerId)
 })
 
 presenterSocket.connect()

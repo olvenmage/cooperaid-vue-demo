@@ -1,8 +1,8 @@
 import type Enemy from "@/types/enemy";
-import type Player from "@/types/player";
+import Player from "@/types/player";
 import Battle, { type CombatFinishedParameters } from "./battle";
 import { EventBus } from "ts-bus";
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import type Encounter from "./encounter";
 import type { AppSocket } from "@/app-socket/lib/core/types";
 import presenterSocket from '../client-socket/presenter-socket'
@@ -16,7 +16,7 @@ interface StartGameParams {
 export default abstract class Game {
     static currentBattle: Battle|null = null
     static eventBus = new EventBus()
-    static players: Player[] = []
+    static players = ref<Player[]>([])
     static webSocket: AppSocket = presenterSocket
     private static route: Encounter[]
     static isGameover = false
@@ -31,7 +31,7 @@ export default abstract class Game {
     }
 
     static async startGame(params: StartGameParams): Promise<void> {
-        this.players = params.players.map((char) => reactive(char)) as Player[]
+        this.players.value = params.players.map((char) => reactive(char)) as Player[]
         this.route = params.route
 
         for (const encounter of this.route) {
@@ -43,32 +43,34 @@ export default abstract class Game {
         }
     }
 
-    static joinPlayer(playerClass: string, playerId: string) {
-        const player = this.players.find((plr) => plr.identity.name == playerClass)
-        
-        if (!player) {
-            console.error(`Player with class ${playerClass} cant join`)
-            return
-        }   
+    static joinPlayer(playerName: string, playerId: string) {
+        this.players.value.push(new Player(playerId, playerName, true, null))
+    }
 
-        console.log("PLAYER JOINED!")
-        player.id = playerId
-        player.connectedExternally = true
+    static addCPU() {
+        this.players.value.push(
+            new Player(
+                "plr" + Math.random().toString(16).slice(2), 
+                "CPU",
+                false,
+                null
+            ).enableAI()
+        )
     }
 
     static updatePlayerState(player: Player) {
-        if (!player.connectedExternally) {
+        if (!player.combatCharacter) {
             return
         }
 
-        presenterSocket.publish(pubUpdatePlayerState ({
+        presenterSocket.publish(pubUpdatePlayerState({
             playerId: player.id,
-            state: player.getState()
+            state: player.combatCharacter.getState()
         }))
     }
 
     static getPlayer(playerId: string): Player|null {
-        return this.players.find((plr) => plr.id == playerId) || null
+        return this.players.value.find((plr) => plr.id == playerId) as Player || null
         
     }
 

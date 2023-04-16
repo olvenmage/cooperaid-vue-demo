@@ -20,6 +20,7 @@ export default class Mage extends PlayerIdentity {
     public imagePath = "/classes/mage.png"
     public playerClass = PlayerClass.MAGE
     public basicSkill: Skill = new FrostBolt()
+    public color = "#51A5C5";
 
     override onCreated(character: Character) {
         character.classBar = new ClassBar(100, 'blue')

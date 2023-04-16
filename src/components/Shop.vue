@@ -3,7 +3,7 @@ import Game from '@/core/game';
 import type CharacterWindowVue from './CharacterWindow.vue';
 import CharacterWindow from './CharacterWindow.vue';
 
-const players = Game.players
+const players = Game.players.value
 
 </script>
 

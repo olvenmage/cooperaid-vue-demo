@@ -2,7 +2,7 @@ import { createSubscribeDefinition } from "@/app-socket/lib/core/AppSocketMessag
 
 const playerJoinMessage = createSubscribeDefinition<{
     playerId: string,
-    playerClass: string
+    playerName: string
 }>('PlayerJoin')
 
 const subCastSkill = createSubscribeDefinition<{
@@ -11,8 +11,14 @@ const subCastSkill = createSubscribeDefinition<{
     targets: string[]
 }>('CastSkill')
 
+const subChangePlayerClass = createSubscribeDefinition<{
+    playerId: string,
+    playerClass: string,
+}>('ChangePlayerClass')
+
 
 export {
     playerJoinMessage,
-    subCastSkill
+    subCastSkill,
+    subChangePlayerClass
 }

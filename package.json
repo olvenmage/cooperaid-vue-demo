@@ -10,6 +10,8 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "bootstrap": "^3.3.5",
+    "jquery": "^3.6.4",
     "ts-bus": "^2.3.1",
     "vue": "^3.2.47"
   },

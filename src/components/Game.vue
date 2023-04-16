@@ -18,6 +18,7 @@ import { CombatEncounter, ShopEncounter } from '@/core/encounter'
 import GameoverScreen from './GameoverScreen.vue';
 import Taunt from '@/types/skills/taunt';
 import main from '@/demo/entry/main';
+import Lobby from '@/components/setup/Lobby.vue';
 
 main()
 
@@ -36,5 +37,6 @@ Game.onShopChanged(() => inShop.value = Game.inShop)
     <GameoverScreen v-if="isGameover"></GameoverScreen>
     <Battlefield v-else-if="inCombat"></Battlefield>
     <Shop v-else-if="inShop"></Shop>
+    <Lobby v-else></Lobby>
   </section>
 </template>

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import Game from '@/core/game';
-import Player from '@/types/player';
 import type OnDamageTrigger from '@/types/triggers/on-damage-trigger';
 import randomRange from '@/utils/randomRange';
 import { onMounted, ref } from 'vue';
@@ -17,8 +15,9 @@ const style = ref({
 })
 
 onMounted(() => {
-  if (props.damage.damagedBy instanceof Player ) {
-    style.value.color = props.damage.damagedBy.playerColor;
+  
+  if (props.damage.damagedBy) {
+    style.value.color = props.damage.damagedBy.identity.color;
   }
   setTimeout(() => {
     style.value.fontSize = '43px'

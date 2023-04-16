@@ -16,6 +16,7 @@ export default class Juggernaut extends PlayerIdentity {
     public imagePath = "/classes/juggernaut.png"
     public playerClass = PlayerClass.JUGGERNAUT
     public basicSkill: Skill = new Bash()
+    public color = "#7F513E";
 
     override onCreated(character: Character) {
         character.classBar = new ClassBar(100, 'silver')
