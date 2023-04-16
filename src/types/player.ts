@@ -35,7 +35,6 @@ abstract class PlayerNumberRegistry {
 class Player {
     public playerColor: string
     public playerNumber: number
-    public connectedExternally = false
 
     private aiEnabled = false
 

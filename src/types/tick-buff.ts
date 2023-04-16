@@ -15,7 +15,7 @@ export default abstract class TickBuff extends Buff {
     protected tickInterval: number = 0
 
     private incrementDuration(character: Character) {
-        if (this.durationCounter >= this.duration) {
+        if (this.durationCounter >= this.duration / GameSettings.speedFactor) {
             this.durationCounter = 0
             if (this.attachedCharacter) {
                 this.endEffect(this.attachedCharacter)

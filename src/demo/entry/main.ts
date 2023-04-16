@@ -11,7 +11,7 @@ import Player from "@/types/player";
 // skills
 import Bandage from "@/types/skills/bandage";
 
-import { BladeFlurry, Sap } from "@/types/classes/rogue"
+import { BladeFlurry, SleepDart } from "@/types/classes/rogue"
 
 // setups
 

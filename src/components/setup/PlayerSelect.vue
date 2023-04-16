@@ -17,8 +17,6 @@ if (props.player.playerClass) {
 
 let playerClass = computed(() => props.player.playerClass)
 
-const isExternal = props.player.connectedExternally
-
 watch(playerClass, () => {
     if (playerClass.value) {
         tempCharacter.value = props.player.createCharacter()

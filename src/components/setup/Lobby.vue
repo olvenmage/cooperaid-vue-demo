@@ -20,6 +20,7 @@ import type Player from '@/types/player';
 import { CombatEncounter } from '@/core/encounter';
 import Enemy from '@/types/enemy';
 import DragonBoss from '@/types/enemies/dragon-boss';
+import GameSettings from '@/core/settings';
 
 const players = Game.players.value
 
@@ -38,6 +39,8 @@ const availableClassStates = computed(() => {
   return availableClasses.value.map((cls) => cls.getState())
 })
 
+const playerAmount = 1
+
 function addCPU() {
   Game.addCPU()
 }
@@ -54,11 +57,12 @@ function setClass(playerId: string, playerClassName: string) {
 }
 
 function start() {
+  GameSettings.speedFactor = 0.5
   Game.startGame({
     players: Game.players.value as Player[],
     route: [
       new CombatEncounter(
-        [new Enemy(new DragonBoss())]
+        [new Enemy(new Paladin())]
       )
     ]
   })
@@ -99,7 +103,7 @@ onMounted(() => {
     <div style="width: 100%; height: 80vh">
       <template v-for="player in players">
         <PlayerSelect class="player-select" :player="player">
-          <select v-if="!player.connectedExternally" v-model="player.playerClass" class="form-control">
+          <select v-if="!player.controledExternally" v-model="player.playerClass" class="form-control">
                 <option v-for="playerClass in availableClasses" :value="playerClass" :style="{color: playerClass.color}">
                     {{ playerClass.name }}
                 </option>
@@ -109,14 +113,14 @@ onMounted(() => {
       </template>
       
 
-      <div v-if="players.length != 4" class="player-select">
+      <div v-if="players.length != playerAmount" class="player-select">
       <button class="btn btn-lg btn-primary btn-block game-font" @click="addCPU">
         ADD CPU
     </button>
     </div>
    
     </div>
-    <button class="btn btn-lg btn-primary btn-block game-font" :disabled="players.length != 4" @click="start">
+    <button class="btn btn-lg btn-primary btn-block game-font" :disabled="players.length != playerAmount" @click="start">
         START GAME
     </button>
   </div>

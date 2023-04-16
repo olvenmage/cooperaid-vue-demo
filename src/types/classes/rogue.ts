@@ -26,7 +26,7 @@ export default class Rogue extends PlayerIdentity {
         new BladeFlurry(),
         new Dismantle(),
         new CheapShot(),
-        new Sap()
+        new SleepDart()
     ]
 }
 
@@ -112,14 +112,14 @@ export class CheapShot extends Skill {
     }
 }
 
-export class Sap extends Skill {
-    name: string = "Sap";
+export class SleepDart extends Skill {
+    name: string = "Sleep Dart";
     energyCost: number = 6;
     cooldown: number = 12 * 1000;
     castTime = 1000
     targetType: TargetType = TargetType.TARGET_ENEMY
     aiTargetting = AiTargetting.RANDOM
-    imagePath = "/rogue/sap.png"
+    imagePath = "/rogue/sleep-dart.png"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {

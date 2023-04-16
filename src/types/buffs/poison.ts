@@ -19,6 +19,8 @@ export default class PoisonBuff extends TickBuff implements StackingBuff {
             return
         }
 
+        console.log(`dmg tick ${this.stackAmount}`)
+
         character.takeDamage({ amount: this.stackAmount * this.damagePerStack, damagedBy: this.givenBy, type: DamageType.POISON })
     }
 
@@ -26,6 +28,7 @@ export default class PoisonBuff extends TickBuff implements StackingBuff {
         if (this.stackAmount == this.maxStack) {
             return
         }
+        console.log("inc stack")
 
         this.stackAmount += amount
     }
