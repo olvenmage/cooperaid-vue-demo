@@ -18,7 +18,7 @@ watchEffect(() => {
 
     targetColor.value = target.value?.identity?.color ?? "black"
 
-    barWidth.value = ((1 - (props.character.castingSkill.castingTimer / props.character.castingSkill.castTime)) * 100) + "%"
+    barWidth.value = ((1 - (props.character.castingSkill.castingTimer / props.character.castingSkill.skillData.castTime)) * 100) + "%"
   } else {
     barWidth.value = "0%"
   }
@@ -30,7 +30,7 @@ watchEffect(() => {
 <template>
     <div class="cast-bar">
         <div class="bar" :style="{ width: barWidth}"></div>
-        <span class="skill-name" :style="{ color: targetColor }">{{ props.character.castingSkill?.name }}</span>
+        <span class="skill-name" :style="{ color: targetColor }">{{ props.character.castingSkill?.skillData?.name }}</span>
     </div>
 </template>
 

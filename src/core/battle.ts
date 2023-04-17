@@ -69,13 +69,9 @@ export default class Battle {
             }
 
 
-            const skill = player.skills.find((sk) => sk.name == event.body.skill)
+            const skill = player.skills.find((sk) => sk.id == event.body.skill)
             
-            console.log("SKILLLS!")
-            console.log(player.skills)
-
             if (!skill?.canCast(player.combatCharacter)) {
-                console.log("cannot cast")
                 return
             }
 

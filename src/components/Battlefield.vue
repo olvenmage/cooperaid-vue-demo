@@ -48,7 +48,6 @@ function castAtAllEnemies(skill: Skill, character: Character) {
   }
 
 
-  console.log("cast @ all")
   skill.cast(
     character,
     () => combatants.filter((char) => character.isEnemyTo(char))
@@ -62,11 +61,11 @@ function selectCharacter(selectedCharacter: Character) {
   }
 
   // check if target is valid
-  if (castingSkill.value.targetType == TargetType.TARGET_ENEMY && !castingCharacter.value.isEnemyTo(selectedCharacter)) {
+  if (castingSkill.value.skillData.targetType == TargetType.TARGET_ENEMY && !castingCharacter.value.isEnemyTo(selectedCharacter)) {
     castingSkill.value = null
     castingCharacter.value = null
     return
-  } else if (castingSkill.value.targetType == TargetType.TARGET_FRIENDLY && castingCharacter.value.isEnemyTo(selectedCharacter)) {
+  } else if (castingSkill.value.skillData.targetType == TargetType.TARGET_FRIENDLY && castingCharacter.value.isEnemyTo(selectedCharacter)) {
     castingSkill.value = null
     castingCharacter.value = null
     return
@@ -103,9 +102,9 @@ function selectCharacter(selectedCharacter: Character) {
       :character="player.combatCharacter"
       :casting-skill="castingSkill"
       :casting="player.id == castingCharacter?.id"
-      @start-cast="(skill) => startCast(skill, player)"
-      @cast-at-all-enemies="(skill) => castAtAllEnemies(skill, player)"
-      @click.capture="() => selectCharacter(player)"
+      @start-cast="(skill) => startCast(skill, player.combatCharacter)"
+      @cast-at-all-enemies="(skill) => castAtAllEnemies(skill, player.combatCharacter)"
+      @click.capture="() => selectCharacter(player.combatCharacter)"
     >
    </BattlefieldCharacter>
     </div>

@@ -28,7 +28,7 @@ watchEffect(() => {
     <div class="energy-bar">
         <div class="bar" :style="{ width: barWidth}"  :class="{'full-energy-bar': energyBar.max == energyBar.current}">
           <div class="energy-icon-wrapper float-left">
-            <img src="/src/assets/energy-icon.png">
+            <img src="/src/assets/icons/energy-icon.png">
         </div>
           <span style="color: black; position: absolute; bottom: -4px; text-align: center; float: left" 
           >{{ energyBar.current }}</span>

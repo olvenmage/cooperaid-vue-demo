@@ -3,13 +3,15 @@ import type Character from '../character';
 import TickBuff from '../tick-buff';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import type CharacterStats from '../character-stats';
+import { isEmpowerableSkil } from '../empowerable-skill';
+import FerocityBar from '../special-bar/ferocity-bar';
 
-export default class Enrage extends TickBuff implements StatMutatingBuff {
+export default class Ferocious extends TickBuff implements StatMutatingBuff {
     // interval in miliseconds (1000 = every second)
-    public baseTickInterval: number = 750
+    public baseTickInterval: number = 1000
 
     START_DURATION = 1
-    CONSUME_AMOUNT = 25
+    CONSUME_AMOUNT = 12
 
     duration: number = this.START_DURATION
    
@@ -21,24 +23,25 @@ export default class Enrage extends TickBuff implements StatMutatingBuff {
             const consumeEffectiveness = (this.CONSUME_AMOUNT / consumedAmount)
 
             this.duration += this.baseTickInterval / consumeEffectiveness
-
-            character.restoreHealth(
-                Math.floor((0.05 / consumeEffectiveness) * character.healthBar.max),
-                character,
-                0.35
-            )
         }
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.energyBoost.set(stats.energyBoost.value + 100)
+        stats.energyBoost.set(stats.energyBoost.value + 20)
+        stats.armor.set(stats.armor.value + 3)
 
         return stats
     }
 
     override startEffect(character: Character): void {
-        if (character.classBar) {
+        if (character.classBar instanceof FerocityBar) {
+            character.identity.imagePath = "/classes/druid-bear.png"
             character.classBar.activated = true
+            character.skills.forEach((sk) => {
+                if (isEmpowerableSkil(sk)) {
+                    sk.empower(character)
+                }
+            })
         }
 
         super.startEffect(character)
@@ -49,7 +52,16 @@ export default class Enrage extends TickBuff implements StatMutatingBuff {
 
         if (character.classBar) {
             //character.classBar.current = 0
+            character.identity.imagePath = "/classes/druid.png"
             character.classBar.activated = false
+
+            if (character.classBar instanceof FerocityBar) {
+                character.skills.forEach((sk) => {
+                    if (isEmpowerableSkil(sk)) {
+                        sk.unempower(character)
+                    }
+                })
+            }
         }
 
         super.endEffect(character)

@@ -1,17 +1,28 @@
 <script lang="ts" setup>
 import type Character from '@/types/character';
 
-defineProps<{
-    character: Character
+const props = defineProps<{
+    character: Character,
+    width?: string,
+    height?: string,
 }>()
+
+const styles = {
+  width: props.width || '100%',
+  height: props.height || '85%'
+}
 </script>
 
 <template>
-  <div class="sprite-wrapper">
+  <div class="sprite-frame" :style="styles" >
+    <div class="sprite-wrapper">
       <img class="sprite" :class="{ 'sprite-dead': character.dead }"  :src="`/src/assets/sprites${character.identity.imagePath}`" style="margin: auto">
       <img class="cross-image" src="/src/assets/sprites/effects/dead-effect.png" v-if="character.dead">
       <img class="stunned-image" src="/src/assets/sprites/effects/stunned-effect.png" v-if="character.stats.stunned">
   </div>
+  <slot></slot>
+  </div>
+
 </template>
 
 <style>
@@ -30,8 +41,6 @@ defineProps<{
   display: flex;
   justify-content: center;
   color: black;
-  background-color: rgba(200, 200, 200, 0.5);
-  border: 4px solid rgba(150, 150, 150, 0.5);
 }
 
 .stunned-image {

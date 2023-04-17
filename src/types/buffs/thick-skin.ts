@@ -1,20 +1,12 @@
 import Buff from '../buff';
 import type Character from '../character';
 import type CharacterStats from '../character-stats';
-import DamageType from '../damage-type';
-import FocusBar from '../special-bar/focus-bar';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
-export default class DismantleBuff extends Buff implements StatMutatingBuff {
-    duration: number = 8 * 1000
-
-    callback = this.giveFocusPerHit.bind(this)
-
-    mutateStats(stats: CharacterStats): CharacterStats {
-        stats.armor.set(stats.armor.value - 3)
-        return stats
-    }
+export default class ThickSkinBuff extends Buff implements StatMutatingBuff {
+    duration: number = 10 * 1000
+    callback = this.giveFerocityToBear.bind(this)
 
     override startEffect(character: Character): void {
         if (character.classBar) {
@@ -34,9 +26,14 @@ export default class DismantleBuff extends Buff implements StatMutatingBuff {
         super.endEffect(character)
     }
 
-    giveFocusPerHit(trigger: OnDamageTrigger) {
-        if (trigger.damageType == DamageType.PHYSICAL && this.givenBy?.classBar instanceof FocusBar) {
+    giveFerocityToBear(trigger: OnDamageTrigger) {
+        if (this.givenBy?.classBar != null) {
             this.givenBy.classBar.increase(2)
         }
+    }
+
+    mutateStats(stats: CharacterStats): CharacterStats {
+        stats.armor.set(stats.armor.value + 3)
+        return stats
     }
 }

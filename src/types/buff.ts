@@ -12,6 +12,7 @@ export default abstract class Buff {
 
     public attachedCharacter: Character|null = null
     public givenBy: Character|null = null
+    public unique = false
 
     private ended = false
 
@@ -19,13 +20,26 @@ export default abstract class Buff {
         this.attachedCharacter = attachedCharacter
         this.givenBy = givenBy
         this.startEffect(attachedCharacter)
-        setTimeout(() => {
-            this.endEffect(attachedCharacter)
-        }, this.duration / GameSettings.speedFactor)
+        this.incrementDuration(attachedCharacter)
     }
 
     startEffect(character: Character) {
        
+    }
+
+    protected incrementDuration(character: Character) {
+        if (this.durationCounter >= this.duration / GameSettings.speedFactor) {
+            this.durationCounter = 0
+            if (this.attachedCharacter) {
+                this.endEffect(this.attachedCharacter)
+            }
+            return
+        }
+
+        setTimeout(() => {
+            this.durationCounter += 100
+            this.incrementDuration(character)
+        }, 100)
     }
 
     endEffect(character: Character) {

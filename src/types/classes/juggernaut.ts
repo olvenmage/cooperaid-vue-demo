@@ -6,8 +6,9 @@ import Enrage from '../buffs/enrage';
 import DamageType from '../damage-type';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import ShieldBlockBuff from '../buffs/shield-block';
-import Untouchable from '../buffs/untouchable';
+import Untouchable from '../buffs/retaliation';
 import CharacterStats from '../character-stats';
+import SkillData from '../skill-data';
 
 
 export default class Juggernaut extends PlayerIdentity {
@@ -51,14 +52,15 @@ export default class Juggernaut extends PlayerIdentity {
 }
 
 export class Bash extends Skill {
-    name: string = "Bash";
-    energyCost: number = 2;
-    cooldown: number = 0;
-    castTime = 1000
-    targetType: TargetType = TargetType.TARGET_ENEMY
-    aiTargetting = AiTargetting.RANDOM
-    imagePath = "/juggernaut/bash.png"
-    
+    skillData: SkillData = new SkillData({
+        name: "Bash",
+        energyCost: 2,
+        cooldown: 0 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        castTime: 1000,
+        aiTargetting: AiTargetting.RANDOM,
+        imagePath: "/barbarian/bash.png"
+    })
 
     BASE_DAMAGE = 2
 
@@ -74,12 +76,14 @@ export class Bash extends Skill {
 }
 
 export class ShieldBlock extends Skill {
-    name: string = "Shield Block";
-    energyCost: number = 4;
-    cooldown: number = 6 * 1000;
-    castTime = 500
-    targetType: TargetType = TargetType.TARGET_NONE
-    imagePath = "/juggernaut/shield-block.png"
+    skillData: SkillData = new SkillData({
+        name: "Shield Block",
+        energyCost: 4,
+        cooldown: 6 * 1000,
+        targetType: TargetType.TARGET_NONE,
+        castTime: 400,
+        imagePath: "/barbarian/shield-block.png"
+    })
 
     castSkill(castBy: Character, targets: Character[]): void {
         castBy.addBuff(new ShieldBlockBuff(), castBy)
@@ -87,12 +91,14 @@ export class ShieldBlock extends Skill {
 }
 
 export class BodySlam extends Skill {
-    name: string = "Body Slam";
-    energyCost: number = 3;
-    cooldown: number = 1 * 1000;
-    castTime = 1000
-    targetType: TargetType = TargetType.TARGET_ENEMY
-    imagePath = "/juggernaut/body-slam.png"
+    skillData: SkillData = new SkillData({
+        name: "Body Slam",
+        energyCost: 3,
+        cooldown: 1 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        castTime: 1000,
+        imagePath: "/barbarian/body-slam.png"
+    })
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {

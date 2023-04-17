@@ -16,7 +16,7 @@ import type Skill from './skill';
 import type OnDamageTrigger from './triggers/on-damage-trigger';
 import type CharacterStats from './character-stats';
 import CharacterSkills from './character-skills';
-import type { DealDamageToParams, TakeDamageParams } from './damage';
+import type { DealDamageToParams, TakeDamageParams, TakeDamageResult } from './damage';
 import { reactive } from 'vue';
 import GameSettings from '@/core/settings';
 import type CharacterState from './state/character-state';
@@ -47,8 +47,8 @@ export default class Character {
         this.identity = identity;
         this.characterSkills = new CharacterSkills(this)
         this.healthBar = new Healthbar(identity.baseStats.maxHealth.value)
-        this.energyBar = new EnergyBar(identity.maxEnergy)
         this.stats = reactive(identity.baseStats.clone()) as CharacterStats
+        this.energyBar = new EnergyBar(this.stats)
         this.isFriendly = isFriendly
 
         this.buffs.onBuffsChanged(() => this.recalculateStats())
@@ -87,20 +87,20 @@ export default class Character {
         return this
     }
 
-    dealDamageTo(damage: DealDamageToParams) {
+    dealDamageTo(damage: DealDamageToParams): OnDamageTrigger|null {
         if (this.dead) {
-            return
+            return null
         }
 
-        damage.target.takeDamage({
+        return damage.target.takeDamage({
             ...damage,
             damagedBy: this
         })
     }
 
-    takeDamage(damage: TakeDamageParams) {
+    takeDamage(damage: TakeDamageParams): OnDamageTrigger|null {
         if (this.dead) {
-            return
+            return null
         }
 
         let actualDamage: number
@@ -135,6 +135,8 @@ export default class Character {
         
         this.checkDeath();       
         this.identity.onDamageTakenTriggers.forEach((cb) => cb(damageTrigger))
+
+        return damageTrigger
     }
 
     raiseThreat(threatBy: Character|null, threat: number) {
@@ -192,9 +194,10 @@ export default class Character {
 
     getState(): CharacterState {
         const basicSkill = this.identity instanceof PlayerIdentity ? this.identity.basicSkill.getState(this) : null
+
         return {
             id: this.id,
-            skills: this.skills.filter((sk) => sk.name != basicSkill?.name).map((sk) => sk.getState(this)),
+            skills: this.skills.filter((sk) => sk.id != basicSkill?.id).map((sk) => sk.getState(this)),
             basicSkill: basicSkill,
             imagePath: this.identity.imagePath,
             healthBar: {
@@ -211,11 +214,7 @@ export default class Character {
                 active: this.classBar.activated,
                 color: this.classBar.color
             } : null,
-            stats: {
-                armor: this.stats.armor.value,
-                magicalArmor: this.stats.magicalArmor.value,
-                stunned: this.stats.stunned
-            },
+            stats: this.stats.getState(),
             buffs: [],
             dead: this.dead
         }

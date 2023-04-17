@@ -19,14 +19,20 @@ export default class CharacterBuffs {
     }
 
     addBuff(buff: Buff, givenBy: Character|null = null) {
-        if (isStackingBuff(buff)) {
+        if (isStackingBuff(buff) || buff.unique) {
             const existingBuff = this.getExistingBuffForInstance(buff)
 
-            if (existingBuff && isStackingBuff(existingBuff)) {
-                existingBuff.addStack(1)
+            if (existingBuff) {
                 existingBuff.durationCounter = 0
+
+                if (isStackingBuff(existingBuff)) {
+                    existingBuff.addStack(1)
+                }
+
+                this.onBuffsChangedCallbacks.forEach((cb) => cb())  
                 return
             }
+
         }
 
         buff.addExpiredTrigger(() => {

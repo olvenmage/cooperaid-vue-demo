@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, ref, computed, onMounted, reactive } from 'vue';
+import { nextTick, computed, onMounted, reactive, watch } from 'vue';
 import { TargetType } from '@/types/skill';
 import Game from '@/core/game';
 import Barbarian from '@/types/classes/barbarian';
@@ -21,6 +21,8 @@ import { CombatEncounter } from '@/core/encounter';
 import Enemy from '@/types/enemy';
 import DragonBoss from '@/types/enemies/dragon-boss';
 import GameSettings from '@/core/settings';
+import Druid from '@/types/classes/druid';
+import DragonEgg from '@/types/enemies/dragon-egg';
 
 const players = Game.players.value
 
@@ -28,8 +30,17 @@ const classes = [
   new Barbarian(),
   new Rogue(),
   new Juggernaut(),
-  new Paladin()
+  new Paladin(),
+  new Mage(),
+  new Druid()
 ]
+
+const playerAssignment: Record<number, Player|null> = reactive({
+  0: null,
+  1: null,
+  2: null,
+  3: null
+})
 
 const availableClasses = computed<PlayerIdentity[]>(() => {
   return classes.filter((c) => players.findIndex((plr) => plr.playerClass?.name == c.name) === -1)
@@ -39,17 +50,19 @@ const availableClassStates = computed(() => {
   return availableClasses.value.map((cls) => cls.getState())
 })
 
-const playerAmount = 1
+watch(players, () => {
+  for (const index in players) {
+    playerAssignment[index] = players[index] as Player
+  }
+})
 
-function addCPU() {
-  Game.addCPU()
-}
+
+const playerAmount = computed(() => Object.keys(playerAssignment).length)
+
 
 function setClass(playerId: string, playerClassName: string) {
       const player = players.find((plr) => plr.id == playerId)
       const playerClass = availableClasses.value.find((cls) => cls.name == playerClassName)
-
-      console.log(`class change: ${playerClassName} `)
 
       if (player && playerClass) {
           player.playerClass = playerClass
@@ -57,12 +70,16 @@ function setClass(playerId: string, playerClassName: string) {
 }
 
 function start() {
-  GameSettings.speedFactor = 0.5
+  GameSettings.speedFactor = 3
   Game.startGame({
     players: Game.players.value as Player[],
     route: [
       new CombatEncounter(
-        [new Enemy(new Rogue())]
+        [
+        new Enemy(new DragonEgg()),
+        new Enemy(new DragonBoss()),
+        new Enemy(new DragonEgg())
+        ]
       )
     ]
   })
@@ -100,24 +117,27 @@ onMounted(() => {
 </script>
 <template>
   <div class="container">
-    <div style="width: 100%; height: 80vh">
-      <template v-for="player in players">
-        <PlayerSelect class="player-select" :player="player">
-          <select v-if="!player.controledExternally" v-model="player.playerClass" class="form-control">
+    <div class="row" style="height: 80vh">
+      <template v-for="player of playerAssignment">
+        <div class="col-md-3" style="height: 100%">
+          <PlayerSelect :player="player" :key="`player-select-${player?.id}`">
+            <template #default="{ player }">
+              <select v-if="player && !player.controledExternally" v-model="player.playerClass" class="form-control">
+                <option  :value="player.playerClass" v-if="player.playerClass" :style="{color: player.playerClass?.color}">
+                  {{ player.playerClass.name }}
+                </option>
                 <option v-for="playerClass in availableClasses" :value="playerClass" :style="{color: playerClass.color}">
                     {{ playerClass.name }}
                 </option>
-            </select>
+              </select>
+              <input class="form-control" v-else-if="player" type="text" :value="player.playerClass?.name" disabled>
+            </template>
           </PlayerSelect>
+          
+        </div>
+       
        
       </template>
-      
-
-      <div v-if="players.length != playerAmount" class="player-select">
-      <button class="btn btn-lg btn-primary btn-block game-font" @click="addCPU">
-        ADD CPU
-    </button>
-    </div>
    
     </div>
     <button class="btn btn-lg btn-primary btn-block game-font" :disabled="players.length != playerAmount" @click="start">
@@ -129,8 +149,8 @@ onMounted(() => {
 <style scoped> 
 .player-select {
   float: left;
-  width: 24%;
+  width: 100%;
   height: 100%;
-  margin-right: 3px;
+  background: #f7f7f9;
 }
 </style>

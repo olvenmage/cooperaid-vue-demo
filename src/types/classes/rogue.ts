@@ -7,6 +7,9 @@ import CharacterStats from '../character-stats';
 import DismantleBuff from '../buffs/dismantle';
 import SappedBuff from '../buffs/sapped';
 import PoisonBuff from '../buffs/poison';
+import FocusBar from '../special-bar/focus-bar'
+import SkillData from '../skill-data';
+import AdrenalineRush from '../buffs/adrenaline-rush';
 
 export default class Rogue extends PlayerIdentity {
     public name = "Rogue"
@@ -19,41 +22,56 @@ export default class Rogue extends PlayerIdentity {
     public color = "#AB6DAC";
 
     override onCreated(character: Character) {
-        character.classBar = new ClassBar(100, 'black')
+        character.classBar = new FocusBar()
+
+        if (character.classBar != null) {
+            character.classBar.onFilled = () => {
+                if (character.classBar == null || character.classBar.activated) return
+                character.addBuff(new AdrenalineRush(), character)
+            }
+        }
     }
 
     public skills = [
-        new BladeFlurry(),
+        new FanOfKnives(),
         new Dismantle(),
-        new CheapShot(),
+        new Kick(),
         new SleepDart()
     ]
 }
 
-export class BladeFlurry extends Skill {
-    name: string = "Blade Flurry";
-    energyCost: number = 3;
-    cooldown: number = 1.5 * 1000;
-    castTime = 1000
-    targetType: TargetType = TargetType.TARGET_ENEMY
-    aiTargetting = AiTargetting.RANDOM
-    imagePath = "/rogue/blade-flurry.png"
+export class FanOfKnives extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Fan of Knives",
+        energyCost: 3,
+        cooldown: 1.5 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        aiTargetting: AiTargetting.RANDOM,
+        castTime: 1000,
+        imagePath: "/rogue/blade-flurry.png"
+    })
 
     AMOUNT_OF_ATTACKS = 3
     DAMAGE_PER_ATTACK = 3
     MS_DELAY_BETWEEN_ATTACK = 50
 
+    FOCUS_PER_ACTUAL_DAMAGE_DEALT = 2
+
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             for (let i = 0; i < this.AMOUNT_OF_ATTACKS; i++) {
                 setTimeout(() => {
-                    castBy.dealDamageTo({
+                    const damageResult = castBy.dealDamageTo({
                         amount: this.DAMAGE_PER_ATTACK,
                         target,
                         type: DamageType.PHYSICAL,
                         threatModifier: 1.1,
                         minAmount: 1
                     })
+
+                    if (damageResult && castBy.classBar instanceof FocusBar) {
+                        castBy.classBar.increase(damageResult.actualDamage * this.FOCUS_PER_ACTUAL_DAMAGE_DEALT)
+                    }
                 }, i * this.MS_DELAY_BETWEEN_ATTACK)
             }
         })
@@ -61,65 +79,90 @@ export class BladeFlurry extends Skill {
 }
 
 export class Dismantle extends Skill {
-    name: string = "Dismantle";
-    energyCost: number = 5;
-    cooldown: number = 12 * 1000;
-    castTime = 500
-    targetType: TargetType = TargetType.TARGET_ENEMY
-    aiTargetting = AiTargetting.HIGHEST_THREAT
-    imagePath = "/rogue/dismantle.png"
+    skillData: SkillData = new SkillData({
+        name: "Dismantle",
+        energyCost: 5,
+        cooldown: 12 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        aiTargetting: AiTargetting.HIGHEST_THREAT,
+        castTime: 500,
+        imagePath: "/rogue/dismantle.png"
+    })
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
+            if (castBy.classBar instanceof FocusBar) {
+                castBy.classBar.increase(4)
+            }
+
             target.addBuff(new DismantleBuff(), castBy)
         })
     }
 }
 
 export class PoisonedStrike extends Skill {
-    name: string = "Poisoned Strike";
-    energyCost: number = 2;
-    cooldown: number = 0 * 1000;
-    castTime = 1000
-    targetType: TargetType = TargetType.TARGET_ENEMY
-    imagePath = "/rogue/poisoned-strike.png"
-    aiTargetting = AiTargetting.RANDOM
+    skillData: SkillData = new SkillData({
+        name: "Poisoned Strike",
+        energyCost: 2,
+        cooldown: 0 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        aiTargetting: AiTargetting.RANDOM,
+        castTime: 1000,
+        imagePath: "/rogue/poisoned-strike.png"
+    })
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
+            if (castBy.classBar instanceof FocusBar) {
+                castBy.classBar.increase(2)
+            }
+
             castBy.dealDamageTo({ target, type: DamageType.PHYSICAL, amount: 4 })
             target.addBuff(new PoisonBuff(1, 6 * 1000, 3), castBy)
         })
     }
 }
 
-export class CheapShot extends Skill {
-    name: string = "Kick";
-    energyCost: number = 4;
-    cooldown: number = 8 * 1000;
-    castTime = 250
-    targetType: TargetType = TargetType.TARGET_ENEMY
-    imagePath = "/rogue/kick.png"
-    aiTargetting = AiTargetting.RANDOM
+export class Kick extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Kick",
+        energyCost: 4,
+        cooldown: 8 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        aiTargetting: AiTargetting.RANDOM,
+        castTime: 250,
+        imagePath: "/rogue/kick.png"
+    })
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             castBy.dealDamageTo({ amount: 8, target, type: DamageType.PHYSICAL, threatModifier: 1.3 })
+
+            if (castBy.classBar instanceof FocusBar) {
+                castBy.classBar.increase(4)
+            }
+            
             if (target.castingSkill != null) {
                 target.castingSkill.interupt()
+
+                if (castBy.classBar instanceof FocusBar) {
+                    castBy.classBar.increase(10)
+                }
             }
         })
     }
 }
 
 export class SleepDart extends Skill {
-    name: string = "Sleep Dart";
-    energyCost: number = 6;
-    cooldown: number = 12 * 1000;
-    castTime = 1000
-    targetType: TargetType = TargetType.TARGET_ENEMY
-    aiTargetting = AiTargetting.RANDOM
-    imagePath = "/rogue/sleep-dart.png"
+    skillData: SkillData = new SkillData({
+        name: "Sleep Dart",
+        energyCost: 6,
+        cooldown: 12 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        aiTargetting: AiTargetting.RANDOM,
+        castTime: 1000,
+        imagePath: "/rogue/sleep-dart.png"
+    })
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {

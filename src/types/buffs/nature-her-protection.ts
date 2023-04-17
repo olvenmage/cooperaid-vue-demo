@@ -1,13 +1,16 @@
-import Game from '@/core/game';
 import Buff from '../buff';
 import type Character from '../character';
 import type CharacterStats from '../character-stats';
+import type StackingBuff from '../stacking-buff';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
-export default class BlessingOfProtectionBuff extends Buff implements StatMutatingBuff {
-    duration: number = 8 * 1000
-    callback = this.giveHolyToPaladin.bind(this)
+export default class NaturesProtectionBuff extends Buff implements StatMutatingBuff, StackingBuff {
+    duration: number = 5 * 1000
+    callback = this.giveFerocityToDruid.bind(this)
+    stackAmount = 1
+
+    maxStacks = 3
 
     override startEffect(character: Character): void {
         if (character.classBar) {
@@ -15,6 +18,15 @@ export default class BlessingOfProtectionBuff extends Buff implements StatMutati
         }
 
         super.startEffect(character)
+    }
+
+    addStack(amount: number): void {
+        if (this.stackAmount == this.maxStacks) {
+            return
+        }
+
+        console.log("adding to stack amount")
+        this.stackAmount += amount
     }
 
     override endEffect(character: Character): void {
@@ -27,14 +39,15 @@ export default class BlessingOfProtectionBuff extends Buff implements StatMutati
         super.endEffect(character)
     }
 
-    giveHolyToPaladin(trigger: OnDamageTrigger) {
+    giveFerocityToDruid(trigger: OnDamageTrigger) {
         if (this.givenBy?.classBar != null) {
-            this.givenBy.classBar.increase(4)
+            this.givenBy.classBar.increase(4 * this.stackAmount)
         }
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.armor.set(stats.armor.value + 3)
+        console.log("adding armor " + this.stackAmount.toString())
+        stats.armor.set(stats.armor.value + this.stackAmount)
         return stats
     }
 }

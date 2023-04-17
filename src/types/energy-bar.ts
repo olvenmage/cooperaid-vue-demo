@@ -1,5 +1,6 @@
 import GameSettings from "@/core/settings";
 import type Character from "./character";
+import type CharacterStats from "./character-stats";
 
 export default class EnergyBar {
     public current: number
@@ -16,8 +17,8 @@ export default class EnergyBar {
 
     character: Character|null = null
 
-    constructor(maxEnergy: number) {
-        this.max = maxEnergy;
+    constructor(private stats: CharacterStats) {
+        this.max = 10;
         this.current = 0;
     }
 
@@ -40,7 +41,7 @@ export default class EnergyBar {
 
     private regen() {
         if (GameSettings.generateEnergyWhileCasting || this.character?.castingSkill == null) {
-            this.energyCounter += this.energyRegenAmount
+            this.energyCounter += this.energyRegenAmount * (1 + (this.stats.energyBoost.value / 100 ))
 
             if (this.energyCounter >= this.energyPointThreshold) {
                 this.energyCounter -= this.energyPointThreshold
@@ -48,7 +49,6 @@ export default class EnergyBar {
             }
         }
       
-
         setTimeout(() => {
             this.regen()
         }, 100 / GameSettings.speedFactor)

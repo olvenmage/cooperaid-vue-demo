@@ -28,9 +28,9 @@ const isEnemy = props.character instanceof Enemy
 let color = props.character.identity.color
 
 function startCast(skill: Skill) {
-  if (skill.targetType == TargetType.TARGET_NONE) {
+  if (skill.skillData.targetType == TargetType.TARGET_NONE) {
     skill.cast(props.character, () => [])
-  } else if (skill.targetType == TargetType.TARGET_ALL_ENEMIES) {
+  } else if (skill.skillData.targetType == TargetType.TARGET_ALL_ENEMIES) {
     emit('cast-at-all-enemies', skill)
   } else {
     emit('start-cast', skill)
@@ -53,13 +53,13 @@ function startCast(skill: Skill) {
       :style="{ background: skill.canCast(character) ? '' : 'gray' }"
       @click="() => startCast(skill)"
       >
-      <span style="float: left; padding-left: 2px">{{ skill.energyCost }}</span>
+      <span style="float: left; padding-left: 2px">{{ skill.skillData.energyCost }}</span>
       <div class="energy-icon-wrapper float-left">
-        <img src="/src/assets/energy-icon.png">
+        <img src="/src/assets/icons/energy-icon.png">
       </div>
-        {{ skill.name }}
+        {{ skill.skillData.name }}
     <span style="float: right" v-if="skill.onCooldown">
-    ({{ (skill.cooldown - skill.onCooldownTimer) / 1000 }})
+    ({{ (skill.skillData.cooldown - skill.onCooldownTimer) / 1000 }})
   </span>
   </div>
   </div>

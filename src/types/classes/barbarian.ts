@@ -1,11 +1,12 @@
 import type Character from '../character'
-import Skill, { TargetType } from '../skill';
+import Skill, { TargetType, type CastSkillResponse } from '../skill';
 import PlayerIdentity, { PlayerClass } from '../player-identity'
 import ClassBar from '../class-bar';
 import Enrage from '../buffs/enrage';
 import DamageType from '../damage-type';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import CharacterStats from '../character-stats';
+import SkillData from '../skill-data';
 
 
 export default class Barbarian extends PlayerIdentity {
@@ -19,6 +20,8 @@ export default class Barbarian extends PlayerIdentity {
     public skills = [
         new RagingBlow(),
         new Rampage(),
+        new AxeThrow(),
+        new Shout()
 
     ]
 
@@ -52,7 +55,6 @@ export default class Barbarian extends PlayerIdentity {
         const currentPercentage = character.healthBar.current / character.healthBar.max
         const rage = ((actualDamage / character.healthBar.max) * 100) * (2 - currentPercentage - ragePercentagePenalty)
         
-        
         character.classBar.increase(
             Math.floor(rage)
         )
@@ -60,12 +62,14 @@ export default class Barbarian extends PlayerIdentity {
 }
 
 export class RecklessStrike extends Skill {
-    name: string = "Reckless Strike";
-    energyCost: number = 2;
-    cooldown: number = 0;
-    targetType: TargetType = TargetType.TARGET_ENEMY
-    castTime = 1000
-    imagePath = "/barbarian/reckless-strike.png"
+    skillData: SkillData = new SkillData({
+        name: "Reckless Strike",
+        energyCost: 2,
+        cooldown: 0,
+        targetType: TargetType.TARGET_ENEMY,
+        castTime: 1000,
+        imagePath: "/barbarian/reckless-strike.png"
+    })
 
     selfDamageAmount = 4
 
@@ -95,14 +99,16 @@ export class RecklessStrike extends Skill {
 }
 
 export class RagingBlow extends Skill {
-    name: string = "Raging Blow";
-    energyCost: number = 4;
-    cooldown: number = 1 * 1000;
-    targetType: TargetType = TargetType.TARGET_ENEMY
-    castTime = 2500
-    imagePath = "/barbarian/raging-blow.png"
+    skillData: SkillData = new SkillData({
+        name: "Raging Blow",
+        energyCost: 4,
+        cooldown: 1 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        castTime: 2500,
+        imagePath: "/barbarian/raging-blow.png"
+    })
 
-    castSkill(castBy: Character, targets: Character[]): void {
+    castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         targets.forEach((target) => castBy.dealDamageTo({ amount: 12, target, type: DamageType.PHYSICAL }))
 
         if (castBy.classBar != null) {
@@ -112,14 +118,16 @@ export class RagingBlow extends Skill {
 }
 
 export class Rampage extends Skill {
-    name: string = "Rampage";
-    energyCost: number = 5;
-    cooldown: number = 8 * 1000;
-    targetType: TargetType = TargetType.TARGET_ENEMY
-    castTime = 1500
-    imagePath = "/barbarian/rampage.png"
+    skillData: SkillData = new SkillData({
+        name: "Rampage",
+        energyCost: 5,
+        cooldown: 8 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        castTime: 1500,
+        imagePath: "/barbarian/rampage.png"
+    })
 
-    castSkill(castBy: Character, targets: Character[]): void {
+    castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         const missingHealthPercentage = (castBy.healthBar.current / castBy.healthBar.max);
         const damageToDeal = Math.ceil(10 * (2 - missingHealthPercentage))
         const threatModifier = 2.5 * missingHealthPercentage
@@ -129,14 +137,51 @@ export class Rampage extends Skill {
 }
 
 export class Shout extends Skill {
-    name: string = "Shout";
-    energyCost: number = 2;
-    cooldown: number = 6 * 1000;
-    targetType: TargetType = TargetType.TARGET_ALL_ENEMIES
-    castTime = 1000
-    imagePath = "/barbarian/shout.png"
+    skillData: SkillData = new SkillData({
+        name: "Shout",
+        energyCost: 2,
+        cooldown: 6 * 1000,
+        targetType: TargetType.TARGET_ALL_ENEMIES,
+        castTime: 1000,
+        imagePath: "/barbarian/shout.png"
+    })
 
-    castSkill(castBy: Character, targets: Character[]): void {
+    castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         targets.forEach((target) => castBy.dealDamageTo({ amount: 3, target, type: DamageType.PHYSICAL, threatModifier: 3.5, minAmount: 3 }))
+    }
+}
+
+export class AxeThrow extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Axe Throw",
+        energyCost: 1,
+        cooldown: 12 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        castTime: 1000,
+        imagePath: "/barbarian/axe-throw.png"
+    })
+
+    COOLDOWN = 12 * 1000
+
+    castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
+        if (this.skillData.isTransformed) {
+            this.finishCooldown()
+
+            return {
+                triggerCooldown: false
+            }
+        } else {
+            targets.forEach((target) => castBy.dealDamageTo({ amount: 8, target, type: DamageType.PHYSICAL, threatModifier: 1 }))
+        }
+    }
+
+    onCooldownSkillData(): Partial<SkillData> | null {
+        return {
+            name: "Retrieve Axe",
+            energyCost: 1,
+            castTime: 1500,
+            imagePath: "/barbarian/retrieve-axe.png",
+            targetType: TargetType.TARGET_NONE
+        }
     }
 }

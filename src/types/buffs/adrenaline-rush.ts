@@ -4,12 +4,12 @@ import TickBuff from '../tick-buff';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import type CharacterStats from '../character-stats';
 
-export default class Enrage extends TickBuff implements StatMutatingBuff {
+export default class AdrenalineRush extends TickBuff implements StatMutatingBuff {
     // interval in miliseconds (1000 = every second)
-    public baseTickInterval: number = 750
+    public baseTickInterval: number = 1000
 
     START_DURATION = 1
-    CONSUME_AMOUNT = 25
+    CONSUME_AMOUNT = 18
 
     duration: number = this.START_DURATION
    
@@ -21,17 +21,12 @@ export default class Enrage extends TickBuff implements StatMutatingBuff {
             const consumeEffectiveness = (this.CONSUME_AMOUNT / consumedAmount)
 
             this.duration += this.baseTickInterval / consumeEffectiveness
-
-            character.restoreHealth(
-                Math.floor((0.05 / consumeEffectiveness) * character.healthBar.max),
-                character,
-                0.35
-            )
         }
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.energyBoost.set(stats.energyBoost.value + 100)
+        stats.speed.set(stats.speed.value + 50)
+        stats.energyBoost.set(stats.energyBoost.value + 50)
 
         return stats
     }

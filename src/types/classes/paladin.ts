@@ -9,6 +9,7 @@ import SavingGrace from '../buffs/saving-grace';
 import BlessingOfProtectionBuff from '../buffs/blessing-of-protection'
 import SmittenBuff from '../buffs/smitten';
 import CharacterStats from '../character-stats';
+import SkillData from '../skill-data';
 
 
 export default class Paladin extends PlayerIdentity {
@@ -44,13 +45,14 @@ export default class Paladin extends PlayerIdentity {
 }
 
 export class HolyShock extends Skill {
-    name: string = "Holy Shock";
-    energyCost: number = 2;
-    cooldown: number = 0;
-    castTime = 1750
-    targetType: TargetType = TargetType.TARGET_ANY
-    imagePath = "/paladin/holy-shock.png"
-
+    skillData: SkillData = new SkillData({
+        name: "Holy Shock",
+        energyCost: 2,
+        cooldown: 0 * 1000,
+        targetType: TargetType.TARGET_ANY,
+        castTime: 1600,
+        imagePath: "/paladin/holy-shock.png"
+    })
 
     DAMAGE_AMOUNT = 6
     HEAL_AMOUNT = 5
@@ -81,12 +83,14 @@ export class HolyShock extends Skill {
 }
 
 export class OverwhelmingLight extends Skill {
-    name: string = "Overwhelming Light";
-    energyCost: number = 5;
-    cooldown: number = 8 * 1000;
-    castTime = 2000
-    targetType: TargetType = TargetType.TARGET_ANY
-    imagePath = "/paladin/overwhelming-light.png"
+    skillData: SkillData = new SkillData({
+        name: "Overwhelming Light",
+        energyCost: 5,
+        cooldown: 7 * 1000,
+        targetType: TargetType.TARGET_ANY,
+        castTime: 2000,
+        imagePath: "/paladin/overwhelming-light.png"
+    })
 
     DAMAGE_AMOUNT = 10
     HEAL_AMOUNT = 20
@@ -112,12 +116,14 @@ export class OverwhelmingLight extends Skill {
 }
 
 export class Smite extends Skill {
-    name: string = "Smite";
-    energyCost: number = 5;
-    cooldown: number = 5 * 1000;
-    castTime = 2000
-    targetType: TargetType = TargetType.TARGET_ENEMY
-    imagePath = "/paladin/smite.png"
+    skillData: SkillData = new SkillData({
+        name: "Smite",
+        energyCost: 5,
+        cooldown: 5 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        castTime: 2000,
+        imagePath: "/paladin/smite.png"
+    })
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (castBy.classBar) {
@@ -132,12 +138,14 @@ export class Smite extends Skill {
 }
 
 export class BlessingOfProtection extends Skill {
-    name: string = "Blessing of Protection";
-    energyCost: number = 3;
-    cooldown: number = 12 * 1000;
-    castTime = 500
-    targetType: TargetType = TargetType.TARGET_FRIENDLY
-    imagePath = "/paladin/blessing-of-protection.png"
+    skillData: SkillData = new SkillData({
+        name: "Blessing of Protection",
+        energyCost: 3,
+        cooldown: 12 * 1000,
+        targetType: TargetType.TARGET_FRIENDLY,
+        castTime: 500,
+        imagePath: "/paladin/blessing-of-protection.png"
+    })
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => { 

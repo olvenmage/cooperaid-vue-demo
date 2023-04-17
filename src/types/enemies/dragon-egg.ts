@@ -7,10 +7,11 @@ import randomRange from '@/utils/randomRange';
 import MeltedArmorBuff from '../buffs/melted-armor';
 import CharacterStats from '../character-stats';
 import ClassBar from '../class-bar';
+import SkillData from '../skill-data';
 
 export default class DragonEgg extends Identity {
     public name = "Dragon Egg"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 50, armor: -1 })
+    public baseStats = CharacterStats.fromObject({ maxHealth: 50, armor: -1, magicalArmor: -1, energyBoost: -10 })
     public imagePath = "/enemies/dragon/dragon-egg.png"
 
     public skills = [
@@ -41,11 +42,14 @@ export default class DragonEgg extends Identity {
 }
 
 class Stir extends Skill {
-    name: string = "Stir"
-    energyCost: number = 3;
-    cooldown: number = 2 * 1000;
-    castTime = 2 * 1000;
-    targetType: TargetType = TargetType.TARGET_NONE
+    public skillData: SkillData = new SkillData({
+        name: "Stir",
+        energyCost: 3,
+        cooldown: 2 * 1000,
+        castTime: 2 * 1000,
+        targetType: TargetType.TARGET_NONE,
+        imagePath: null
+    })
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (castBy.classBar != null) {
@@ -55,11 +59,15 @@ class Stir extends Skill {
 }
 
 export class WhelpBite extends Skill {
-    name: string = "Bite"
-    energyCost: number = 3;
-    castTime = 3000;
-    cooldown: number = 1 * 1000;
-    targetType: TargetType = TargetType.TARGET_ENEMY
+    public skillData: SkillData = new SkillData({
+        name: "Bite",
+        energyCost: 3,
+        cooldown: 1 * 1000,
+        castTime: 3 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        imagePath: null
+    })
+
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => castBy.dealDamageTo({ amount: 5, target, type: DamageType.PHYSICAL }))
@@ -67,11 +75,14 @@ export class WhelpBite extends Skill {
 }
 
 export class Ember extends Skill {
-    name: string = "Ember"
-    energyCost: number = 8;
-    castTime = 4000;
-    cooldown: number = 4 * 1000;
-    targetType: TargetType = TargetType.TARGET_ENEMY
+    public skillData: SkillData = new SkillData({
+        name: "Firespew",
+        energyCost: 8,
+        cooldown: 4 * 1000,
+        castTime: 4 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        imagePath: null
+    })
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => castBy.dealDamageTo({ amount: 8, target, type: DamageType.MAGICAL }))

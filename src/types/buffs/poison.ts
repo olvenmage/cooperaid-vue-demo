@@ -1,5 +1,6 @@
 import type Character from '../character';
 import DamageType from '../damage-type';
+import FocusBar from '../special-bar/focus-bar';
 import type StackingBuff from '../stacking-buff';
 import TickBuff from '../tick-buff';
 
@@ -19,16 +20,22 @@ export default class PoisonBuff extends TickBuff implements StackingBuff {
             return
         }
 
-        console.log(`dmg tick ${this.stackAmount}`)
+        if (this.givenBy?.classBar instanceof FocusBar) {
+            this.givenBy.classBar.increase(this.stackAmount * 2)
+        }
 
         character.takeDamage({ amount: this.stackAmount * this.damagePerStack, damagedBy: this.givenBy, type: DamageType.POISON })
     }
 
     addStack(amount: number) {
+        if (this.givenBy?.classBar instanceof FocusBar) {
+            this.givenBy.classBar.increase(1)
+        }
+
+
         if (this.stackAmount == this.maxStack) {
             return
         }
-        console.log("inc stack")
 
         this.stackAmount += amount
     }

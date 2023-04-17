@@ -1,3 +1,5 @@
+import type StatsState from "./stats-state"
+
 export enum CharacterSkillTargetType {
     TARGET_ENEMY,
     TARGET_FRIENDLY,
@@ -26,15 +28,12 @@ export default interface CharacterState {
     basicSkill: CharacterSkill|null
     skills: CharacterSkill[]
     buffs: CharacterBuff[]
-    stats: {
-        armor: number,
-        magicalArmor: number
-        stunned: boolean
-    }
+    stats: StatsState
     dead: boolean
 }
 
 export interface CharacterSkill {
+    id: string
     name: string,
     imagePath: string|null,
     canCast: boolean,

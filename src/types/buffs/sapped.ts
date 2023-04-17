@@ -5,13 +5,24 @@ import type CharacterStats from '../character-stats';
 import DamageType from '../damage-type';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
+import FocusBar from '../special-bar/focus-bar';
+import TickBuff from '../tick-buff';
 
-export default class SappedBuff extends Buff implements StatMutatingBuff {
+export default class SappedBuff extends TickBuff implements StatMutatingBuff {
+    public baseTickInterval: number = 1000;
     duration: number = 6 * 1000
 
     triggered = false
 
     callback = this.breakSap.bind(this)
+
+    tickEffect(character: Character): void {
+        if (this.givenBy?.classBar instanceof FocusBar) {
+            this.givenBy.classBar.increase(
+                4
+            )
+        }
+    }
 
     override startEffect(character: Character): void {
         this.duration = randomRange(4, 8) * 1000
@@ -26,12 +37,11 @@ export default class SappedBuff extends Buff implements StatMutatingBuff {
         if (index != -1) {
             character.identity.onDamageTakenTriggers.splice(index, 1)
         }
-        
+
         super.endEffect(character)
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        console.log("STUNNERONI 1")
         stats.stunned = true
     
         return stats

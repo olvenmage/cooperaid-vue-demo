@@ -64,28 +64,30 @@ function addDamageFloat(trigger: OnDamageTrigger) {
         <div class="damage-floats">
             <FloatingDamage v-for="damageFloat in damageFloats" :key="damageFloat.id" :damage="damageFloat"></FloatingDamage>
         </div>
-        <CharacterSprite :character="character"></CharacterSprite>
+        <CharacterSprite style="margin-top: 10px;" width="175px" height="175px" :character="character">
+          <div class="stat-wrapper">
+          <img class="armor" width="16" height="16" src="/src/assets/icons/magical-armor-symbol.png" alt="">
+          <span style="font-size: 20px; margin-right: 8px">{{ character.stats.magicalArmor.value }}</span>
+          <img class="armor" width="16" height="16" src="/src/assets/icons/armor-symbol.png" alt="">
+          <span style="font-size: 20px">{{ character.stats.armor.value }}</span>
+          <img class="armor" width="16" height="16" src="/src/assets/icons/energy-boost-symbol.png" alt="">
+          <span style="font-size: 20px">{{ character.stats.energyBoost.value }}</span>
+          <img class="armor" width="16" height="16" src="/src/assets/icons/speed-icon.png" alt="">
+          <span style="font-size: 20px">{{ character.stats.speed.value }}</span>
+        </div>
+      </CharacterSprite>
         <div v-if="!hideName" style="position: absolute; left: 2px; bottom: 0px">
           AI
           <input type="checkbox" v-model="aiEnabled" @change="toggleAI">
         </div>
-        <div class="armor-wrapper">
-          <img class="armor" width="16" height="16" src="/src/assets/magical-armor-symbol.png" alt="">
-          <span style="font-size: 20px; margin-right: 8px">{{ character.stats.magicalArmor.value }}</span>
-          <img class="armor" width="16" height="16" src="/src/assets/armor-symbol.png" alt="">
-          <span style="font-size: 20px">{{ character.stats.armor.value }}</span>
-        </div>
+      
         
       </div>
 </template>
 
 <style scoped>
 
-.armor-wrapper {
-  position: absolute;
-  height: 16px;
-  right: 0;
-  bottom: 16px;
+.stat-wrapper {
 }
 
 .char-name {

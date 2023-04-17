@@ -27,7 +27,7 @@ export default class CharacterAIBrain {
                 continue
             }
             
-            if (skill.energyCost > character.energyBar.current) {
+            if (skill.skillData.energyCost > character.energyBar.current) {
                 // sometimes save energy for expensive skill
                 if (Math.round(Math.random())) {
                     return
@@ -41,7 +41,7 @@ export default class CharacterAIBrain {
             }
 
             // prioritize expensive skills
-            if (bestSkill == null || skill.energyCost > bestSkill.energyCost) {
+            if (bestSkill == null || skill.skillData.energyCost > bestSkill.skillData.energyCost) {
                 bestSkill = skill
             }
         }
@@ -50,19 +50,19 @@ export default class CharacterAIBrain {
             return
         }
 
-        if (bestSkill.targetType == TargetType.TARGET_NONE) {
+        if (bestSkill.skillData.targetType == TargetType.TARGET_NONE) {
             bestSkill.cast(character, () => [])
             return
         }
 
-        if (bestSkill.targetType == TargetType.TARGET_ALL_ENEMIES) {
+        if (bestSkill.skillData.targetType == TargetType.TARGET_ALL_ENEMIES) {
             bestSkill.cast(character, () => battle.combatants.filter((combatant) => character.isEnemyTo(combatant)))
             return
         }
 
-        let targettingMethod: TargetType = bestSkill.targetType
+        let targettingMethod: TargetType = bestSkill.skillData.targetType
     
-        if (bestSkill.targetType == TargetType.TARGET_ANY) {
+        if (bestSkill.skillData.targetType == TargetType.TARGET_ANY) {
             const friendlyNeedsHelp = battle.combatants.some((c) => !character.isEnemyTo(c) && !c.dead && bestSkill!.getCastPriority(character, c) > 1)
             // coinflip
             if (friendlyNeedsHelp && Math.round(Math.random())) {
@@ -72,7 +72,7 @@ export default class CharacterAIBrain {
             }
         }
 
-        let aiPreferredTarget = bestSkill.aiTargetting
+        let aiPreferredTarget = bestSkill.skillData.aiTargetting
 
         let validTargets = shuffleArray(battle.combatants)
 

@@ -8,6 +8,7 @@ import DismantleBuff from '../buffs/dismantle';
 import type EmpowerableSKill from '../empowerable-skill';
 import Empowered from '../buffs/empowered';
 import FrozenBuff from '../buffs/frozen'
+import SkillData from '../skill-data';
 
 abstract class MageSkill extends Skill {
     abstract empower(castBy: Character): void
@@ -36,12 +37,14 @@ export default class Mage extends PlayerIdentity {
 }
 
 export class FrostBolt extends Skill implements EmpowerableSKill {
-    name: string = "FrostBolt";
-    energyCost: number = 2;
-    cooldown: number = 0 * 1000;
-    castTime = 1500
-    targetType: TargetType = TargetType.TARGET_ENEMY
-    aiTargetting = AiTargetting.HIGHEST_THREAT
+    skillData: SkillData = new SkillData({
+        name: "Frostbolt",
+        energyCost: 2,
+        cooldown: 0 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        castTime: 1000,
+        imagePath: "/mage/frost-bolt.png"
+    })
 
     empowered = false
 
@@ -60,15 +63,16 @@ export class FrostBolt extends Skill implements EmpowerableSKill {
     }
 
     empower(castBy: Character): void {
-        this.targetType = TargetType.TARGET_ENEMY
+        this.skillData.transform({
+            name: "Frost Tomb",
+            energyCost: 4,
+        })
+
         this.empowered = true
-        this.name = "Frost Tomb"
-        this.energyCost = 4
     }
 
     unempower(castBy: Character): void {
         this.empowered = false
-        this.name = "Frost Bolt"
-        this.energyCost = 2
+        this.skillData.transformBack()
     }
 }

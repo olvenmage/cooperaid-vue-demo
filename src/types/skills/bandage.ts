@@ -1,17 +1,19 @@
 import PoisonBuff from "../buffs/poison";
 import type Character from "../character";
 import Skill, { AiTargetting, TargetType } from "../skill";
+import SkillData from "../skill-data";
 
 export default class Bandage extends Skill {
-    name: string = "Bandage";
-    energyCost: number = 3;
-    cooldown: number = 4 * 1000;
-    castTime = 2000
-    targetType: TargetType = TargetType.TARGET_FRIENDLY
-    aiTargetting = AiTargetting.RANDOM
-    imagePath = "/neutral/bandage.png"
-
-    override interuptsOnDamageTaken = true
+    skillData: SkillData = new SkillData({
+        name: "Bandage",
+        energyCost: 3,
+        cooldown: 4 * 1000,
+        targetType: TargetType.TARGET_FRIENDLY,
+        aiTargetting: AiTargetting.RANDOM,
+        castTime: 2000,
+        imagePath: "/neutral/bandage.png",
+        interuptsOnDamageTaken: true
+    })
 
     BASE_DAMAGE = 3
 
