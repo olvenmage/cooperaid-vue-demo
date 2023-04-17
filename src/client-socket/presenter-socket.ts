@@ -4,7 +4,7 @@ import NativeSocketTransport from "../app-socket/lib/transport-stompjs/NativeSoc
 import { playerJoinMessage } from "./IncomingMessages";
 
 const presenterSocket = createAppSocket({
-    url: `ws://127.0.0.1:8080/coop-presenter`,
+    url: `ws://192.168.1.23:8080/coop-presenter`,
     transport: new NativeSocketTransport(),
     debug: true
 });
