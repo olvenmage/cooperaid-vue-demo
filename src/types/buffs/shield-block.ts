@@ -47,8 +47,8 @@ export default class ShieldBlockBuff extends Buff implements StatMutatingBuff {
         if (!this.triggered && trigger.originalDamage > (trigger.character.stats.armor.value - this.ARMOR_VALUE)) {
            console.log(`${trigger.character.identity.name} BY : ${trigger.damagedBy?.identity.name}`)
             // bugs when turned on TODO FIX
-            //trigger.damagedBy?.dealDamage(Math.ceil(trigger.character.stats.armor.value / 2), trigger.character, DamageType.PHYSICAL, 2)
             this.triggered = true
+            trigger.damagedBy?.dealDamageTo({amount: Math.ceil(trigger.character.stats.armor.value / 2), target: trigger.character, type: DamageType.PHYSICAL, threatModifier: 2})
             this.endEffect(trigger.character)
         }
 

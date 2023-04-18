@@ -29,7 +29,7 @@ export default class ThornsBuff extends Buff {
     }
 
     returnDamage(params: OnDamageTrigger) {
-        if (!params.damagedBy) {
+        if (!params.damagedBy || params.damageType != DamageType.PHYSICAL || !params.damagedBy.isEnemyTo(params.character)) {
             return
         }
 
