@@ -77,13 +77,13 @@ export default abstract class Skill {
     incrementCooldown() {
         if (!this.onCooldown) return;
 
-        if (this.onCooldownTimer >= this.skillData.cooldown) {
+        if (this.onCooldownTimer >= this.skillData.cooldown / GameSettings.speedFactor) {
             this.finishCooldown()
             return
         }
 
         setTimeout(() => {
-            this.onCooldownTimer += 1000 * GameSettings.speedFactor
+            this.onCooldownTimer += 1000
             this.incrementCooldown()
         }, 990)
     }
@@ -229,7 +229,9 @@ export default abstract class Skill {
             energyCost: this.skillData.energyCost,
             validTargets: [],
             imagePath: this.skillData.imagePath,
-            targetType: this.skillData.targetType as unknown as CharacterSkillTargetType
+            targetType: this.skillData.targetType as unknown as CharacterSkillTargetType,
+            cooldown: this.skillData.cooldown / GameSettings.speedFactor,
+            cooldownRemaining: this.onCooldownTimer,
         }
     }
 

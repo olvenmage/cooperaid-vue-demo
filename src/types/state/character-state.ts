@@ -40,6 +40,8 @@ export interface CharacterSkill {
     energyCost: number,
     validTargets: string[],
     targetType: CharacterSkillTargetType
+    cooldownRemaining: number // in ms speed relative,
+    cooldown: number // in ms speed relative
 }
 
 export interface CharacterBuff {

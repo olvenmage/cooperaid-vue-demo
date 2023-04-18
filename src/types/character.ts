@@ -194,12 +194,12 @@ export default class Character {
     }
 
     getState(): CharacterState {
-        const basicSkill = this.identity instanceof PlayerIdentity ? this.identity.basicSkill.getState(this) : null
+        const basicSkill = this.skills[0]
 
         return {
             id: this.id,
             skills: this.skills.filter((sk) => sk.id != basicSkill?.id).map((sk) => sk.getState(this)),
-            basicSkill: basicSkill,
+            basicSkill: basicSkill?.getState(this),
             imagePath: this.identity.imagePath,
             healthBar: {
                 current: this.healthBar.current,

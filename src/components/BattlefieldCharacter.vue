@@ -26,6 +26,7 @@ const hasSavingGrace = computed(() => props.character.buffs.hasBuff(SavingGrace)
 const isEnemy = props.character instanceof Enemy
 
 let color = props.character.identity.color
+const speedFactor = GameSettings.speedFactor
 
 function startCast(skill: Skill) {
   if (skill.skillData.targetType == TargetType.TARGET_NONE) {
@@ -59,7 +60,7 @@ function startCast(skill: Skill) {
       </div>
         {{ skill.skillData.name }}
     <span style="float: right" v-if="skill.onCooldown">
-    ({{ (skill.skillData.cooldown - skill.onCooldownTimer) / 1000 }})
+    ({{ (skill.skillData.cooldown / speedFactor - skill.onCooldownTimer) / 1000 }})
   </span>
   </div>
   </div>

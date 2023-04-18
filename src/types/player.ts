@@ -49,6 +49,16 @@ class Player {
         return this.innerPlayerClass
     }
 
+    get allSkills(): Skill[] {
+        const allSkills = [...this.skills]
+
+        if (this.basicSkill) {
+            allSkills.push(this.basicSkill)
+        }
+
+        return allSkills
+    }
+
     set playerClass(newVal: PlayerIdentity|null) {
         this.innerPlayerClass = newVal
         if (newVal) {

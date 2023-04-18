@@ -10,7 +10,7 @@ import SkillData from '../skill-data';
 
 export default class DragonBoss extends Identity {
     public name = "Dragon"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 400, armor: 3, magicalArmor: 2 })
+    public baseStats = CharacterStats.fromObject({ maxHealth: 200, armor: 2, magicalArmor: 2 })
     public imagePath = "/enemies/dragon/dragonboss.png"
 
     public stackingFireDamage = 0
@@ -34,7 +34,7 @@ export class DragonThrash extends Skill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 12, target, type: DamageType.PHYSICAL }))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: 10, target, type: DamageType.PHYSICAL }))
     }
 }
 
@@ -50,7 +50,7 @@ export class DragonSwipe extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
 
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 12, target, type: DamageType.PHYSICAL }))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: 10, target, type: DamageType.PHYSICAL }))
     }
 }
 

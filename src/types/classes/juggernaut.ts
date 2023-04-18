@@ -61,7 +61,7 @@ export class Bash extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         castTime: 1000,
         aiTargetting: AiTargetting.RANDOM,
-        imagePath: "/barbarian/bash.png"
+        imagePath: "/juggernaut/bash.png"
     })
 
     BASE_DAMAGE = 2
@@ -84,7 +84,7 @@ export class ShieldBlock extends Skill {
         cooldown: 6 * 1000,
         targetType: TargetType.TARGET_NONE,
         castTime: 400,
-        imagePath: "/barbarian/shield-block.png"
+        imagePath: "/juggernaut/shield-block.png"
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -99,7 +99,7 @@ export class BodySlam extends Skill {
         cooldown: 1 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         castTime: 1000,
-        imagePath: "/barbarian/body-slam.png"
+        imagePath: "/juggernaut/body-slam.png"
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
