@@ -77,7 +77,7 @@ export default class CharacterAIBrain {
         let validTargets = shuffleArray(battle.combatants)
 
         if (targettingMethod == TargetType.TARGET_FRIENDLY) {
-            validTargets = battle.combatants.filter((c) => !character.isEnemyTo(c))
+            validTargets = shuffleArray(battle.combatants.filter((c) => !character.isEnemyTo(c)))
 
             const getMostDireFriendly = (skill: Skill) => {
                 let mostDireFriendly = null

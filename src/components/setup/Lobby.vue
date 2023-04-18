@@ -39,8 +39,8 @@ const classes = [
 const playerAssignment: Record<number, Player|null> = reactive({
   0: null,
   1: null,
-  // 2: null,
-  // 3: null
+  2: null,
+  3: null
 })
 
 const availableClasses = computed<PlayerIdentity[]>(() => {
@@ -73,12 +73,6 @@ function start() {
   Game.startGame({
     players: Game.players.value as Player[],
     route: [
-    new CombatEncounter(
-        [
-        new Enemy(new DragonBoss()),
-        ]
-      ),
-      new TestEncounter(),
       new CombatEncounter(
         [
         new Enemy(new DragonEgg()),

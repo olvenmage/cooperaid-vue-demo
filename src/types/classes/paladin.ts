@@ -40,7 +40,8 @@ export default class Paladin extends PlayerIdentity {
 
     public skills = [
         new Smite(),
-        new BlessingOfProtection()
+        new BlessingOfProtection(),
+        new OverwhelmingLight()
     ]
 }
 
@@ -66,7 +67,7 @@ export class HolyShock extends Skill {
             }
 
             if (castBy.classBar != null) {
-                let holyPowerAmount = 9
+                let holyPowerAmount = 8
 
                 if (target.id == castBy.id) {
                     holyPowerAmount += 3
@@ -100,6 +101,10 @@ export class OverwhelmingLight extends Skill {
             castBy.dealDamageTo({ amount: this.DAMAGE_AMOUNT, type: DamageType.MAGICAL, target})
             target.restoreHealth(this.HEAL_AMOUNT, castBy, 0.8)
         })
+
+        if (castBy.classBar != null) {
+            castBy.classBar.increase(10)
+        }
     }
 
     override getCastPriority(castBy: Character, target: Character) {
@@ -150,7 +155,7 @@ export class BlessingOfProtection extends Skill {
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => { 
             target.addBuff(new BlessingOfProtectionBuff(), castBy)
-            Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 15}))
+            Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 12}))
         })
     }
 

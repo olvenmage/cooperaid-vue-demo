@@ -35,7 +35,6 @@ export default class Juggernaut extends PlayerIdentity {
     public skills = [
         new BodySlam(),
         new ShieldBlock(),
-        new Taunt()
     ]
 
     generateResistanceOnDamage({ character, actualDamage, originalDamage }: OnDamageTrigger) {

@@ -115,7 +115,7 @@ export class Thorns extends Skill implements EmpowerableSKill {
         } else {
             targets.forEach((target) => {
                 target.addBuff(new ThornsBuff(), castBy)
-                Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 12}))
+                Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 8}))
             })
 
             if (castBy.classBar instanceof FerocityBar) {
