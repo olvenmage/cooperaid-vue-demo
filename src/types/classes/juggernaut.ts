@@ -9,6 +9,7 @@ import ShieldBlockBuff from '../buffs/shield-block';
 import Untouchable from '../buffs/retaliation';
 import CharacterStats from '../character-stats';
 import SkillData from '../skill-data';
+import Taunt from '../skills/taunt';
 
 
 export default class Juggernaut extends PlayerIdentity {
@@ -34,6 +35,7 @@ export default class Juggernaut extends PlayerIdentity {
     public skills = [
         new BodySlam(),
         new ShieldBlock(),
+        new Taunt()
     ]
 
     generateResistanceOnDamage({ character, actualDamage, originalDamage }: OnDamageTrigger) {

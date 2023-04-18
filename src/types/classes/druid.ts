@@ -13,6 +13,7 @@ import NaturesProtectionBuff from '../buffs/nature-her-protection';
 import Game from '@/core/game';
 import { globalThreatEvent } from '@/core/events';
 import Taunt from '../skills/taunt';
+import RegrowthBuff from '../buffs/regrowth';
 
 export default class Druid extends PlayerIdentity {
     public name = "Druid"
@@ -20,7 +21,7 @@ export default class Druid extends PlayerIdentity {
     public imagePath = "/classes/druid.png"
     public playerClass = PlayerClass.DRUID
     public basicSkill: Skill = new CommandNature()
-    public color = "#50C878";
+    public color = "#105E26";
 
     override onCreated(character: Character) {
         character.classBar = new FerocityBar()
@@ -34,7 +35,7 @@ export default class Druid extends PlayerIdentity {
 
     public skills = [
         new Thorns(),
-        new Taunt()
+        new Regrowth()
     ]
 }
 
@@ -53,7 +54,7 @@ export class CommandNature extends Skill implements EmpowerableSKill {
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
             targets.forEach((target) => {
-                castBy.dealDamageTo({ amount: 12, type: DamageType.PHYSICAL, target})
+                castBy.dealDamageTo({ amount: 12, type: DamageType.PHYSICAL, target, threatModifier: 1.5})
             })
     
         } else {
@@ -70,7 +71,7 @@ export class CommandNature extends Skill implements EmpowerableSKill {
         }
       
         if (!this.empowered && castBy.classBar != null) {
-            castBy.classBar.increase(45)
+            castBy.classBar.increase(10)
         }
     }
 
@@ -138,5 +139,56 @@ export class Thorns extends Skill implements EmpowerableSKill {
     unempower(castBy: Character): void {
         this.empowered = false
         this.skillData.transformBack()
+    }
+}
+
+export class Regrowth extends Skill implements EmpowerableSKill {
+    skillData: SkillData = new SkillData({
+        name: "Regrowth",
+        energyCost: 3,
+        cooldown: 8 * 1000,
+        targetType: TargetType.TARGET_FRIENDLY,
+        castTime: 1650,
+        imagePath: "/druid/regrowth.png"
+    })
+
+    empowered = false
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        if (this.skillData.isTransformed) {
+            if (castBy.classBar instanceof FerocityBar) {
+                castBy.classBar.decrease(25)
+            }
+        } else {
+            targets.forEach((target) => {
+                target.addBuff(new RegrowthBuff(), castBy)
+            })
+
+            if (castBy.classBar instanceof FerocityBar) {
+                castBy.classBar.increase(6)
+            }
+        }
+    }
+
+    empower(castBy: Character): void {
+        this.skillData.transform({
+            name: "Calm",
+            energyCost: 3,
+            targetType: TargetType.TARGET_NONE,
+            imagePath: "/druid/bear/calm.png",
+            castTime: 1000,
+            canCastOnCooldown: true
+        })
+
+        this.empowered = true
+    }
+
+    unempower(castBy: Character): void {
+        this.empowered = false
+        this.skillData.transformBack()
+    }
+
+    override getCastPriority(castBy: Character, target: Character) {
+        return 95 - (target.healthBar.current / target.healthBar.max * 100)
     }
 }

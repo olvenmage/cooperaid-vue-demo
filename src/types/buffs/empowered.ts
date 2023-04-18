@@ -22,7 +22,7 @@ export default class Empowered extends TickBuff {
             character.classBar.decrease(consumedAmount)
             const consumeEffectiveness = (this.CONSUME_AMOUNT / consumedAmount)
 
-            this.duration += this.tickInterval / consumeEffectiveness
+            this.duration += this.baseTickInterval / consumeEffectiveness
         }
     }
 

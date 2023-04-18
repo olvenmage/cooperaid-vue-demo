@@ -95,10 +95,10 @@ function addDamageFloat(trigger: OnDamageTrigger) {
   position: absolute;
   z-index: 3;
   font-weight: 800;
-  font-size: 25px;
+  font-size: 26px;
   top: -26px;
   -webkit-text-stroke-width: 2px;
-  -webkit-text-stroke-color: rgba(100, 100, 100, 0.5);
+  -webkit-text-stroke-color:  black;
 }
 
 .char-dead {

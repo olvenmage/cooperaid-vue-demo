@@ -29,6 +29,7 @@ export default class Ferocious extends TickBuff implements StatMutatingBuff {
     mutateStats(stats: CharacterStats): CharacterStats {
         stats.energyBoost.set(stats.energyBoost.value + 20)
         stats.armor.set(stats.armor.value + 3)
+        stats.magicalArmor.set(stats.magicalArmor.value + 3)
 
         return stats
     }
