@@ -17,12 +17,13 @@ import { subChangePlayerClass } from '@/client-socket/IncomingMessages';
 import type PlayerIdentity from '@/types/player-identity';
 import PlayerSelect from './PlayerSelect.vue';
 import type Player from '@/types/player';
-import { CombatEncounter } from '@/core/encounter';
+import { CombatEncounter, TestEncounter } from '@/core/encounter';
 import Enemy from '@/types/enemy';
 import DragonBoss from '@/types/enemies/dragon-boss';
 import GameSettings from '@/core/settings';
 import Druid from '@/types/classes/druid';
 import DragonEgg from '@/types/enemies/dragon-egg';
+import Goblin from '@/types/enemies/goblin';
 
 const players = Game.players.value
 
@@ -56,9 +57,7 @@ watch(players, () => {
   }
 })
 
-
 const playerAmount = computed(() => Object.keys(playerAssignment).length)
-
 
 function setClass(playerId: string, playerClassName: string) {
       const player = players.find((plr) => plr.id == playerId)
@@ -74,6 +73,14 @@ function start() {
   Game.startGame({
     players: Game.players.value as Player[],
     route: [
+    new CombatEncounter(
+        [
+        new Enemy(new Goblin()),
+        new Enemy(new Goblin()),
+        new Enemy(new Goblin())
+        ]
+      ),
+      new TestEncounter(),
       new CombatEncounter(
         [
         new Enemy(new DragonEgg()),

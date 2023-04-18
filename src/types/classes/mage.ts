@@ -5,15 +5,10 @@ import ClassBar from '../class-bar';
 import DamageType from '../damage-type';
 import CharacterStats from '../character-stats';
 import DismantleBuff from '../buffs/dismantle';
-import type EmpowerableSKill from '../empowerable-skill';
+import type EmpowerableSKill from '../skill-types/empowerable-skill';
 import Empowered from '../buffs/empowered';
 import FrozenBuff from '../buffs/frozen'
 import SkillData from '../skill-data';
-
-abstract class MageSkill extends Skill {
-    abstract empower(castBy: Character): void
-    abstract unempower(castBy: Character): void
-}
 
 export default class Mage extends PlayerIdentity {
     public name = "Mage"
@@ -24,7 +19,7 @@ export default class Mage extends PlayerIdentity {
     public color = "#51A5C5";
 
     override onCreated(character: Character) {
-        character.classBar = new ClassBar(100, 'blue')
+        character.classBar = new ClassBar(100, '#5d5abf')
         if (character.classBar != null) {
             character.classBar.onFilled = () => {
                 if (character.classBar == null || character.classBar.activated) return
@@ -46,8 +41,6 @@ export class FrostBolt extends Skill implements EmpowerableSKill {
         imagePath: "/mage/frost-bolt.png"
     })
 
-    empowered = false
-
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             castBy.dealDamageTo({ amount: 7, type: DamageType.MAGICAL, target})
@@ -57,7 +50,7 @@ export class FrostBolt extends Skill implements EmpowerableSKill {
             }
         })
 
-        if (!this.empowered && castBy.classBar != null) {
+        if (!this.skillData.isTransformed && castBy.classBar != null) {
             castBy.classBar.increase(25)
         }
     }
@@ -68,12 +61,9 @@ export class FrostBolt extends Skill implements EmpowerableSKill {
             imagePath: "/mage/frost-tomb.png",
             energyCost: 4,
         })
-
-        this.empowered = true
     }
 
     unempower(castBy: Character): void {
-        this.empowered = false
         this.skillData.transformBack()
     }
 }

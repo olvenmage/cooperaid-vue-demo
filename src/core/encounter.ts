@@ -1,5 +1,6 @@
 import type Enemy from "@/types/enemy";
 import Game from "./game";
+import SkillDamageUpgrade from "@/types/skill-upgrades/skill-damage-upgrade";
 
 export default abstract class Encounter {
     abstract startEncounter(): Promise<boolean>
@@ -32,6 +33,27 @@ export class ShopEncounter extends Encounter {
 
     async startEncounter(): Promise<boolean> {
         await Game.enterShop()
+
+        return new Promise((resolve, reject) => {
+            resolve(true)
+        })
+    }
+}
+
+export class TestEncounter extends Encounter {
+    constructor() {
+        super()
+    }
+
+    async startEncounter(): Promise<boolean> {
+        const dmgUpgrade = new SkillDamageUpgrade()
+
+        for (const player of Game.players.value) {
+            if (player.basicSkill != null && dmgUpgrade.applies(player.basicSkill)) {
+                console.log("applies!")
+                player.basicSkill.socketedUpgrade = dmgUpgrade
+            }
+        }
 
         return new Promise((resolve, reject) => {
             resolve(true)

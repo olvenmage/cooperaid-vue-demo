@@ -7,6 +7,7 @@ import DamageType from '../damage-type';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import CharacterStats from '../character-stats';
 import SkillData from '../skill-data';
+import type SkillDamageUpgrade from '../skill-upgrades/skill-damage-upgrade';
 
 
 export default class Barbarian extends PlayerIdentity {
@@ -68,13 +69,14 @@ export class RecklessStrike extends Skill {
         cooldown: 0,
         targetType: TargetType.TARGET_ENEMY,
         castTime: 1000,
-        imagePath: "/barbarian/reckless-strike.png"
+        imagePath: "/barbarian/reckless-strike.png",
+        damage: 10
     })
 
     selfDamageAmount = 4
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 10, type: DamageType.PHYSICAL, threatModifier: 0.8, target }))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: this.skillData.damage ?? 0, type: DamageType.PHYSICAL, threatModifier: 0.8, target }))
     }
 
     beforeCast(castBy: Character): void {

@@ -42,10 +42,10 @@ export default class Character {
 
     public isFriendly: boolean
 
-    constructor(identity: Identity, isFriendly = false) {
+    constructor(identity: Identity, isFriendly = false, characterSkills = new CharacterSkills(identity.skills, null)) {
         this.id = "char" + Math.random().toString(16).slice(2)
         this.identity = identity;
-        this.characterSkills = new CharacterSkills(this)
+        this.characterSkills = characterSkills
         this.healthBar = new Healthbar(identity.baseStats.maxHealth.value)
         this.stats = reactive(identity.baseStats.clone()) as CharacterStats
         this.energyBar = new EnergyBar(this.stats)
@@ -188,6 +188,7 @@ export default class Character {
     }
 
     initializeCombat(): void {
+        this.characterSkills.applyUpgrades()
         this.identity.onCreated(this)
         this.energyBar.start(this)
     }

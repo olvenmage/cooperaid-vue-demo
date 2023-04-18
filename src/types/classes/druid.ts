@@ -4,7 +4,7 @@ import PlayerIdentity, { PlayerClass } from '../player-identity'
 import Ferocious from '../buffs/ferocious';
 import DamageType from '../damage-type';
 import CharacterStats from '../character-stats';
-import type EmpowerableSKill from '../empowerable-skill';
+import type EmpowerableSKill from '../skill-types/empowerable-skill';
 import SkillData from '../skill-data';
 import FerocityBar from '../special-bar/ferocity-bar'
 import ThornsBuff from '../buffs/thorns-buff';

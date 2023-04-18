@@ -4,21 +4,16 @@ import PlayerIdentity from "./player-identity";
 import type Skill from "./skill";
 
 export default class CharacterSkills {
-    private character: Character
     private collection: Skill[] = []
-    
+
     onSkillsChangedCallbacks: (() => void)[] = []
 
-    constructor(character: Character) {
-        this.character = character
-
-        const basicSkill = null
-
-        if (character.identity instanceof PlayerIdentity) {
-            this.collection.push(character.identity.basicSkill)
+    constructor(skills: Skill[], basicSkill: Skill|null) {
+        if (basicSkill) {
+            this.collection.push(basicSkill)
         }
 
-        this.collection = this.collection.concat(character.identity.skills)
+        this.collection = this.collection.concat(skills)
     }
  
     get skills() {
@@ -26,12 +21,22 @@ export default class CharacterSkills {
     }
 
     addSkill(skill: Skill) {
-        this.collection.push(skill)      
+        this.collection.push(skill)
         this.onSkillsChangedCallbacks.forEach((cb) => cb())  
     }
     
     onSkillsChanged(callback: () => void) {
         this.onSkillsChangedCallbacks.push(callback)
+    }
+
+    applyUpgrades(): void {
+        this.collection.forEach((skill) => {
+            skill.skillData.resetToBase()
+            
+            if (skill.socketedUpgrade) {
+                skill.socketedUpgrade.applyUpgrade(skill)
+            }
+        })
     }
 
     removeSkill(skillClass: typeof Skill): this {

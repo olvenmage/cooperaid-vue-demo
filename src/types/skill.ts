@@ -5,6 +5,7 @@ import DamageType from './damage-type';
 import type OnDamageTrigger from './triggers/on-damage-trigger';
 import type SkillData from './skill-data';
 import type { SkillDataParams } from './skill-data';
+import type SkillUpgrade from './skill-upgrade';
 
 enum TargetType {
     TARGET_ENEMY,
@@ -34,6 +35,7 @@ export default abstract class Skill {
     public casted = false
 
     private interupted = false
+    public socketedUpgrade: SkillUpgrade|null = null
 
     currentTargets: Character[] = []
     id = "skill" + Math.random().toString(16).slice(2)

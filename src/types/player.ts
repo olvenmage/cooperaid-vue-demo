@@ -1,5 +1,6 @@
 import Character from './character';
 import CharacterAI from './character-ai';
+import CharacterSkills from './character-skills';
 import Faction from './faction';
 import type Identity from './identity';
 import type PlayerIdentity from './player-identity';
@@ -40,6 +41,7 @@ class Player {
 
     public combatCharacter: Character|null = null
     public skills: Skill[] = []
+    public basicSkill: Skill|null = null
 
     private innerPlayerClass: PlayerIdentity|null = null
 
@@ -51,9 +53,9 @@ class Player {
         this.innerPlayerClass = newVal
         if (newVal) {
             this.skills = [
-                newVal.basicSkill,
                 ...newVal.skills
             ]
+            this.basicSkill = newVal.basicSkill
         } else {
             this.skills = [];
         }
@@ -85,7 +87,9 @@ class Player {
             throw Error("Can't create character without player identity")
         }
 
-        const character = reactive(new Character(this.playerClass, true)) as Character
+        console.log(this.basicSkill)
+
+        const character = reactive(new Character(this.playerClass, true, new CharacterSkills(this.skills, this.basicSkill))) as Character
 
         character.id = this.id
 

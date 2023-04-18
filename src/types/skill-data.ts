@@ -16,6 +16,7 @@ export interface SkillDataParams {
     interuptsOnDamageTaken?: boolean
     castingIncrementer?: number
     canCastOnCooldown?: boolean
+    damage?: number
 }
 
 export default class SkillData {
@@ -34,10 +35,12 @@ export default class SkillData {
 
     public castingIncrementer
 
+    baseParams: SkillDataParams
     currentParams: SkillDataParams
     isTransformed = false
     oldData: SkillDataParams|null = null
     canCastOnCooldown
+    damage: number|null
 
     get timeRelativeCooldown() {
         return this.cooldown / GameSettings.speedFactor
@@ -45,6 +48,7 @@ export default class SkillData {
 
     constructor(params: SkillDataParams) {
         this.currentParams = params
+        this.baseParams = params
         this.name = params.name
         this.energyCost = params.energyCost
         this.cooldown = params.cooldown
@@ -55,6 +59,11 @@ export default class SkillData {
         this.interuptsOnDamageTaken = params.interuptsOnDamageTaken ?? false
         this.castingIncrementer = params.castingIncrementer ?? 100
         this.canCastOnCooldown = params.canCastOnCooldown ?? false
+        this.damage = params.damage ?? null
+    }
+
+    resetToBase() {
+        this.applyParams(Object.assign({}, this.baseParams))
     }
 
     transform(newParams: Partial<SkillDataParams>) {
@@ -62,8 +71,27 @@ export default class SkillData {
 
         const params = Object.assign({}, this.currentParams, newParams)
 
+        this.applyParams(params)
+
         this.oldData = this.currentParams;
         this.currentParams = params
+       
+        this.isTransformed = true
+    }
+
+    transformBack() {
+        if (!this.oldData || !this.isTransformed) {
+            return false
+        }
+
+        this.isTransformed = false;
+
+        this.transform(this.oldData)
+        this.oldData = null
+        this.isTransformed = false;
+    }
+
+    private applyParams(params: SkillDataParams) {
         this.name = params.name
         this.energyCost = params.energyCost
         this.cooldown = params.cooldown
@@ -73,23 +101,8 @@ export default class SkillData {
         this.castTime=  params.castTime
         this.interuptsOnDamageTaken = params.interuptsOnDamageTaken ?? false
         this.castingIncrementer = params.castingIncrementer ?? 100
-        this.canCastOnCooldown = newParams.canCastOnCooldown ?? false
-        this.isTransformed = true
-    }
-
-    transformBack() {
-        if (!this.oldData || !this.isTransformed) {
-            console.log("cant sorry")
-            return false
-        }
-
-        this.isTransformed = false;
-
-        console.log("transforming back into")
-        console.log(this.oldData)
-        this.transform(this.oldData)
-        this.oldData = null
-        this.isTransformed = false;
+        this.canCastOnCooldown = params.canCastOnCooldown ?? false
+        this.damage = params.damage ?? null
     }
 
     clone(): SkillData {

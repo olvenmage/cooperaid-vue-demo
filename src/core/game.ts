@@ -135,5 +135,9 @@ export default abstract class Game {
         this.currentBattle = null
 
         this.onCombatChangedListeners.forEach((cb) => cb())
+
+        Game.players.value.forEach(player => {
+            player.combatCharacter = null
+        });
     }
 }

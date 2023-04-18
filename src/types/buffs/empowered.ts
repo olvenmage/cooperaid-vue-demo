@@ -2,7 +2,7 @@ import GameSettings from '@/core/settings';
 import type Character from '../character';
 import type CharacterStats from '../character-stats';
 import DamageType from '../damage-type';
-import { isEmpowerableSkil } from '../empowerable-skill';
+import { isEmpowerableSkil } from '../skill-types/empowerable-skill';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import TickBuff from '../tick-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';

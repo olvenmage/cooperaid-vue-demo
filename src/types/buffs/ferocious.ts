@@ -3,7 +3,7 @@ import type Character from '../character';
 import TickBuff from '../tick-buff';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import type CharacterStats from '../character-stats';
-import { isEmpowerableSkil } from '../empowerable-skill';
+import { isEmpowerableSkil } from '../skill-types/empowerable-skill';
 import FerocityBar from '../special-bar/ferocity-bar';
 
 export default class Ferocious extends TickBuff implements StatMutatingBuff {
