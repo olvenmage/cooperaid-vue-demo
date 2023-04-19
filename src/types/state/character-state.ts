@@ -35,6 +35,7 @@ export default interface CharacterState {
 export interface CharacterSkill {
     id: string
     name: string,
+    description: string|null,
     imagePath: string|null,
     canCast: boolean,
     energyCost: number,

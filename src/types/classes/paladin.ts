@@ -19,6 +19,7 @@ export default class Paladin extends PlayerIdentity {
     public playerClass = PlayerClass.PALADIN
     public basicSkill: Skill = new HolyShock()
     public color = "#B59E54";
+    public description = "The Paladin vows to protect the weak and bring justice to the unjust They are equiped with plate armor so they can confront the toughest of foes, and the blessing of their God allows them to heal wounds and wield powerful holy magic to vanquish evil."
 
     override onCreated(character: Character) {
         character.classBar = new ClassBar(100, 'gold')
@@ -54,6 +55,8 @@ export class HolyShock extends Skill {
         castTime: 1600,
         imagePath: "/paladin/holy-shock.png"
     })
+
+    description: string | null = "Basic. Deal 6 damage to an enemy or restore 5 health to an ally."
 
     DAMAGE_AMOUNT = 6
     HEAL_AMOUNT = 5
@@ -93,6 +96,8 @@ export class OverwhelmingLight extends Skill {
         imagePath: "/paladin/overwhelming-light.png"
     })
 
+    description: string | null = "Deal 10 damage to any target, if they survive restore 20 health to them."
+
     DAMAGE_AMOUNT = 10
     HEAL_AMOUNT = 20
 
@@ -130,6 +135,8 @@ export class Smite extends Skill {
         imagePath: "/paladin/smite.png"
     })
 
+    description: string | null = "Deal 10 magic damage to an enemy, restore 8 health to the first ally that attacks them."
+
     castSkill(castBy: Character, targets: Character[]): void {
         if (castBy.classBar) {
             castBy.classBar.increase(12)
@@ -151,6 +158,8 @@ export class BlessingOfProtection extends Skill {
         castTime: 500,
         imagePath: "/paladin/blessing-of-protection.png"
     })
+
+    description: string | null = "Buff an ally to give them 3 armor for a long duration"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => { 

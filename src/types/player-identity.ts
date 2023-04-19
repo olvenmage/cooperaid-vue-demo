@@ -14,6 +14,16 @@ enum PlayerClass {
 abstract class PlayerIdentity extends Identity {
     abstract playerClass: PlayerClass
     abstract basicSkill: Skill
+
+    abstract description: string
+
+    getPlayerIdentityState(): PlayerIdentity {
+        const skills = [
+            this.basicSkill,
+            ...this.skills,
+        ]
+        return Object.assign({}, this.getState(), { description: this.description, skills: skills.map((sk) => sk.getState(null)) }) as PlayerIdentity
+    }
 }
 
 export default PlayerIdentity;

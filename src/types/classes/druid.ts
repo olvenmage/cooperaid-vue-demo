@@ -22,6 +22,7 @@ export default class Druid extends PlayerIdentity {
     public playerClass = PlayerClass.DRUID
     public basicSkill: Skill = new CommandNature()
     public color = "#105E26";
+    public description: string = "The Druid harnesses the vast powers of nature to preserve balance and protect life. They are filled with the primal rage of nature and they have the ability to unleash it when pushed far enough."
 
     override onCreated(character: Character) {
         character.classBar = new FerocityBar()
@@ -48,6 +49,8 @@ export class CommandNature extends Skill implements EmpowerableSKill {
         castTime: 1250,
         imagePath: "/druid/command-nature.png"
     })
+
+    description: string | null = "Basic. Deal 5 magic damage to an enemy, or give armor to an ally for a medium duration (stacks 3 times)"
 
     empowered = false
 
@@ -107,6 +110,8 @@ export class Thorns extends Skill implements EmpowerableSKill {
         imagePath: "/druid/thorns.png"
     })
 
+    description: string | null = "Buff an ally to deal 5 damage when they are damaged."
+
     empowered = false
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -151,6 +156,8 @@ export class Regrowth extends Skill implements EmpowerableSKill {
         castTime: 1650,
         imagePath: "/druid/regrowth.png"
     })
+
+    description: string | null = "Buff an ally to restore 10 health over time."
 
     empowered = false
 

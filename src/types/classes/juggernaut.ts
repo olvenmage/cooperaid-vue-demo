@@ -19,6 +19,7 @@ export default class Juggernaut extends PlayerIdentity {
     public playerClass = PlayerClass.JUGGERNAUT
     public basicSkill: Skill = new Bash()
     public color = "#7F513E";
+    public description: string = "The Juggernaut is a fearsome warrior covered in thick armor. They use their armor to protect allies and reduce incoming damage but do not underestimate them as their armor is also their greatest weapon."
 
     override onCreated(character: Character) {
         this.onDamageTakenTriggers = []
@@ -63,6 +64,8 @@ export class Bash extends Skill {
         imagePath: "/juggernaut/bash.png"
     })
 
+    description: string | null = "Basic. Deal 2 + <ARMOR> damage to an enemy"
+
     BASE_DAMAGE = 2
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -86,6 +89,8 @@ export class ShieldBlock extends Skill {
         imagePath: "/juggernaut/shield-block.png"
     })
 
+    description: string | null = "Gain 8 Armor and Magic armor until you are attacked"
+
     castSkill(castBy: Character, targets: Character[]): void {
         castBy.addBuff(new ShieldBlockBuff(), castBy)
     }
@@ -101,10 +106,12 @@ export class BodySlam extends Skill {
         imagePath: "/juggernaut/body-slam.png"
     })
 
+    description: string | null = "Deal 6 + <ARMOR> Damage but the target also damages you based on their armor."
+
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: 5 + castBy.stats.armor.value, target, type: DamageType.PHYSICAL, threatModifier: 1.2})
-            target.dealDamageTo({ amount: 5 + target.stats.armor.value, target: castBy, type: DamageType.PHYSICAL, threatModifier: 1.2})
+            castBy.dealDamageTo({ amount: 6 + castBy.stats.armor.value, target, type: DamageType.PHYSICAL, threatModifier: 1.2})
+            target.dealDamageTo({ amount: 2 + target.stats.armor.value, target: castBy, type: DamageType.PHYSICAL, threatModifier: 1.2})
         })
     }
 }

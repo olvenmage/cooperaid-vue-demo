@@ -120,7 +120,7 @@ class Player {
         return {
             id: this.id,
             name: this.name,
-            playerClass: this.playerClass?.getState() || null
+            playerClass: this.playerClass?.getPlayerIdentityState() || null
         }
     }
 

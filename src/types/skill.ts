@@ -37,8 +37,10 @@ export default abstract class Skill {
     private interupted = false
     public socketedUpgrade: SkillUpgrade|null = null
 
+    description: string|null = null
+
     currentTargets: Character[] = []
-    id = "skill" + Math.random().toString(16).slice(2)
+    readonly id = "skill" + Math.random().toString(16).slice(2)
 
     interuptsOnDamageTakenCallback = this.onDamageTaken.bind(this)
 
@@ -221,13 +223,14 @@ export default abstract class Skill {
         return 0
     }
 
-    getState(castBy: Character): CharacterSkill {
+    getState(castBy: Character|null): CharacterSkill {
         return {
             id: this.id,
             name: this.skillData.name,
-            canCast: this.canCast(castBy),
+            canCast: castBy ? this.canCast(castBy) : true,
             energyCost: this.skillData.energyCost,
             validTargets: [],
+            description: this.description,
             imagePath: this.skillData.imagePath,
             targetType: this.skillData.targetType as unknown as CharacterSkillTargetType,
             cooldown: this.skillData.cooldown / GameSettings.speedFactor,

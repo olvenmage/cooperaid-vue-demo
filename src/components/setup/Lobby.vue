@@ -13,7 +13,7 @@ import type Identity from '@/types/identity';
 import type IdentityState from '@/types/state/identity-state';
 import type LobbyState from '@/types/state/lobby-state';
 import { pubUpdateLobbyState } from '@/client-socket/OutgoingMessages';
-import { subChangePlayerClass } from '@/client-socket/IncomingMessages';
+import { subChangePlayerClass, subRequestClassChange } from '@/client-socket/IncomingMessages';
 import type PlayerIdentity from '@/types/player-identity';
 import PlayerSelect from './PlayerSelect.vue';
 import type Player from '@/types/player';
@@ -68,6 +68,48 @@ function setClass(playerId: string, playerClassName: string) {
       }
 }
 
+// carousel class change
+function requestClassChange(playerId: string, selectIndex: number) {
+    const player = players.find((plr) => plr.id == playerId)
+
+    if (!player) {
+      return
+    }
+
+    let currentClassIndex = classes.findIndex((cls) => cls.name == player.playerClass?.name)
+
+    if (currentClassIndex == -1) {
+      return
+    }
+
+    let newClassIndex = -1;
+    let checkIndex = selectIndex
+
+    while (newClassIndex == -1) {
+        const potentialNewClass = classes[currentClassIndex + checkIndex]
+
+        if (!potentialNewClass) {
+            checkIndex = selectIndex
+            if (selectIndex == 1) {
+                currentClassIndex = -1
+            } else {
+              currentClassIndex = classes.length
+            }
+        } else {
+          const availableNewClassIndex = availableClasses.value.findIndex((cls) => cls.name == potentialNewClass.name)
+
+          if (availableNewClassIndex != -1) {
+              newClassIndex = availableNewClassIndex;
+              break;
+          } else {
+            checkIndex += selectIndex
+          }
+        }
+   }
+
+  setClass(playerId, availableClasses.value[newClassIndex]!.name)
+}
+
 function start() {
   GameSettings.speedFactor = 0.5
   Game.startGame({
@@ -88,6 +130,10 @@ function start() {
 onMounted(() => {
   presenterSocket.subscribe(subChangePlayerClass , (event) => {
     setClass(event.body.playerId, event.body.playerClass)
+  })
+
+  presenterSocket.subscribe(subRequestClassChange , (event) => {
+    requestClassChange(event.body.playerId, event.body.selectIndex)
   })
 
   setInterval(() => {

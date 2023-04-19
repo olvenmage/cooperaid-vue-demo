@@ -25,7 +25,6 @@ export default class SappedBuff extends TickBuff implements StatMutatingBuff {
     }
 
     override startEffect(character: Character): void {
-        this.duration = randomRange(4, 8) * 1000
         character.identity.onDamageTakenTriggers.push(this.callback)
 
         super.startEffect(character)

@@ -20,6 +20,7 @@ export default class Rogue extends PlayerIdentity {
     public basicSkill: Skill = new PoisonedStrike()
     public armor = 2
     public color = "#AB6DAC";
+    public description: string = "For the rogue, the only code is the contract, and their honor is purchased in gold. Free from the constraints of a conscience, these merceranier rely on brutal and efficient tactics. Lethal assassins and masters of deception and control."
 
     override onCreated(character: Character) {
         character.classBar = new FocusBar()
@@ -55,6 +56,8 @@ export class FanOfKnives extends Skill {
     DAMAGE_PER_ATTACK = 3
     MS_DELAY_BETWEEN_ATTACK = 50
 
+    description: string | null = "Deal 3 damage to an enemy three times. (Min 1 damage per hit)"
+
     FOCUS_PER_ACTUAL_DAMAGE_DEALT = 2
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -70,7 +73,7 @@ export class FanOfKnives extends Skill {
                     })
 
                     if (damageResult && castBy.classBar instanceof FocusBar) {
-                        castBy.classBar.increase(damageResult.actualDamage * this.FOCUS_PER_ACTUAL_DAMAGE_DEALT)
+                        castBy.classBar.increase(Math.max(damageResult.actualDamage, this.DAMAGE_PER_ATTACK) * this.FOCUS_PER_ACTUAL_DAMAGE_DEALT)
                     }
                 }, i * this.MS_DELAY_BETWEEN_ATTACK)
             }
@@ -88,6 +91,8 @@ export class Dismantle extends Skill {
         castTime: 500,
         imagePath: "/rogue/dismantle.png"
     })
+
+    description: string | null = "Reduce an enemy's armor by 3 for a long duration."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
@@ -111,6 +116,8 @@ export class PoisonedStrike extends Skill {
         imagePath: "/rogue/poisoned-strike.png"
     })
 
+    description: string | null = "Basic. Deal 4 damage to an enemy and apply a stacking poison debuff for a medium duration (stacks 3 times)"
+
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             if (castBy.classBar instanceof FocusBar) {
@@ -133,6 +140,8 @@ export class Kick extends Skill {
         castTime: 250,
         imagePath: "/rogue/kick.png"
     })
+
+    description: string | null = "Deal 8 damage to an enemy and interrupt their current cast."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
@@ -163,6 +172,8 @@ export class SleepDart extends Skill {
         castTime: 1000,
         imagePath: "/rogue/sleep-dart.png"
     })
+
+    description: string | null = "Turn an enemy to sleep for a medium duration or until they take damage."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {

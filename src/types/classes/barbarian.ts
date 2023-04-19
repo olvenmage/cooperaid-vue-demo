@@ -17,6 +17,7 @@ export default class Barbarian extends PlayerIdentity {
     public playerClass = PlayerClass.BARBARIAN
     public basicSkill: Skill = new RecklessStrike()
     public color = "#E7623E";
+    public description: string = "The Barbarian is part of one of the many tribes on the fringes of civilization. Their combat prowess is unmatched and they are willing to go to any length to ensure bloodshed and destruction on their foes."
 
     public skills = [
         new RagingBlow(),
@@ -75,6 +76,8 @@ export class RecklessStrike extends Skill {
 
     selfDamageAmount = 4
 
+    description: string | null = "Basic. Take 4 damage to deal 10 damage to an enemy."
+
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => castBy.dealDamageTo({ amount: this.skillData.damage ?? 0, type: DamageType.PHYSICAL, threatModifier: 0.8, target }))
     }
@@ -110,6 +113,8 @@ export class RagingBlow extends Skill {
         imagePath: "/barbarian/raging-blow.png"
     })
 
+    description: string | null = "Deal 12 damage to an enemy and generate 12 rage."
+
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         targets.forEach((target) => castBy.dealDamageTo({ amount: 12, target, type: DamageType.PHYSICAL }))
 
@@ -126,12 +131,15 @@ export class Rampage extends Skill {
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         castTime: 1500,
-        imagePath: "/barbarian/rampage.png"
+        imagePath: "/barbarian/rampage.png",
+        damage: 10
     })
+
+    description: string | null = "Deal 10 to an enemy, deals more damage the lower your health (max: 20)"
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         const missingHealthPercentage = (castBy.healthBar.current / castBy.healthBar.max);
-        const damageToDeal = Math.ceil(10 * (2 - missingHealthPercentage))
+        const damageToDeal = Math.ceil((this.skillData.damage ?? 10) * (2 - missingHealthPercentage))
         const threatModifier = 2.5 * missingHealthPercentage
 
         targets.forEach((target) => castBy.dealDamageTo({ amount: damageToDeal, target, type: DamageType.PHYSICAL, threatModifier }))
@@ -147,6 +155,8 @@ export class Shout extends Skill {
         castTime: 1000,
         imagePath: "/barbarian/shout.png"
     })
+
+    description: string | null = "Deal 3 piercing damage to all enemies, generates a lot of threat"
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         targets.forEach((target) => castBy.dealDamageTo({ amount: 3, target, type: DamageType.PHYSICAL, threatModifier: 3.5, minAmount: 3 }))
@@ -164,6 +174,8 @@ export class AxeThrow extends Skill {
     })
 
     COOLDOWN = 12 * 1000
+
+    description: string | null = "Deal 8 damage to an enemy, can be retrieved to reset cooldown"
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         if (this.skillData.isTransformed) {
