@@ -17,7 +17,7 @@ export default class Barbarian extends PlayerIdentity {
     public playerClass = PlayerClass.BARBARIAN
     public basicSkill: Skill = new RecklessStrike()
     public color = "#E7623E";
-    public description: string = "The Barbarian is part of one of the many tribes on the fringes of civilization. Their combat prowess is unmatched and they are willing to go to any length to ensure bloodshed and destruction on their foes."
+    public description: string = "The Barbarian, different as they might be, are defined by their rage: unbridled, unquenchable, and unthinking fury. With unmatched combat prowess, they are willing to go to any length to ensure victory."
 
     public skills = [
         new RagingBlow(),
