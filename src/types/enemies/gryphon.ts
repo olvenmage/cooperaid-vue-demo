@@ -17,6 +17,9 @@ export default class Gryphon extends Identity {
 
     public skills = [
         new TakeFlight(),
+        new BeakAttack(),
+        new Squawk(),
+        new SkyDive()
     ]
 }
 
@@ -24,17 +27,51 @@ class BeakAttack extends Skill {
     public skillData: SkillData = new SkillData({
         name: "Beak Attack",
         energyCost: 4,
-        cooldown: 8 * 1000,
+        cooldown: 3 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         imagePath: null,
         range: SkillRange.MELEE,
     })
 
+    override canCast(castBy: Character): boolean {
+        if (castBy.stats.flying) {
+            return false
+        }
+
+        return super.canCast(castBy)
+    }
+
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 14, target, type: DamageType.PHYSICAL }))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: 12, target, type: DamageType.PHYSICAL }))
     }
 }
+
+class SkyDive extends Skill {
+    public skillData: SkillData = new SkillData({
+        name: "Sky Dive",
+        energyCost: 5,
+        cooldown: 3 * 1000,
+        castTime: 3 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        imagePath: null,
+        damage: 14,
+        range: SkillRange.RANGED,
+    })
+
+    override canCast(castBy: Character): boolean {
+        if (!castBy.stats.flying) {
+            return false
+        }
+
+        return super.canCast(castBy)
+    }
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL, minAmount: this.skillData.damage }))
+    }
+}
+
 
 
 class Squawk extends Skill {
