@@ -42,9 +42,13 @@ export default class Character {
 
     public isFriendly: boolean
 
-    constructor(identity: Identity, isFriendly = false, characterSkills = new CharacterSkills(identity.skills, null)) {
+    constructor(identity: Identity, isFriendly = false, characterSkills: CharacterSkills|null = null) {
         this.id = "char" + Math.random().toString(16).slice(2)
         this.identity = identity;
+
+        if (characterSkills == null) {
+            characterSkills = new CharacterSkills(identity.skills, identity instanceof PlayerIdentity ? identity.basicSkill : null)
+        }
         this.characterSkills = characterSkills
         this.healthBar = new Healthbar(identity.baseStats.maxHealth.value)
         this.stats = reactive(identity.baseStats.clone()) as CharacterStats

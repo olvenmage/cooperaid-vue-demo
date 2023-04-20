@@ -22,7 +22,7 @@ export default abstract class TickBuff extends Buff {
         }
 
         setTimeout(() => {
-            this.durationCounter += this.tickInterval
+            this.durationCounter += this.tickInterval / GameSettings.speedFactor
             this.tickEffect(character)
             this.incrementDuration(character)
         }, this.tickInterval / GameSettings.speedFactor)

@@ -17,6 +17,7 @@ export default class SavingGrace extends TickBuff {
         if (this.givenBy?.classBar) {
             const consumedAmount = Math.min(this.CONSUME_AMOUNT, this.givenBy.classBar.current)
             this.givenBy.classBar.decrease(consumedAmount)
+            const consumeEffectiveness = (this.CONSUME_AMOUNT / consumedAmount)
 
             this.increaseDuration(this.tickInterval / consumeEffectiveness)
         }

@@ -28,7 +28,7 @@ export default abstract class Buff {
     }
 
     increaseDuration(amount: number) {
-        this.duration += amount / GameSettings.speedFactor
+        this.duration += amount
     }
 
     protected incrementDuration(character: Character) {

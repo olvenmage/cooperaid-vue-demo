@@ -159,7 +159,7 @@ export class Regrowth extends Skill implements EmpowerableSKill {
         targetType: TargetType.TARGET_FRIENDLY,
         castTime: 1400,
         imagePath: "/druid/regrowth.png",
-        buffDuration: 6 * 1000
+        buffDuration: 12 * 1000
     })
 
     description: string | null = "Buff an ally to restore 16 health over time."
