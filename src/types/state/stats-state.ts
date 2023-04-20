@@ -5,4 +5,5 @@ export default interface StatsState {
     speed: number, // increases cast speed
     energyBoost: number // increases energy regen
     stunned: boolean
+    flying: boolean // cant be attacked by physical attacks
 }

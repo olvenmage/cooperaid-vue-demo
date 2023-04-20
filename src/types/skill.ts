@@ -235,6 +235,8 @@ export default abstract class Skill {
             targetType: this.skillData.targetType as unknown as CharacterSkillTargetType,
             cooldown: this.skillData.cooldown / GameSettings.speedFactor,
             cooldownRemaining: this.onCooldownTimer,
+            buffDuration: this.skillData.buffDuration / GameSettings.speedFactor,
+            castTime: this.skillData.castTime / GameSettings.speedFactor
         }
     }
 

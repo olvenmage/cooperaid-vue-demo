@@ -109,7 +109,7 @@ export class RagingBlow extends Skill {
         energyCost: 4,
         cooldown: 1 * 1000,
         targetType: TargetType.TARGET_ENEMY,
-        castTime: 2500,
+        castTime: 2000,
         imagePath: "/barbarian/raging-blow.png"
     })
 
@@ -130,7 +130,7 @@ export class Rampage extends Skill {
         energyCost: 5,
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_ENEMY,
-        castTime: 1500,
+        castTime: 1250,
         imagePath: "/barbarian/rampage.png",
         damage: 10
     })

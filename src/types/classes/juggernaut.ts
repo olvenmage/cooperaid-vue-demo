@@ -86,13 +86,14 @@ export class ShieldBlock extends Skill {
         cooldown: 6 * 1000,
         targetType: TargetType.TARGET_NONE,
         castTime: 400,
-        imagePath: "/juggernaut/shield-block.png"
+        imagePath: "/juggernaut/shield-block.png",
+        buffDuration: 5 * 1000,
     })
 
     description: string | null = "Gain 8 Armor and Magic armor until you are attacked"
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.addBuff(new ShieldBlockBuff(), castBy)
+        castBy.addBuff(new ShieldBlockBuff(this.skillData.buffDuration, ), castBy)
     }
 }
 

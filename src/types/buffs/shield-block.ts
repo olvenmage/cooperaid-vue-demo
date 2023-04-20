@@ -14,6 +14,11 @@ export default class ShieldBlockBuff extends Buff implements StatMutatingBuff {
 
     callback = this.shieldBlock.bind(this)
 
+    constructor(newDuration: number) {
+        super()
+        this.duration = newDuration
+    }
+
     override startEffect(character: Character): void {
         character.identity.beforeDamageTakenTriggers.push(this.callback)
 
@@ -46,7 +51,6 @@ export default class ShieldBlockBuff extends Buff implements StatMutatingBuff {
     shieldBlock(trigger: OnDamageTrigger): number {
         if (!this.triggered && trigger.originalDamage > (trigger.character.stats.armor.value - this.ARMOR_VALUE)) {
            console.log(`${trigger.character.identity.name} BY : ${trigger.damagedBy?.identity.name}`)
-            // bugs when turned on TODO FIX
             this.triggered = true
             trigger.damagedBy?.dealDamageTo({amount: Math.ceil(trigger.character.stats.armor.value / 2), target: trigger.character, type: DamageType.PHYSICAL, threatModifier: 2})
             this.endEffect(trigger.character)

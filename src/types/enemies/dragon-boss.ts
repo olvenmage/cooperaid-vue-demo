@@ -7,6 +7,7 @@ import randomRange from '@/utils/randomRange';
 import MeltedArmorBuff from '../buffs/melted-armor';
 import CharacterStats from '../character-stats';
 import SkillData from '../skill-data';
+import AggressiveBuff from '../buffs/aggressive';
 
 export default class DragonBoss extends Identity {
     public name = "Dragon"
@@ -66,8 +67,7 @@ export class DragonRoar extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (castBy.identity instanceof DragonBoss) {
-            castBy.stats.energyBoost.set(castBy.stats.energyBoost.value + 25)
-            castBy.stats.speed.set(castBy.stats.speed.value + 25)
+            castBy.addBuff(new AggressiveBuff(), castBy)
             castBy.identity.stackingFireDamage += 2
         }
     }
@@ -79,7 +79,7 @@ export class FireBreath extends Skill {
         name: "Fire Breath",
         energyCost: 10,
         cooldown: 4 * 1000,
-        castTime: 4 * 1000,
+        castTime: 5 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         imagePath: null
     })
@@ -89,7 +89,7 @@ export class FireBreath extends Skill {
         if (dragonIdentity instanceof DragonBoss) {
             targets.forEach((target) => {
                 castBy.dealDamageTo({
-                    amount: randomRange(16, 18 + dragonIdentity.stackingFireDamage),
+                    amount: randomRange(18, 18 + dragonIdentity.stackingFireDamage),
                     target,
                     type: DamageType.MAGICAL
                 })

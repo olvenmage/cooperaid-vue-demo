@@ -12,6 +12,11 @@ export default class NaturesProtectionBuff extends Buff implements StatMutatingB
 
     maxStacks = 3
 
+    constructor(newDuration: number = 5 * 1000) {
+        super()
+        this.duration = newDuration
+    }
+
     override startEffect(character: Character): void {
         if (character.classBar) {
             character.identity.onDamageTakenTriggers.push(this.callback)

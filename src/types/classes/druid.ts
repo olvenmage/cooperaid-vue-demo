@@ -46,8 +46,10 @@ export class CommandNature extends Skill implements EmpowerableSKill {
         energyCost: 2,
         cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ANY,
-        castTime: 1250,
-        imagePath: "/druid/command-nature.png"
+        castTime: 1000,
+        imagePath: "/druid/command-nature.png",
+        buffDuration: 5 * 1000,
+        damageType: DamageType.MAGICAL
     })
 
     description: string | null = "Basic. Deal 5 magic damage to an enemy, or give armor to an ally for a medium duration (stacks 3 times)"
@@ -57,16 +59,16 @@ export class CommandNature extends Skill implements EmpowerableSKill {
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
             targets.forEach((target) => {
-                castBy.dealDamageTo({ amount: 12, type: DamageType.PHYSICAL, target, threatModifier: 1.5})
+                castBy.dealDamageTo({ amount: 12, type: this.skillData.damageType!, target, threatModifier: 1.5})
             })
     
         } else {
             targets.forEach((target) => {
                 if (target.isEnemyTo(castBy)) {
-                    castBy.dealDamageTo({ amount: 5, type: DamageType.MAGICAL, target})
+                    castBy.dealDamageTo({ amount: 5, type: this.skillData.damageType!, target})
 
                 } else {
-                    target.addBuff(new NaturesProtectionBuff(), castBy)
+                    target.addBuff(new NaturesProtectionBuff(this.skillData.buffDuration), castBy)
                     Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 4}))
                 }
             })
@@ -88,7 +90,8 @@ export class CommandNature extends Skill implements EmpowerableSKill {
             energyCost: 3,
             targetType: TargetType.TARGET_ENEMY,
             imagePath: "/druid/bear/swipe.png",
-            castTime: 1000
+            castTime: 1000,
+            damageType: DamageType.PHYSICAL
         })
 
         this.empowered = true
@@ -106,8 +109,9 @@ export class Thorns extends Skill implements EmpowerableSKill {
         energyCost: 2,
         cooldown: 11 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
-        castTime: 1650,
-        imagePath: "/druid/thorns.png"
+        castTime: 1250,
+        imagePath: "/druid/thorns.png",
+        buffDuration: 10 * 1000
     })
 
     description: string | null = "Buff an ally to deal 5 damage when they are damaged."
@@ -119,7 +123,7 @@ export class Thorns extends Skill implements EmpowerableSKill {
             castBy.addBuff(new ThickSkinBuff(), castBy)
         } else {
             targets.forEach((target) => {
-                target.addBuff(new ThornsBuff(), castBy)
+                target.addBuff(new ThornsBuff(this.skillData.buffDuration), castBy)
                 Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 8}))
             })
 
@@ -153,8 +157,9 @@ export class Regrowth extends Skill implements EmpowerableSKill {
         energyCost: 3,
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
-        castTime: 1650,
-        imagePath: "/druid/regrowth.png"
+        castTime: 1400,
+        imagePath: "/druid/regrowth.png",
+        buffDuration: 6 * 1000
     })
 
     description: string | null = "Buff an ally to restore 10 health over time."
@@ -168,7 +173,7 @@ export class Regrowth extends Skill implements EmpowerableSKill {
             }
         } else {
             targets.forEach((target) => {
-                target.addBuff(new RegrowthBuff(), castBy)
+                target.addBuff(new RegrowthBuff(this.skillData.buffDuration), castBy)
             })
 
             if (castBy.classBar instanceof FerocityBar) {

@@ -25,7 +25,7 @@ export default class AdrenalineRush extends TickBuff implements StatMutatingBuff
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.speed.set(stats.speed.value + 50)
+        stats.speed.set(stats.speed.value + 100)
         stats.energyBoost.set(stats.energyBoost.value + 50)
 
         return stats

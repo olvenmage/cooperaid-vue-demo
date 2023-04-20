@@ -12,6 +12,11 @@ export default class ThornsBuff extends Buff {
     unique = true
     private returnDamageCallback = this.returnDamage.bind(this)
 
+    constructor(newDuration = 10 * 1000) {
+        super()
+        this.duration = newDuration
+    }
+
     override startEffect(character: Character): void {
         character.identity.onDamageTakenTriggers.push(this.returnDamageCallback)
 

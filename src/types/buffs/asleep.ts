@@ -8,13 +8,18 @@ import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import FocusBar from '../special-bar/focus-bar';
 import TickBuff from '../tick-buff';
 
-export default class SappedBuff extends TickBuff implements StatMutatingBuff {
+export default class SleepBuff extends TickBuff implements StatMutatingBuff {
     public baseTickInterval: number = 1000;
     duration: number = 6 * 1000
 
     triggered = false
 
     callback = this.breakSap.bind(this)
+
+    constructor(newDuration: number) {
+        super()
+        this.duration = newDuration
+    }
 
     tickEffect(character: Character): void {
         if (this.givenBy?.classBar instanceof FocusBar) {

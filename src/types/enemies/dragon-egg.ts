@@ -11,7 +11,7 @@ import SkillData from '../skill-data';
 
 export default class DragonEgg extends Identity {
     public name = "Dragon Egg"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 50, armor: -1, magicalArmor: -1, energyBoost: -10 })
+    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: -1, magicalArmor: -1, energyBoost: -10 })
     public imagePath = "/enemies/dragon/dragon-egg.png"
 
     public skills = [

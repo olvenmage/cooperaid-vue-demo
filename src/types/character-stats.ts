@@ -40,6 +40,7 @@ export default class CharacterStats {
     public energyBoost = new CharacterStat()
     public speed = new CharacterStat()
     public stunned = false
+    public flying = false
 
     constructor(maxHealth: number, armor = 0, magicalArmor = 0, energyBoost = 0, speed = 0) {
         this.maxHealth.set(maxHealth)
@@ -76,6 +77,7 @@ export default class CharacterStats {
         this.energyBoost.recalculate(stats.energyBoost.value)
         this.speed.recalculate(stats.speed.value)
         this.stunned = false
+        this.flying = false
     }
 
     getState(): StatsState {
@@ -86,6 +88,7 @@ export default class CharacterStats {
             energyBoost: this.energyBoost.value,
             speed: this.speed.value,
             stunned: this.stunned,
+            flying: this.flying
         }
     }
 }

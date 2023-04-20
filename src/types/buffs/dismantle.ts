@@ -11,6 +11,11 @@ export default class DismantleBuff extends Buff implements StatMutatingBuff {
 
     callback = this.giveFocusPerHit.bind(this)
 
+    constructor(newDuration: number) {
+        super()
+        this.duration = newDuration
+    }
+
     mutateStats(stats: CharacterStats): CharacterStats {
         stats.armor.set(stats.armor.value - 3)
         return stats

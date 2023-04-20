@@ -52,7 +52,7 @@ export class HolyShock extends Skill {
         energyCost: 2,
         cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ANY,
-        castTime: 1600,
+        castTime: 1250,
         imagePath: "/paladin/holy-shock.png"
     })
 
@@ -92,19 +92,17 @@ export class OverwhelmingLight extends Skill {
         energyCost: 5,
         cooldown: 7 * 1000,
         targetType: TargetType.TARGET_ANY,
-        castTime: 2000,
-        imagePath: "/paladin/overwhelming-light.png"
+        castTime: 1500,
+        imagePath: "/paladin/overwhelming-light.png",
+        damage: 10
     })
 
     description: string | null = "Deal 10 damage to any target, if they survive restore 20 health to them."
 
-    DAMAGE_AMOUNT = 10
-    HEAL_AMOUNT = 20
-
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: this.DAMAGE_AMOUNT, type: DamageType.MAGICAL, target})
-            target.restoreHealth(this.HEAL_AMOUNT, castBy, 0.8)
+            castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, target})
+            target.restoreHealth(this.skillData.damage! * 2, castBy, 0.8)
         })
 
         if (castBy.classBar != null) {
@@ -113,11 +111,11 @@ export class OverwhelmingLight extends Skill {
     }
 
     override getCastPriority(castBy: Character, target: Character) {
-        if (!castBy.isEnemyTo(target) && target.healthBar.current < this.DAMAGE_AMOUNT) {
+        if (!castBy.isEnemyTo(target) && target.healthBar.current < this.skillData.damage!) {
             return -50
         }
 
-        if (!castBy.isEnemyTo(target) && target.healthBar.current > this.DAMAGE_AMOUNT) {
+        if (!castBy.isEnemyTo(target) && target.healthBar.current > this.skillData.damage!) {
             return -50
         }
 
@@ -131,8 +129,9 @@ export class Smite extends Skill {
         energyCost: 5,
         cooldown: 5 * 1000,
         targetType: TargetType.TARGET_ENEMY,
-        castTime: 2000,
-        imagePath: "/paladin/smite.png"
+        castTime: 1500,
+        imagePath: "/paladin/smite.png",
+        damage: 10
     })
 
     description: string | null = "Deal 10 magic damage to an enemy, restore 8 health to the first ally that attacks them."
@@ -143,7 +142,7 @@ export class Smite extends Skill {
         }
    
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: 10, target, type: DamageType.MAGICAL})
+            castBy.dealDamageTo({ amount: this.skillData.damage!, target, type: DamageType.MAGICAL})
             target.addBuff(new SmittenBuff(), castBy)
         })
     }
@@ -156,14 +155,15 @@ export class BlessingOfProtection extends Skill {
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
         castTime: 500,
-        imagePath: "/paladin/blessing-of-protection.png"
+        imagePath: "/paladin/blessing-of-protection.png",
+        buffDuration: 8 * 1000
     })
 
     description: string | null = "Buff an ally to give them 3 armor for a long duration"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => { 
-            target.addBuff(new BlessingOfProtectionBuff(), castBy)
+            target.addBuff(new BlessingOfProtectionBuff(this.skillData.buffDuration), castBy)
             Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 12}))
         })
     }

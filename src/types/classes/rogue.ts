@@ -5,7 +5,7 @@ import ClassBar from '../class-bar';
 import DamageType from '../damage-type';
 import CharacterStats from '../character-stats';
 import DismantleBuff from '../buffs/dismantle';
-import SappedBuff from '../buffs/sapped';
+import SleepBuff from '../buffs/asleep';
 import PoisonBuff from '../buffs/poison';
 import FocusBar from '../special-bar/focus-bar'
 import SkillData from '../skill-data';
@@ -49,11 +49,11 @@ export class FanOfKnives extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         aiTargetting: AiTargetting.RANDOM,
         castTime: 1000,
-        imagePath: "/rogue/blade-flurry.png"
+        imagePath: "/rogue/blade-flurry.png",
+        damage: 3,
     })
 
     AMOUNT_OF_ATTACKS = 3
-    DAMAGE_PER_ATTACK = 3
     MS_DELAY_BETWEEN_ATTACK = 50
 
     description: string | null = "Deal 3 damage to an enemy three times. (Min 1 damage per hit)"
@@ -65,7 +65,7 @@ export class FanOfKnives extends Skill {
             for (let i = 0; i < this.AMOUNT_OF_ATTACKS; i++) {
                 setTimeout(() => {
                     const damageResult = castBy.dealDamageTo({
-                        amount: this.DAMAGE_PER_ATTACK,
+                        amount: this.skillData.damage!,
                         target,
                         type: DamageType.PHYSICAL,
                         threatModifier: 1.1,
@@ -73,7 +73,7 @@ export class FanOfKnives extends Skill {
                     })
 
                     if (damageResult && castBy.classBar instanceof FocusBar) {
-                        castBy.classBar.increase(Math.max(damageResult.actualDamage, this.DAMAGE_PER_ATTACK) * this.FOCUS_PER_ACTUAL_DAMAGE_DEALT)
+                        castBy.classBar.increase(Math.max(damageResult.actualDamage, this.skillData.damage!) * this.FOCUS_PER_ACTUAL_DAMAGE_DEALT)
                     }
                 }, i * this.MS_DELAY_BETWEEN_ATTACK)
             }
@@ -89,7 +89,8 @@ export class Dismantle extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         aiTargetting: AiTargetting.HIGHEST_THREAT,
         castTime: 500,
-        imagePath: "/rogue/dismantle.png"
+        imagePath: "/rogue/dismantle.png",
+        buffDuration: 8 * 1000
     })
 
     description: string | null = "Reduce an enemy's armor by 3 for a long duration."
@@ -100,7 +101,7 @@ export class Dismantle extends Skill {
                 castBy.classBar.increase(4)
             }
 
-            target.addBuff(new DismantleBuff(), castBy)
+            target.addBuff(new DismantleBuff(this.skillData.buffDuration!), castBy)
         })
     }
 }
@@ -113,7 +114,11 @@ export class PoisonedStrike extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         aiTargetting: AiTargetting.RANDOM,
         castTime: 1000,
-        imagePath: "/rogue/poisoned-strike.png"
+        imagePath: "/rogue/poisoned-strike.png",
+        damageType: DamageType.PHYSICAL,
+        damage: 4,
+        buffDuration: 6 * 1000,
+        maxStacks: 3
     })
 
     description: string | null = "Basic. Deal 4 damage to an enemy and apply a stacking poison debuff for a medium duration (stacks 3 times)"
@@ -124,8 +129,8 @@ export class PoisonedStrike extends Skill {
                 castBy.classBar.increase(2)
             }
 
-            castBy.dealDamageTo({ target, type: DamageType.PHYSICAL, amount: 4 })
-            target.addBuff(new PoisonBuff(1, 6 * 1000, 3), castBy)
+            castBy.dealDamageTo({ target, type: DamageType.PHYSICAL, amount: this.skillData.damage! })
+            target.addBuff(new PoisonBuff(1, this.skillData.buffDuration!, this.skillData.maxStacks!), castBy)
         })
     }
 }
@@ -138,14 +143,16 @@ export class Kick extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         aiTargetting: AiTargetting.RANDOM,
         castTime: 250,
-        imagePath: "/rogue/kick.png"
+        imagePath: "/rogue/kick.png",
+        damage: 8,
+        damageType: DamageType.PHYSICAL
     })
 
     description: string | null = "Deal 8 damage to an enemy and interrupt their current cast."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: 8, target, type: DamageType.PHYSICAL, threatModifier: 1.3 })
+            castBy.dealDamageTo({ amount: this.skillData.damage!, target, type: this.skillData.damageType!, threatModifier: 1.3 })
 
             if (castBy.classBar instanceof FocusBar) {
                 castBy.classBar.increase(4)
@@ -170,15 +177,16 @@ export class SleepDart extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         aiTargetting: AiTargetting.RANDOM,
         castTime: 1000,
-        imagePath: "/rogue/sleep-dart.png"
+        imagePath: "/rogue/sleep-dart.png",
+        buffDuration: 6 * 1000
     })
 
     description: string | null = "Turn an enemy to sleep for a medium duration or until they take damage."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            target.addBuff(new SappedBuff(), castBy)
-            target.ai?.raiseThreat(castBy, 25)
+            target.addBuff(new SleepBuff(this.skillData.buffDuration!), castBy)
+            target.ai?.raiseThreat(castBy, 20)
         })
     }
 }

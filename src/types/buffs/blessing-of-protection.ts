@@ -9,6 +9,11 @@ export default class BlessingOfProtectionBuff extends Buff implements StatMutati
     duration: number = 8 * 1000
     callback = this.giveHolyToPaladin.bind(this)
 
+    constructor(newDuration: number) {
+        super()
+        this.duration = newDuration
+    }
+
     override startEffect(character: Character): void {
         if (character.classBar) {
             character.identity.onDamageTakenTriggers.push(this.callback)

@@ -6,10 +6,11 @@ import TickBuff from '../tick-buff';
 
 export default class RegrowthBuff extends TickBuff {
     public baseTickInterval: number = 750
-    public duration = 7.5 * 1000
+    public duration = 6 * 1000
 
-    constructor() {
+    constructor(newDuration: number) {
         super()
+        this.duration = newDuration
     }
 
     tickEffect(character: Character) {
@@ -21,6 +22,6 @@ export default class RegrowthBuff extends TickBuff {
             this.givenBy.classBar.increase(2)
         }
 
-        character.restoreHealth(1, this.givenBy, 0.65)
+        character.restoreHealth(2, this.givenBy, 0.65)
     }
 }

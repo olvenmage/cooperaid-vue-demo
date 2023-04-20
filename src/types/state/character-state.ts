@@ -43,6 +43,8 @@ export interface CharacterSkill {
     targetType: CharacterSkillTargetType
     cooldownRemaining: number // in ms speed relative,
     cooldown: number // in ms speed relative
+    buffDuration: number // in ms speed relative
+    castTime: number // in ms speed relative
 }
 
 export interface CharacterBuff {

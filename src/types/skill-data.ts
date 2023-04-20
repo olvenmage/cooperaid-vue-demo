@@ -17,6 +17,9 @@ export interface SkillDataParams {
     castingIncrementer?: number
     canCastOnCooldown?: boolean
     damage?: number
+    damageType?: DamageType
+    buffDuration?: number
+    maxStacks?: number
 }
 
 export default class SkillData {
@@ -26,21 +29,24 @@ export default class SkillData {
     cooldown: number
     targetType: TargetType
 
-    public imagePath: string|null
-    public aiTargetting
+    imagePath: string|null
+    aiTargetting
     // cast time in microseconds
     castTime: number
 
-    public interuptsOnDamageTaken
+    interuptsOnDamageTaken
 
-    public castingIncrementer
-
-    baseParams: SkillDataParams
-    currentParams: SkillDataParams
-    isTransformed = false
-    oldData: SkillDataParams|null = null
+    castingIncrementer
     canCastOnCooldown
     damage: number|null
+    buffDuration: number
+    maxStacks: number
+    damageType: DamageType|null
+
+    private baseParams: SkillDataParams
+    private currentParams: SkillDataParams
+    isTransformed = false
+    private oldData: SkillDataParams|null = null
 
     get timeRelativeCooldown() {
         return this.cooldown / GameSettings.speedFactor
@@ -60,6 +66,9 @@ export default class SkillData {
         this.castingIncrementer = params.castingIncrementer ?? 100
         this.canCastOnCooldown = params.canCastOnCooldown ?? false
         this.damage = params.damage ?? null
+        this.damageType = params.damageType ?? null
+        this.buffDuration = params.buffDuration ?? 0
+        this.maxStacks = params.maxStacks ?? 0
     }
 
     resetToBase() {
@@ -103,6 +112,9 @@ export default class SkillData {
         this.castingIncrementer = params.castingIncrementer ?? 100
         this.canCastOnCooldown = params.canCastOnCooldown ?? false
         this.damage = params.damage ?? null
+        this.damageType = params.damageType ?? null
+        this.buffDuration = params.buffDuration ?? 0
+        this.maxStacks = params.maxStacks ?? 0
     }
 
     clone(): SkillData {
