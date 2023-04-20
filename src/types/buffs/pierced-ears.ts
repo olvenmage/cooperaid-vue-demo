@@ -7,6 +7,7 @@ export default class PiercedEarsBuff extends Buff implements StatMutatingBuff {
 
     mutateStats(stats: CharacterStats): CharacterStats {
         stats.armor.set(stats.armor.value - 1)
+        stats.speed.set(stats.speed.value - 50)
         return stats
     }
 }

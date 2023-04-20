@@ -8,6 +8,7 @@ import DamageType from '../damage-type';
 import CharacterStats from '../character-stats';
 import SkillData from '../skill-data';
 import PiercedEarsBuff from '../buffs/pierced-ears'
+import FlyingBuff from '../buffs/flying'
 
 export default class Gryphon extends Identity {
     public name = "Gryphon"
@@ -40,7 +41,7 @@ class Squawk extends Skill {
     public skillData: SkillData = new SkillData({
         name: "Squawk",
         energyCost: 2,
-        cooldown: 8 * 1000,
+        cooldown: 10 * 1000,
         castTime: 1 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
         imagePath: null
