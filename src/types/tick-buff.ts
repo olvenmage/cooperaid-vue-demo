@@ -5,14 +5,12 @@ import GameSettings from '@/core/settings'
 
 export default abstract class TickBuff extends Buff {
     // interval in miliseconds
-    public abstract baseTickInterval: number
+    public abstract tickInterval: number
     public durationCounter: number = 0
 
     public attachedCharacter: Character|null = null
 
     abstract tickEffect(character: Character): void
-
-    protected tickInterval: number = 0
 
     protected override incrementDuration(character: Character) {
         if (this.durationCounter >= this.duration / GameSettings.speedFactor) {
@@ -27,11 +25,10 @@ export default abstract class TickBuff extends Buff {
             this.durationCounter += this.tickInterval
             this.tickEffect(character)
             this.incrementDuration(character)
-        }, this.tickInterval)
+        }, this.tickInterval / GameSettings.speedFactor)
     }
 
     override startBuff(attachedCharacter: Character, givenBy: Character|null) {
-        this.tickInterval = this.baseTickInterval / GameSettings.speedFactor
         this.attachedCharacter = attachedCharacter
         this.givenBy = givenBy
         this.startEffect(attachedCharacter)

@@ -1,6 +1,5 @@
 import type Skill from "./skill";
-import Upgrade from "./upgrade";
+import UpgradeGem from "./upgrade";
 
-export default abstract class SkillUpgrade extends Upgrade<Skill> {
-    
+export default abstract class SkillUpgradeGem extends UpgradeGem<Skill> {
 }

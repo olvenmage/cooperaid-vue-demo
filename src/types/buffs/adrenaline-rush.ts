@@ -6,7 +6,7 @@ import type CharacterStats from '../character-stats';
 
 export default class AdrenalineRush extends TickBuff implements StatMutatingBuff {
     // interval in miliseconds (1000 = every second)
-    public baseTickInterval: number = 1000
+    public tickInterval: number = 1000
 
     START_DURATION = 1
     CONSUME_AMOUNT = 18
@@ -20,7 +20,7 @@ export default class AdrenalineRush extends TickBuff implements StatMutatingBuff
             character.classBar.decrease(consumedAmount)
             const consumeEffectiveness = (this.CONSUME_AMOUNT / consumedAmount)
 
-            this.duration += this.baseTickInterval / consumeEffectiveness
+            this.increaseDuration(this.tickInterval / consumeEffectiveness)
         }
     }
 

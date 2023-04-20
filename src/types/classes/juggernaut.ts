@@ -10,6 +10,8 @@ import Untouchable from '../buffs/retaliation';
 import CharacterStats from '../character-stats';
 import SkillData from '../skill-data';
 import Taunt from '../skills/taunt';
+import type SkillUpgradeGem from '../skill-upgrade';
+import ShieldBlockAlliesSkillGem from '../skill-upgrades/juggernaut/shield-block-allies-skill-gem';
 
 
 export default class Juggernaut extends PlayerIdentity {
@@ -84,16 +86,18 @@ export class ShieldBlock extends Skill {
         name: "Shield Block",
         energyCost: 4,
         cooldown: 6 * 1000,
-        targetType: TargetType.TARGET_NONE,
+        targetType: TargetType.TARGET_SELF,
         castTime: 400,
         imagePath: "/juggernaut/shield-block.png",
         buffDuration: 5 * 1000,
     })
 
-    description: string | null = "Gain 8 Armor and Magic armor until you are attacked"
+    description: string | null = "Gain 8 Armor and your magic armor is equal to your armor, until you are attacked"
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.addBuff(new ShieldBlockBuff(this.skillData.buffDuration, ), castBy)
+        targets.forEach((target) => {
+            target.addBuff(new ShieldBlockBuff(this.skillData.buffDuration, ), castBy)
+        })
     }
 }
 
@@ -107,12 +111,12 @@ export class BodySlam extends Skill {
         imagePath: "/juggernaut/body-slam.png"
     })
 
-    description: string | null = "Deal 6 + <ARMOR> Damage but the target also damages you based on their armor."
+    description: string | null = "Body slam the target, you deal twice your armor in damage to them, but they also deal damage to you based on their armor."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: 6 + castBy.stats.armor.value, target, type: DamageType.PHYSICAL, threatModifier: 1.2})
-            target.dealDamageTo({ amount: 2 + target.stats.armor.value, target: castBy, type: DamageType.PHYSICAL, threatModifier: 1.2})
+            castBy.dealDamageTo({ amount: castBy.stats.armor.value * 2, target, type: DamageType.PHYSICAL, threatModifier: 1.2})
+            target.dealDamageTo({ amount: target.stats.armor.value, target: castBy, type: DamageType.PHYSICAL, threatModifier: 1.2})
         })
     }
 }

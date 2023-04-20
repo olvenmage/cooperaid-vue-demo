@@ -9,7 +9,7 @@ import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
 export default class Empowered extends TickBuff {
     // interval in miliseconds (1000 = every second)
-    public baseTickInterval: number = 1000
+    public tickInterval: number = 1000
 
     START_DURATION = 1
     CONSUME_AMOUNT = 15
@@ -22,7 +22,7 @@ export default class Empowered extends TickBuff {
             character.classBar.decrease(consumedAmount)
             const consumeEffectiveness = (this.CONSUME_AMOUNT / consumedAmount)
 
-            this.duration += this.baseTickInterval / consumeEffectiveness
+            this.increaseDuration(this.tickInterval / consumeEffectiveness)
         }
     }
 

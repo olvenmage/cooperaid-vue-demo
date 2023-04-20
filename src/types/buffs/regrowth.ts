@@ -5,8 +5,8 @@ import type StackingBuff from '../stacking-buff';
 import TickBuff from '../tick-buff';
 
 export default class RegrowthBuff extends TickBuff {
-    public baseTickInterval: number = 750
-    public duration = 6 * 1000
+    public tickInterval: number = 1500
+    public duration = 12 * 1000
 
     constructor(newDuration: number) {
         super()

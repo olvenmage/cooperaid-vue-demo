@@ -4,7 +4,7 @@ import TickBuff from '../tick-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
 export default class SavingGrace extends TickBuff {
-    baseTickInterval = 1000
+    tickInterval = 1000
 
     CONSUME_AMOUNT = 25
     START_DURATION =  1
@@ -18,7 +18,7 @@ export default class SavingGrace extends TickBuff {
             const consumedAmount = Math.min(this.CONSUME_AMOUNT, this.givenBy.classBar.current)
             this.givenBy.classBar.decrease(consumedAmount)
 
-            this.duration += this.baseTickInterval / (this.CONSUME_AMOUNT / consumedAmount)
+            this.increaseDuration(this.tickInterval / consumeEffectiveness)
         }
     }
 

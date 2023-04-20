@@ -1,12 +1,12 @@
-import type Skill from "../skill";
-import SkillUpgrade from "../skill-upgrade";
+import type Skill from "../../skill";
+import SkillUpgradeGem from "../../skill-upgrade";
 
-export default class SkillDamageUpgrade extends SkillUpgrade {
+export default class DamageIncreaseSkillGem extends SkillUpgradeGem {
     public description: string = "Increases damage dealt by 20%"
     public name = "Basic Damage Upgrade"
 
     applies(item: Skill): boolean {
-        return item.skillData.damage != null
+        return item.skillData.damage > 0
     }
 
     applyUpgrade(item: Skill) {

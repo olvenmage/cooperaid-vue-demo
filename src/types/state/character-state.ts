@@ -4,6 +4,7 @@ export enum CharacterSkillTargetType {
     TARGET_ENEMY,
     TARGET_FRIENDLY,
     TARGET_NONE,
+    TARGET_SELF,
     TARGET_ANY,
     TARGET_ALL_ENEMIES
 }

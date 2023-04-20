@@ -17,6 +17,7 @@ export interface SkillDataParams {
     castingIncrementer?: number
     canCastOnCooldown?: boolean
     damage?: number
+    healing?: number
     damageType?: DamageType
     buffDuration?: number
     maxStacks?: number
@@ -38,12 +39,14 @@ export default class SkillData {
 
     castingIncrementer
     canCastOnCooldown
-    damage: number|null
+    damage: number = 0
+    healing: number = 0
     buffDuration: number
     maxStacks: number
     damageType: DamageType|null
 
     private baseParams: SkillDataParams
+    private currentBaseParams: SkillDataParams
     private currentParams: SkillDataParams
     isTransformed = false
     private oldData: SkillDataParams|null = null
@@ -55,6 +58,7 @@ export default class SkillData {
     constructor(params: SkillDataParams) {
         this.currentParams = params
         this.baseParams = params
+        this.currentBaseParams = params
         this.name = params.name
         this.energyCost = params.energyCost
         this.cooldown = params.cooldown
@@ -65,14 +69,15 @@ export default class SkillData {
         this.interuptsOnDamageTaken = params.interuptsOnDamageTaken ?? false
         this.castingIncrementer = params.castingIncrementer ?? 100
         this.canCastOnCooldown = params.canCastOnCooldown ?? false
-        this.damage = params.damage ?? null
+        this.damage = params.damage ?? 0
+        this.healing = params.healing ?? 0
         this.damageType = params.damageType ?? null
         this.buffDuration = params.buffDuration ?? 0
         this.maxStacks = params.maxStacks ?? 0
     }
 
     resetToBase() {
-        this.applyParams(Object.assign({}, this.baseParams))
+        this.applyParams(Object.assign({}, this.currentBaseParams))
     }
 
     transform(newParams: Partial<SkillDataParams>) {
@@ -83,6 +88,7 @@ export default class SkillData {
         this.applyParams(params)
 
         this.oldData = this.currentParams;
+        this.currentBaseParams = params
         this.currentParams = params
        
         this.isTransformed = true
@@ -97,6 +103,7 @@ export default class SkillData {
 
         this.transform(this.oldData)
         this.oldData = null
+        this.currentBaseParams = this.baseParams
         this.isTransformed = false;
     }
 
@@ -111,7 +118,8 @@ export default class SkillData {
         this.interuptsOnDamageTaken = params.interuptsOnDamageTaken ?? false
         this.castingIncrementer = params.castingIncrementer ?? 100
         this.canCastOnCooldown = params.canCastOnCooldown ?? false
-        this.damage = params.damage ?? null
+        this.damage = params.damage ?? 0
+        this.healing = params.healing ?? 0
         this.damageType = params.damageType ?? null
         this.buffDuration = params.buffDuration ?? 0
         this.maxStacks = params.maxStacks ?? 0

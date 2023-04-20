@@ -17,13 +17,10 @@ import { subChangePlayerClass, subRequestClassChange } from '@/client-socket/Inc
 import type PlayerIdentity from '@/types/player-identity';
 import PlayerSelect from './PlayerSelect.vue';
 import type Player from '@/types/player';
-import { CombatEncounter, TestEncounter } from '@/core/encounter';
-import Enemy from '@/types/enemy';
-import DragonBoss from '@/types/enemies/dragon-boss';
 import GameSettings from '@/core/settings';
 import Druid from '@/types/classes/druid';
-import DragonEgg from '@/types/enemies/dragon-egg';
-import Goblin from '@/types/enemies/goblin';
+import mainRoute from '@/core/main-route'
+
 
 const players = Game.players.value
 
@@ -38,7 +35,7 @@ const classes = [
 
 const playerAssignment: Record<number, Player|null> = reactive({
   0: null,
-  1: null,
+  // 1: null,
   // 2: null,
   // 3: null
 })
@@ -114,16 +111,7 @@ function start() {
   GameSettings.speedFactor = 0.5
   Game.startGame({
     players: Game.players.value as Player[],
-    route: [
-      new CombatEncounter(
-        [
-        new Enemy(new DragonEgg()),
-        new Enemy(new DragonBoss()),
-        new Enemy(new DragonEgg()),
-        // new Enemy(new Druid())
-        ]
-      )
-    ]
+    route: mainRoute,
   })
 }
 

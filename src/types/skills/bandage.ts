@@ -10,16 +10,17 @@ export default class Bandage extends Skill {
         cooldown: 4 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
         aiTargetting: AiTargetting.RANDOM,
-        castTime: 2000,
+        castTime: 1800,
         imagePath: "/neutral/bandage.png",
-        interuptsOnDamageTaken: true
+        interuptsOnDamageTaken: true,
+        healing: 6
     })
 
     BASE_DAMAGE = 3
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            target.restoreHealth(6, castBy, 0.6)
+            target.restoreHealth(this.skillData.healing, castBy, 0.6)
             target.buffs.removeBuffByType(PoisonBuff)
         })
     }

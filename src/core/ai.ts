@@ -55,6 +55,12 @@ export default class CharacterAIBrain {
             return
         }
 
+        if (bestSkill.skillData.targetType == TargetType.TARGET_SELF) {
+            const self = character
+            bestSkill.cast(character, () => [self])
+            return
+        }
+
         if (bestSkill.skillData.targetType == TargetType.TARGET_ALL_ENEMIES) {
             bestSkill.cast(character, () => battle.combatants.filter((combatant) => character.isEnemyTo(combatant)))
             return

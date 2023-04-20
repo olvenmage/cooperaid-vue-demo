@@ -31,6 +31,9 @@ const speedFactor = GameSettings.speedFactor
 function startCast(skill: Skill) {
   if (skill.skillData.targetType == TargetType.TARGET_NONE) {
     skill.cast(props.character, () => [])
+  } else if (skill.skillData.targetType == TargetType.TARGET_SELF) {
+    const self = props.character
+    skill.cast(props.character, () => [self])
   } else if (skill.skillData.targetType == TargetType.TARGET_ALL_ENEMIES) {
     emit('cast-at-all-enemies', skill)
   } else {

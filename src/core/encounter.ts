@@ -1,6 +1,6 @@
 import type Enemy from "@/types/enemy";
 import Game from "./game";
-import SkillDamageUpgrade from "@/types/skill-upgrades/skill-damage-upgrade";
+import GemLootProvider from "@/types/skill-upgrades/gem-loot-provider";
 
 export default abstract class Encounter {
     abstract startEncounter(): Promise<boolean>
@@ -46,13 +46,8 @@ export class TestEncounter extends Encounter {
     }
 
     async startEncounter(): Promise<boolean> {
-        const dmgUpgrade = new SkillDamageUpgrade()
-
         for (const player of Game.players.value) {
-            if (player.basicSkill != null && dmgUpgrade.applies(player.basicSkill)) {
-                console.log("applies!")
-                player.basicSkill.socketedUpgrade = dmgUpgrade
-            }
+            console.log(GemLootProvider.getUpgradeGemOptions(player))
         }
 
         return new Promise((resolve, reject) => {

@@ -9,7 +9,7 @@ import FocusBar from '../special-bar/focus-bar';
 import TickBuff from '../tick-buff';
 
 export default class SleepBuff extends TickBuff implements StatMutatingBuff {
-    public baseTickInterval: number = 1000;
+    public tickInterval: number = 1000;
     duration: number = 6 * 1000
 
     triggered = false

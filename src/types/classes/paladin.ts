@@ -131,7 +131,8 @@ export class Smite extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         castTime: 1500,
         imagePath: "/paladin/smite.png",
-        damage: 10
+        damage: 10,
+        buffDuration: 6 * 1000
     })
 
     description: string | null = "Deal 10 magic damage to an enemy, restore 8 health to the first ally that attacks them."
@@ -143,7 +144,7 @@ export class Smite extends Skill {
    
         targets.forEach((target) => {
             castBy.dealDamageTo({ amount: this.skillData.damage!, target, type: DamageType.MAGICAL})
-            target.addBuff(new SmittenBuff(), castBy)
+            target.addBuff(new SmittenBuff(this.skillData.buffDuration), castBy)
         })
     }
 }

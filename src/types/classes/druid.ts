@@ -162,7 +162,7 @@ export class Regrowth extends Skill implements EmpowerableSKill {
         buffDuration: 6 * 1000
     })
 
-    description: string | null = "Buff an ally to restore 10 health over time."
+    description: string | null = "Buff an ally to restore 16 health over time."
 
     empowered = false
 

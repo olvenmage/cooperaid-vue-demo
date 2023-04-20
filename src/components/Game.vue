@@ -17,10 +17,7 @@ import Shop from './Shop.vue'
 import { CombatEncounter, ShopEncounter } from '@/core/encounter'
 import GameoverScreen from './GameoverScreen.vue';
 import Taunt from '@/types/skills/taunt';
-import main from '@/demo/entry/main';
 import Lobby from '@/components/setup/Lobby.vue';
-
-main()
 
 let inCombat = ref(Game.inCombat)
 let inShop = ref(Game.inShop)

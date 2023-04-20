@@ -7,7 +7,7 @@ import DamageType from '../damage-type';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import CharacterStats from '../character-stats';
 import SkillData from '../skill-data';
-import type SkillDamageUpgrade from '../skill-upgrades/skill-damage-upgrade';
+import type SkillDamageUpgrade from '../skill-upgrades/generic/damage-increase-skill-gem';
 
 
 export default class Barbarian extends PlayerIdentity {

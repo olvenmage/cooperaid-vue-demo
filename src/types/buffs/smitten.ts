@@ -8,6 +8,11 @@ export default class SmittenBuff extends Buff {
 
     callback = this.consumeSmitten.bind(this)
 
+    constructor(newDuration: number) {
+        super()
+        this.duration = newDuration
+    }
+
     override startEffect(character: Character): void {
         character.identity.onDamageTakenTriggers.push(this.callback)
 

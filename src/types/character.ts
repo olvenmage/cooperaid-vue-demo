@@ -194,6 +194,7 @@ export default class Character {
     }
 
     getState(): CharacterState {
+        this.characterSkills.applyUpgrades()
         const basicSkill = this.skills[0]
 
         return {
