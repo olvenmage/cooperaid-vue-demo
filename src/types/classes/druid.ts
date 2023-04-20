@@ -70,7 +70,8 @@ export class CommandNature extends Skill implements EmpowerableSKill {
 
                 } else {
                     target.addBuff(new NaturesProtectionBuff(this.skillData.buffDuration), castBy)
-                    Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 4}))
+                    Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 2}))
+                    Game.eventBus.publish(globalThreatEvent({ healer: castBy, amount: 2}))
                 }
             })
     
@@ -127,7 +128,8 @@ export class Thorns extends Skill implements EmpowerableSKill {
         } else {
             targets.forEach((target) => {
                 target.addBuff(new ThornsBuff(this.skillData.buffDuration), castBy)
-                Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 8}))
+                Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 6}))
+                Game.eventBus.publish(globalThreatEvent({ healer: castBy, amount: 4}))
             })
 
             if (castBy.classBar instanceof FerocityBar) {

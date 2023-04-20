@@ -183,7 +183,10 @@ export class HeavyNet extends Skill {
     description: string | null = "Throw a net on an enemy at range, slowing them tremendously and grounding them"
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
-        targets.forEach((target) => target.addBuff(new NettedBuff(this.skillData.buffDuration), castBy))
+        targets.forEach((target) => {
+            target.addBuff(new NettedBuff(this.skillData.buffDuration), castBy)
+            target.raiseThreat(castBy, 10)
+        })
     }
 }
 

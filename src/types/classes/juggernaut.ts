@@ -123,7 +123,7 @@ export class ShieldShatter extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: castBy.stats.armor.value * 2, target, type: DamageType.PHYSICAL, minAmount: castBy.stats.armor.value, threatModifier: 1.3 })
+            castBy.dealDamageTo({ amount: castBy.stats.armor.value * 2, target, type: DamageType.PHYSICAL, minAmount: castBy.stats.armor.value, threatModifier: 1.4 })
         })
 
         if (castBy.buffs.hasBuff(ShieldBlockBuff)) {

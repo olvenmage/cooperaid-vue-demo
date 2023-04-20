@@ -169,7 +169,8 @@ export class BlessingOfProtection extends Skill {
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => { 
             target.addBuff(new BlessingOfProtectionBuff(this.skillData.buffDuration), castBy)
-            Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 12}))
+            Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 8}))
+            Game.eventBus.publish(globalThreatEvent({ healer: castBy, amount: 4}))
         })
     }
 
