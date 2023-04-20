@@ -47,6 +47,7 @@ export default class ParryBuff extends Buff {
         if (trigger.damageType == DamageType.PHYSICAL) {
             this.triggered = true
             trigger.character.addBuff(new ParryHasteBuff(), trigger.character)
+            this.endEffect(trigger.character)
             return Math.round(trigger.actualDamage / 2)
         }
 

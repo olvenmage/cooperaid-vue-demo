@@ -137,10 +137,10 @@ export class ShieldShatter extends Skill {
 export class Fortify extends Skill {
     skillData: SkillData = new SkillData({
         name: "Fortify",
-        energyCost: 4,
-        cooldown: 6 * 1000,
+        energyCost: 5,
+        cooldown: 10 * 1000,
         targetType: TargetType.TARGET_SELF,
-        castTime: 1000,
+        castTime: 1250,
         imagePath: "/juggernaut/fortify.png",
         range: SkillRange.MELEE,
     })

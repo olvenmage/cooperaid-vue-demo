@@ -27,7 +27,7 @@ class BeakAttack extends Skill {
     public skillData: SkillData = new SkillData({
         name: "Beak Attack",
         energyCost: 4,
-        cooldown: 3 * 1000,
+        cooldown: 2 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         imagePath: null,
@@ -51,7 +51,7 @@ class SkyDive extends Skill {
     public skillData: SkillData = new SkillData({
         name: "Sky Dive",
         energyCost: 5,
-        cooldown: 3 * 1000,
+        cooldown: 2 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         imagePath: null,
@@ -96,9 +96,9 @@ class Squawk extends Skill {
 class TakeFlight extends Skill {
     public skillData: SkillData = new SkillData({
         name: "Take Flight",
-        energyCost: 1,
-        cooldown: 30 * 1000,
-        castTime: 2 * 1000,
+        energyCost: 5,
+        cooldown: 25 * 1000,
+        castTime: 3 * 1000,
         targetType: TargetType.TARGET_SELF,
         imagePath: null,
         range: SkillRange.RANGED,

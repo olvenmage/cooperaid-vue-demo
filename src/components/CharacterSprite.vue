@@ -19,7 +19,8 @@ const styles = {
       <img class="sprite" :class="{ 'sprite-dead': character.dead }"  :src="`/src/assets/sprites${character.identity.imagePath}`" style="margin: auto">
       <img class="cross-image" src="/src/assets/sprites/effects/dead-effect.png" v-if="character.dead">
       <img class="stunned-image" src="/src/assets/sprites/effects/stunned-effect.png" v-if="character.stats.stunned">
-  </div>
+      <img class="flight-image" src="/src/assets/sprites/effects/flying-effect.png" v-if="character.stats.flying">
+    </div>
   <slot></slot>
   </div>
 
@@ -50,6 +51,16 @@ const styles = {
   opacity: 0.7;
   z-index: 2;
   
+  width: 100%;
+  height: 100%;
+}
+
+.flight-image {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  opacity: 0.9;
+  z-index: -1;
   width: 100%;
   height: 100%;
 }
