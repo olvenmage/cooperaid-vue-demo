@@ -1,5 +1,5 @@
 import type Character from '../character'
-import Skill, { AiTargetting, TargetType } from '../skill';
+import Skill, { AiTargetting, SkillRange, TargetType } from '../skill';
 import PlayerIdentity, { PlayerClass } from '../player-identity'
 import ClassBar from '../class-bar';
 import Enrage from '../buffs/enrage';
@@ -63,7 +63,8 @@ export class Bash extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         castTime: 1000,
         aiTargetting: AiTargetting.RANDOM,
-        imagePath: "/juggernaut/bash.png"
+        imagePath: "/juggernaut/bash.png",
+        range: SkillRange.MELEE,
     })
 
     description: string | null = "Basic. Deal 2 + <ARMOR> damage to an enemy"
@@ -90,6 +91,7 @@ export class ShieldBlock extends Skill {
         castTime: 400,
         imagePath: "/juggernaut/shield-block.png",
         buffDuration: 5 * 1000,
+        range: SkillRange.MELEE,
     })
 
     description: string | null = "Gain 8 Armor and your magic armor is equal to your armor, until you are attacked"
@@ -108,7 +110,8 @@ export class BodySlam extends Skill {
         cooldown: 1 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         castTime: 1000,
-        imagePath: "/juggernaut/body-slam.png"
+        imagePath: "/juggernaut/body-slam.png",
+        range: SkillRange.MELEE,
     })
 
     description: string | null = "Body slam the target, you deal twice your armor in damage to them, but they also deal damage to you based on their armor."

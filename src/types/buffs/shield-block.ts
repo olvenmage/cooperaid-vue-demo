@@ -1,4 +1,4 @@
-import Buff from '../buff';
+import Buff, { BuffPriority } from '../buff';
 import type Character from '../character';
 import type CharacterStats from '../character-stats';
 import DamageType from '../damage-type';
@@ -7,6 +7,7 @@ import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
 export default class ShieldBlockBuff extends Buff implements StatMutatingBuff {
     duration: number = 5 * 1000
+    priority = BuffPriority.LAST_1
 
     ARMOR_VALUE = 8
 

@@ -10,15 +10,8 @@ import Barbarian from "@/types/classes/barbarian";
 const mainRoute: Encounter[] = [
     new TestEncounter(),
     new CombatEncounter(
-        [
-        new Enemy(new Barbarian()),
-        ]
-      ),
-    new CombatEncounter(
       [
-      new Enemy(new Goblin()),
       new Enemy(new Gryphon()),
-      new Enemy(new Goblin()),
       ]
     )
 ]

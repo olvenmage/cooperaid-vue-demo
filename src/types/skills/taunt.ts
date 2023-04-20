@@ -1,5 +1,5 @@
 import type Character from "../character";
-import Skill, { AiTargetting, TargetType } from "../skill";
+import Skill, { AiTargetting, SkillTag, TargetType } from "../skill";
 import SkillData from "../skill-data";
 
 export default class Taunt extends Skill {
@@ -11,6 +11,7 @@ export default class Taunt extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         castTime: 500,
         imagePath: "/neutral/taunt.png",
+        tags: [SkillTag.SUPPORT, SkillTag.RANGED]
     })
  
     castSkill(castBy: Character, targets: Character[]): void {

@@ -47,7 +47,7 @@ export class TestEncounter extends Encounter {
 
     async startEncounter(): Promise<boolean> {
         for (const player of Game.players.value) {
-            console.log(GemLootProvider.getUpgradeGemOptions(player))
+            console.log(GemLootProvider.getUpgradeGemOptions(player as Player))
         }
 
         return new Promise((resolve, reject) => {

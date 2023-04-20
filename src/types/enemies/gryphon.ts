@@ -1,7 +1,7 @@
 
 import type Character from '../character';
 import Identity from '../identity';
-import Skill, { TargetType } from '../skill';
+import Skill, { SkillRange, TargetType } from '../skill';
 import EnergyBar from '../energy-bar';
 import Healthbar from '../health-bar';
 import DamageType from '../damage-type';
@@ -16,8 +16,7 @@ export default class Gryphon extends Identity {
     public imagePath = "/enemies/gryphon.png"
 
     public skills = [
-        new Squawk(),
-        new BeakAttack()
+        new TakeFlight(),
     ]
 }
 
@@ -28,7 +27,8 @@ class BeakAttack extends Skill {
         cooldown: 8 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
-        imagePath: null
+        imagePath: null,
+        range: SkillRange.MELEE,
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -44,7 +44,8 @@ class Squawk extends Skill {
         cooldown: 10 * 1000,
         castTime: 1 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
-        imagePath: null
+        imagePath: null,
+        range: SkillRange.RANGED,
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -58,14 +59,15 @@ class Squawk extends Skill {
 class TakeFlight extends Skill {
     public skillData: SkillData = new SkillData({
         name: "Take Flight",
-        energyCost: 6,
+        energyCost: 1,
         cooldown: 30 * 1000,
         castTime: 2 * 1000,
-        targetType: TargetType.TARGET_NONE,
-        imagePath: null
+        targetType: TargetType.TARGET_SELF,
+        imagePath: null,
+        range: SkillRange.RANGED,
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.addBuff(new FlyingBuff(8 * 1000), castBy)
+        castBy.addBuff(new FlyingBuff(10 * 1000), castBy)
     }
 }

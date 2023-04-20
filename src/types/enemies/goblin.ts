@@ -1,7 +1,7 @@
 
 import type Character from '../character';
 import Identity from '../identity';
-import Skill, { TargetType } from '../skill';
+import Skill, { SkillRange, TargetType } from '../skill';
 import EnergyBar from '../energy-bar';
 import Healthbar from '../health-bar';
 import DamageType from '../damage-type';
@@ -26,7 +26,8 @@ class GoblinClobber extends Skill {
         cooldown: 10 * 1000,
         castTime: 8 * 1000,
         targetType: TargetType.TARGET_ENEMY,
-        imagePath: null
+        imagePath: null,
+        range: SkillRange.MELEE,
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -42,7 +43,8 @@ class GoblinBite extends Skill {
         cooldown: 0 * 1000,
         castTime: 4 * 1000,
         targetType: TargetType.TARGET_ENEMY,
-        imagePath: null
+        imagePath: null,
+        range: SkillRange.MELEE,
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

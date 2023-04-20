@@ -1,6 +1,6 @@
 import PoisonBuff from "../buffs/poison";
 import type Character from "../character";
-import Skill, { AiTargetting, TargetType } from "../skill";
+import Skill, { AiTargetting, SkillRange, SkillTag, TargetType } from "../skill";
 import SkillData from "../skill-data";
 
 export default class Bandage extends Skill {
@@ -13,7 +13,9 @@ export default class Bandage extends Skill {
         castTime: 1800,
         imagePath: "/neutral/bandage.png",
         interuptsOnDamageTaken: true,
-        healing: 6
+        healing: 6,
+        range: SkillRange.MELEE,
+        tags: [SkillTag.HEAL]
     })
 
     BASE_DAMAGE = 3

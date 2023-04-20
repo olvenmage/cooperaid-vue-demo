@@ -1,5 +1,5 @@
 import type Character from '../character'
-import Skill, { TargetType, type CastSkillResponse } from '../skill';
+import Skill, { TargetType, type CastSkillResponse, SkillRange } from '../skill';
 import PlayerIdentity, { PlayerClass } from '../player-identity'
 import ClassBar from '../class-bar';
 import Enrage from '../buffs/enrage';
@@ -8,6 +8,7 @@ import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import CharacterStats from '../character-stats';
 import SkillData from '../skill-data';
 import type SkillDamageUpgrade from '../skill-upgrades/generic/damage-increase-skill-gem';
+import NettedBuff from '../buffs/netted';
 
 
 export default class Barbarian extends PlayerIdentity {
@@ -23,7 +24,7 @@ export default class Barbarian extends PlayerIdentity {
         new RagingBlow(),
         new Rampage(),
         new AxeThrow(),
-        new Shout()
+        new HeavyNet()
 
     ]
 
@@ -71,7 +72,8 @@ export class RecklessStrike extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         castTime: 1000,
         imagePath: "/barbarian/reckless-strike.png",
-        damage: 10
+        damage: 10,
+        range: SkillRange.MELEE
     })
 
     selfDamageAmount = 4
@@ -110,7 +112,8 @@ export class RagingBlow extends Skill {
         cooldown: 1 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         castTime: 2000,
-        imagePath: "/barbarian/raging-blow.png"
+        imagePath: "/barbarian/raging-blow.png",
+        range: SkillRange.MELEE,
     })
 
     description: string | null = "Deal 12 damage to an enemy and generate 12 rage."
@@ -132,7 +135,8 @@ export class Rampage extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         castTime: 1250,
         imagePath: "/barbarian/rampage.png",
-        damage: 10
+        damage: 10,
+        range: SkillRange.MELEE,
     })
 
     description: string | null = "Deal 10 to an enemy, deals more damage the lower your health (max: 20)"
@@ -153,13 +157,33 @@ export class Shout extends Skill {
         cooldown: 6 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
         castTime: 1000,
-        imagePath: "/barbarian/shout.png"
+        imagePath: "/barbarian/shout.png",
+        range: SkillRange.RANGED,
     })
 
     description: string | null = "Deal 3 piercing damage to all enemies, generates a lot of threat"
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         targets.forEach((target) => castBy.dealDamageTo({ amount: 3, target, type: DamageType.PHYSICAL, threatModifier: 3.5, minAmount: 3 }))
+    }
+}
+
+export class HeavyNet extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Heavy Net",
+        energyCost: 4,
+        cooldown: 12 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        range: SkillRange.RANGED,
+        imagePath: "barbarian/heavy-net.png",
+        castTime: 1500,
+        buffDuration: 8 * 1000
+    })
+
+    description: string | null = "Throw a net on an enemy at range, slowing them tremendously and grounding them"
+
+    castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
+        targets.forEach((target) => target.addBuff(new NettedBuff(this.skillData.buffDuration), castBy))
     }
 }
 
@@ -170,7 +194,8 @@ export class AxeThrow extends Skill {
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         castTime: 1000,
-        imagePath: "/barbarian/axe-throw.png"
+        imagePath: "/barbarian/axe-throw.png",
+        range: SkillRange.RANGED,
     })
 
     COOLDOWN = 12 * 1000
@@ -195,7 +220,8 @@ export class AxeThrow extends Skill {
             energyCost: 1,
             castTime: 1500,
             imagePath: "/barbarian/retrieve-axe.png",
-            targetType: TargetType.TARGET_NONE
+            targetType: TargetType.TARGET_NONE,
+            range: SkillRange.MELEE,
         }
     }
 }

@@ -1,5 +1,5 @@
 import type Character from '../character'
-import Skill, { AiTargetting, TargetType } from '../skill';
+import Skill, { AiTargetting, SkillRange, TargetType } from '../skill';
 import PlayerIdentity, { PlayerClass } from '../player-identity'
 import ClassBar from '../class-bar';
 import DamageType from '../damage-type';
@@ -51,6 +51,7 @@ export class FanOfKnives extends Skill {
         castTime: 1000,
         imagePath: "/rogue/blade-flurry.png",
         damage: 3,
+        range: SkillRange.RANGED,
     })
 
     AMOUNT_OF_ATTACKS = 3
@@ -90,7 +91,8 @@ export class Dismantle extends Skill {
         aiTargetting: AiTargetting.HIGHEST_THREAT,
         castTime: 500,
         imagePath: "/rogue/dismantle.png",
-        buffDuration: 8 * 1000
+        buffDuration: 8 * 1000,
+        range: SkillRange.MELEE,
     })
 
     description: string | null = "Reduce an enemy's armor by 3 for a long duration."
@@ -118,7 +120,8 @@ export class PoisonedStrike extends Skill {
         damageType: DamageType.PHYSICAL,
         damage: 4,
         buffDuration: 6 * 1000,
-        maxStacks: 3
+        maxStacks: 3,
+        range: SkillRange.MELEE,
     })
 
     description: string | null = "Basic. Deal 4 damage to an enemy and apply a stacking poison debuff for a medium duration (stacks 3 times)"
@@ -145,7 +148,8 @@ export class Kick extends Skill {
         castTime: 250,
         imagePath: "/rogue/kick.png",
         damage: 8,
-        damageType: DamageType.PHYSICAL
+        damageType: DamageType.PHYSICAL,
+        range: SkillRange.MELEE,
     })
 
     description: string | null = "Deal 8 damage to an enemy and interrupt their current cast."
@@ -178,7 +182,8 @@ export class SleepDart extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         castTime: 1000,
         imagePath: "/rogue/sleep-dart.png",
-        buffDuration: 6 * 1000
+        buffDuration: 6 * 1000,
+        range: SkillRange.RANGED,
     })
 
     description: string | null = "Turn an enemy to sleep for a medium duration or until they take damage."

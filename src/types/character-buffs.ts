@@ -1,3 +1,4 @@
+import { BuffPriority } from "./buff";
 import type Buff from "./buff";
 import type Character from "./character";
 import type CharacterStats from "./character-stats";
@@ -6,7 +7,20 @@ import { isStatMutatingBuff } from "./stat-mutating-buff";
 
 export default class CharacterBuffs {
     private character: Character
-    private collection: Buff[] = []
+    private collection : Record<BuffPriority, Buff[]> = {
+        [BuffPriority.EARLY_1] : [],
+        [BuffPriority.EARLY_2] : [],
+        [BuffPriority.EARLY_3] : [],
+        [BuffPriority.NORMAL_1] : [],
+        [BuffPriority.NORMAL_2] : [],
+        [BuffPriority.NORMAL_3] : [],
+        [BuffPriority.LATE_1] : [],
+        [BuffPriority.LATE_2] : [],
+        [BuffPriority.LATE_3] : [],
+        [BuffPriority.LAST_1] : [],
+        [BuffPriority.LAST_2] : [],
+        [BuffPriority.LAST_3] : [],
+    }
     
     onBuffsChangedCallbacks: (() => void)[] = []
 
@@ -14,8 +28,8 @@ export default class CharacterBuffs {
         this.character = character
     }
 
-    get buffs() {
-        return this.collection
+    get buffs(): Buff[] {
+        return Object.values(this.collection).flat()
     }
 
     addBuff(buff: Buff, givenBy: Character|null = null) {
@@ -36,22 +50,22 @@ export default class CharacterBuffs {
         }
 
         buff.addExpiredTrigger(() => {
-            const index = this.collection.findIndex((collectionBuff) => collectionBuff.id == buff.id)
+            const index = this.collection[buff.priority].findIndex((collectionBuff) => collectionBuff.id == buff.id)
 
             if (index != -1) {
-                this.collection.splice(index, 1)
+                this.collection[buff.priority].splice(index, 1)
                 this.onBuffsChangedCallbacks.forEach((cb) => cb())
             }
         })
 
-        this.collection.push(buff)      
+        this.collection[buff.priority].push(buff)      
 
         buff.startBuff(this.character, givenBy)
         this.onBuffsChangedCallbacks.forEach((cb) => cb())  
     }
 
     forEach(callback: (buff: Buff) => void) {
-        this.collection.forEach(callback)
+        this.buffs.forEach(callback)
     }
     
     onBuffsChanged(callback: () => void) {
@@ -79,17 +93,17 @@ export default class CharacterBuffs {
     }
 
     getExistingBuffForInstance(buffInstance: Buff): Buff|null {
-        return this.collection.find((collectionBuff) => collectionBuff.constructor == buffInstance.constructor) || null
+        return this.buffs.find((collectionBuff) => collectionBuff.constructor == buffInstance.constructor) || null
     }
 
     private getExistingBuffByType(buffClass: typeof Buff) {
-        return this.collection.find((collectionBuff) => collectionBuff instanceof buffClass) || null
+        return this.buffs.find((collectionBuff) => collectionBuff instanceof buffClass) || null
     }
 
     mutateStats(baseStats: CharacterStats): CharacterStats {
         let stats = baseStats
 
-        for (const buff of this.collection) {
+        for (const buff of this.buffs) {
             if (isStatMutatingBuff(buff)) {
                 stats = buff.mutateStats(stats)
             }

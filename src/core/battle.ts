@@ -134,9 +134,9 @@ export default class Battle {
 
     private syncClients() {
         const allies: Character[] = this.combatants.filter((c) => c.isFriendly)
-        const allyStates = allies.map((p) => p.getState())
+        const allyStates = allies.map((p) => p.getState(this))
 
-        const enemies = this.combatants.filter((c) => !allies.includes(c)).map((e) => e.getState())
+        const enemies = this.combatants.filter((c) => !allies.includes(c)).map((e) => e.getState(this))
 
         Game.players.value.filter((player) => player.controledExternally).forEach((player) => {
             presenterSocket.publish(
@@ -145,7 +145,7 @@ export default class Battle {
                     state: {
                         enemies,
                         allies: allyStates.filter((a) => a.id != player.id),
-                        self: allyStates.find((a) => a.id == player.id) || player.combatCharacter!.getState()
+                        self: allyStates.find((a) => a.id == player.id) || player.combatCharacter!.getState(this)
                     }
                 })
             )

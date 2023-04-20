@@ -1,6 +1,20 @@
 import GameSettings from '@/core/settings';
 import type Character from './character';
 
+export enum BuffPriority {
+    EARLY_1 = 0,
+    EARLY_2 = 1,
+    EARLY_3 = 2,
+    NORMAL_1 = 3,
+    NORMAL_2 = 4,
+    NORMAL_3 = 5,
+    LATE_1 = 6,
+    LATE_2 = 7,
+    LATE_3 = 8,
+    LAST_1 = 9,
+    LAST_2 = 10,
+    LAST_3 = 11
+}
 
 export default abstract class Buff {
     // duration in microseconds
@@ -13,6 +27,7 @@ export default abstract class Buff {
     public attachedCharacter: Character|null = null
     public givenBy: Character|null = null
     public unique = false
+    public priority: BuffPriority = BuffPriority.NORMAL_1
 
     private ended = false
 

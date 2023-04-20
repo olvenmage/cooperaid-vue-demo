@@ -1,5 +1,5 @@
 import type Character from '../character'
-import Skill, { AiTargetting, TargetType } from '../skill';
+import Skill, { AiTargetting, SkillRange, TargetType } from '../skill';
 import PlayerIdentity, { PlayerClass } from '../player-identity'
 import ClassBar from '../class-bar';
 import DamageType from '../damage-type';
@@ -39,7 +39,8 @@ export class FrostBolt extends Skill implements EmpowerableSKill {
         cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         castTime: 1000,
-        imagePath: "/mage/frost-bolt.png"
+        imagePath: "/mage/frost-bolt.png",
+        range: SkillRange.RANGED,
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

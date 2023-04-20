@@ -1,5 +1,5 @@
 import type Character from '../character'
-import Skill, { AiTargetting, TargetType } from '../skill';
+import Skill, { AiTargetting, SkillRange, TargetType } from '../skill';
 import PlayerIdentity, { PlayerClass } from '../player-identity'
 import Ferocious from '../buffs/ferocious';
 import DamageType from '../damage-type';
@@ -49,7 +49,8 @@ export class CommandNature extends Skill implements EmpowerableSKill {
         castTime: 1000,
         imagePath: "/druid/command-nature.png",
         buffDuration: 5 * 1000,
-        damageType: DamageType.MAGICAL
+        damageType: DamageType.MAGICAL,
+        range: SkillRange.RANGED,
     })
 
     description: string | null = "Basic. Deal 5 magic damage to an enemy, or give armor to an ally for a medium duration (stacks 3 times)"
@@ -91,7 +92,8 @@ export class CommandNature extends Skill implements EmpowerableSKill {
             targetType: TargetType.TARGET_ENEMY,
             imagePath: "/druid/bear/swipe.png",
             castTime: 1000,
-            damageType: DamageType.PHYSICAL
+            damageType: DamageType.PHYSICAL,
+            range: SkillRange.MELEE,
         })
 
         this.empowered = true
@@ -111,7 +113,8 @@ export class Thorns extends Skill implements EmpowerableSKill {
         targetType: TargetType.TARGET_FRIENDLY,
         castTime: 1250,
         imagePath: "/druid/thorns.png",
-        buffDuration: 10 * 1000
+        buffDuration: 10 * 1000,
+        range: SkillRange.RANGED,
     })
 
     description: string | null = "Buff an ally to deal 5 damage when they are damaged."
@@ -139,7 +142,8 @@ export class Thorns extends Skill implements EmpowerableSKill {
             energyCost: 4,
             targetType: TargetType.TARGET_NONE,
             imagePath: "/druid/bear/thick-skin.png",
-            castTime: 1000
+            castTime: 1000,
+            range: SkillRange.MELEE,
         })
 
         this.empowered = true
@@ -159,7 +163,8 @@ export class Regrowth extends Skill implements EmpowerableSKill {
         targetType: TargetType.TARGET_FRIENDLY,
         castTime: 1400,
         imagePath: "/druid/regrowth.png",
-        buffDuration: 12 * 1000
+        buffDuration: 12 * 1000,
+        range: SkillRange.RANGED,
     })
 
     description: string | null = "Buff an ally to restore 16 health over time."

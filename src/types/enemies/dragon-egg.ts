@@ -1,7 +1,7 @@
 
 import type Character from '../character';
 import Identity from '../identity';
-import Skill, { TargetType } from '../skill';
+import Skill, { SkillRange, TargetType } from '../skill';
 import DamageType from '../damage-type';
 import randomRange from '@/utils/randomRange';
 import MeltedArmorBuff from '../buffs/melted-armor';
@@ -48,7 +48,8 @@ class Stir extends Skill {
         cooldown: 2 * 1000,
         castTime: 2 * 1000,
         targetType: TargetType.TARGET_NONE,
-        imagePath: null
+        imagePath: null,
+        range: SkillRange.MELEE,
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -65,7 +66,8 @@ export class WhelpBite extends Skill {
         cooldown: 1 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
-        imagePath: null
+        imagePath: null,
+        range: SkillRange.MELEE,
     })
 
 
@@ -81,7 +83,8 @@ export class Ember extends Skill {
         cooldown: 4 * 1000,
         castTime: 4 * 1000,
         targetType: TargetType.TARGET_ENEMY,
-        imagePath: null
+        imagePath: null,
+        range: SkillRange.RANGED,
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

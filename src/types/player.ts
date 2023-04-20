@@ -97,8 +97,6 @@ class Player {
             throw Error("Can't create character without player identity")
         }
 
-        console.log(this.basicSkill)
-
         const character = reactive(new Character(this.playerClass, true, new CharacterSkills(this.skills, this.basicSkill))) as Character
 
         character.id = this.id

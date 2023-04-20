@@ -20,6 +20,7 @@ import type { DealDamageToParams, TakeDamageParams, TakeDamageResult } from './d
 import { reactive } from 'vue';
 import GameSettings from '@/core/settings';
 import type CharacterState from './state/character-state';
+import type Battle from '@/core/battle';
 
 
 export default class Character {
@@ -197,14 +198,14 @@ export default class Character {
         this.energyBar.start(this)
     }
 
-    getState(): CharacterState {
+    getState(battle: Battle|null = null): CharacterState {
         this.characterSkills.applyUpgrades()
         const basicSkill = this.skills[0]
 
         return {
             id: this.id,
-            skills: this.skills.filter((sk) => sk.id != basicSkill?.id).map((sk) => sk.getState(this)),
-            basicSkill: basicSkill?.getState(this),
+            skills: this.skills.filter((sk) => sk.id != basicSkill?.id).map((sk) => sk.getState(this, battle)),
+            basicSkill: basicSkill?.getState(this, battle),
             imagePath: this.identity.imagePath,
             healthBar: {
                 current: this.healthBar.current,

@@ -30,7 +30,6 @@ export default class NaturesProtectionBuff extends Buff implements StatMutatingB
             return
         }
 
-        console.log("adding to stack amount")
         this.stackAmount += amount
     }
 
@@ -51,7 +50,6 @@ export default class NaturesProtectionBuff extends Buff implements StatMutatingB
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        console.log("adding armor " + this.stackAmount.toString())
         stats.armor.set(stats.armor.value + this.stackAmount)
         return stats
     }

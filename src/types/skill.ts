@@ -6,6 +6,7 @@ import type OnDamageTrigger from './triggers/on-damage-trigger';
 import type SkillData from './skill-data';
 import type { SkillDataParams } from './skill-data';
 import type SkillUpgrade from './skill-upgrade';
+import type Battle from '@/core/battle';
 
 enum TargetType {
     TARGET_ENEMY,
@@ -14,6 +15,20 @@ enum TargetType {
     TARGET_SELF,
     TARGET_ANY,
     TARGET_ALL_ENEMIES
+}
+
+enum SkillTag {
+    ATTACK,
+    SPELL,
+    HEAL,
+    DEFENSIVE,
+    SUPPORT,
+}
+
+// MELLEE includes TOUCH
+enum SkillRange {
+    MELEE,
+    RANGED,
 }
 
 enum AiTargetting {
@@ -63,6 +78,41 @@ export default abstract class Skill {
         }
 
         return true;
+    }
+
+    areTargetsValid(castBy: Character, targets: Character[]): boolean {
+        if (this.skillData.targetType == TargetType.TARGET_NONE) {
+            return true
+        }
+
+        return targets.some((target) => {
+           return this.isTargetValid(castBy, target)
+        })
+    }
+
+    isTargetValid(castBy: Character, target: Character) {
+        // todo: if can not target dead
+        if (target.dead) {
+            return false
+        }
+
+        if (this.skillData.targetType == TargetType.TARGET_SELF) {
+            return castBy.id == target.id
+        }
+
+        const isEnemy = castBy.isEnemyTo(target)
+
+        if (this.skillData.targetType == TargetType.TARGET_FRIENDLY && isEnemy) {
+            return false
+        } else if (this.skillData.targetType == TargetType.TARGET_ENEMY && !isEnemy) {
+            return false
+        }
+
+        if (this.skillData.range === SkillRange.MELEE && target.stats.flying) {
+            return false
+        }
+
+        return true
     }
 
     onCooldownFinished() {
@@ -143,17 +193,12 @@ export default abstract class Skill {
         }, this.skillData.castingIncrementer)
     }
 
-    areTargetsValid(targets: Character[]) {
-        if (this.skillData.targetType == TargetType.TARGET_NONE) return true
-        return targets.some((char) => !char.dead)
-    }
-
     cast(castBy: Character, getTargets: () => Character[]) {
         if (!this.canCast(castBy)) {
             return false;
         }
 
-        if (!this.areTargetsValid(getTargets())) {
+        if (!this.areTargetsValid(castBy, getTargets())) {
             return false;
         }
 
@@ -194,7 +239,7 @@ export default abstract class Skill {
         const onCooldownSkillData = this.onCooldownSkillData()
         
         if (onCooldownSkillData) {
-            this.skillData.transform(Object.assign({}, onCooldownSkillData, { canCastOnCooldown: true }))
+            this.skillData.transform(Object.assign({}, onCooldownSkillData, { canCastOnCooldown: true }) as SkillDataParams)
         }
     }
 
@@ -224,13 +269,13 @@ export default abstract class Skill {
         return 0
     }
 
-    getState(castBy: Character|null): CharacterSkill {
+    getState(castBy: Character|null, battle: Battle|null): CharacterSkill {
         return {
             id: this.id,
             name: this.skillData.name,
             canCast: castBy ? this.canCast(castBy) : true,
             energyCost: this.skillData.energyCost,
-            validTargets: [],
+            validTargets: battle && castBy ? battle.combatants.filter((cb) => this.isTargetValid(castBy, cb)).map((c) => c.id) : [],
             description: this.description,
             imagePath: this.skillData.imagePath,
             targetType: this.skillData.targetType as unknown as CharacterSkillTargetType,
@@ -244,4 +289,4 @@ export default abstract class Skill {
     abstract castSkill(castBy: Character, targets: Character[]): CastSkillResponse
 }
 
-export { TargetType, AiTargetting }
+export { TargetType, AiTargetting, SkillTag, SkillRange }

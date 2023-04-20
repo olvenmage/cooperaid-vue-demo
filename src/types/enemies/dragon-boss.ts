@@ -1,7 +1,7 @@
 
 import type Character from '../character';
 import Identity from '../identity';
-import Skill, { TargetType } from '../skill';
+import Skill, { SkillRange, TargetType } from '../skill';
 import DamageType from '../damage-type';
 import randomRange from '@/utils/randomRange';
 import MeltedArmorBuff from '../buffs/melted-armor';
@@ -31,7 +31,8 @@ export class DragonThrash extends Skill {
         cooldown: 2 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
-        imagePath: null
+        imagePath: null,
+        range: SkillRange.MELEE,
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -46,7 +47,8 @@ export class DragonSwipe extends Skill {
         cooldown: 10 * 1000,
         castTime: 2 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
-        imagePath: null
+        imagePath: null,
+        range: SkillRange.MELEE,
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -62,7 +64,8 @@ export class DragonRoar extends Skill {
         cooldown: 15 * 1000,
         castTime: 1 * 1000,
         targetType: TargetType.TARGET_NONE,
-        imagePath: null
+        imagePath: null,
+        range: SkillRange.RANGED,
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -81,7 +84,8 @@ export class FireBreath extends Skill {
         cooldown: 4 * 1000,
         castTime: 5 * 1000,
         targetType: TargetType.TARGET_ENEMY,
-        imagePath: null
+        imagePath: null,
+        range: SkillRange.RANGED,
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

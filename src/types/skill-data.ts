@@ -1,9 +1,9 @@
 import GameSettings from '@/core/settings';
 import type Character from './character';
 import type { CharacterSkill, CharacterSkillTargetType } from './state/character-state';
-import DamageType from './damage-type';
+import type DamageType from './damage-type';
 import type OnDamageTrigger from './triggers/on-damage-trigger';
-import { AiTargetting, TargetType } from './skill';
+import { AiTargetting, SkillTag, TargetType, SkillRange } from './skill';
 
 export interface SkillDataParams {
     name: string,
@@ -11,6 +11,7 @@ export interface SkillDataParams {
     cooldown: number,
     imagePath: string|null,
     castTime: number,
+    range: SkillRange,
     targetType: TargetType
     aiTargetting?: AiTargetting,
     interuptsOnDamageTaken?: boolean
@@ -20,7 +21,8 @@ export interface SkillDataParams {
     healing?: number
     damageType?: DamageType
     buffDuration?: number
-    maxStacks?: number
+    maxStacks?: number,
+    tags?: SkillTag[]
 }
 
 export default class SkillData {
@@ -44,6 +46,9 @@ export default class SkillData {
     buffDuration: number
     maxStacks: number
     damageType: DamageType|null
+    tags: SkillTag[]
+    range: SkillRange
+
 
     private baseParams: SkillDataParams
     private currentBaseParams: SkillDataParams
@@ -59,6 +64,9 @@ export default class SkillData {
         this.currentParams = params
         this.baseParams = params
         this.currentBaseParams = params
+
+        this.tags = params.tags ?? []
+        this.range = params.range
         this.name = params.name
         this.energyCost = params.energyCost
         this.cooldown = params.cooldown
@@ -109,6 +117,8 @@ export default class SkillData {
 
     private applyParams(params: SkillDataParams) {
         this.name = params.name
+        this.range = params.range
+        this.tags = params.tags ?? []
         this.energyCost = params.energyCost
         this.cooldown = params.cooldown
         this.targetType = params.targetType

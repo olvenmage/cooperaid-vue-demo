@@ -1,5 +1,5 @@
 import type Character from '../character'
-import Skill, { TargetType } from '../skill';
+import Skill, { SkillRange, TargetType } from '../skill';
 import PlayerIdentity, { PlayerClass } from '../player-identity'
 import ClassBar from '../class-bar';
 import DamageType from '../damage-type';
@@ -53,7 +53,8 @@ export class HolyShock extends Skill {
         cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ANY,
         castTime: 1250,
-        imagePath: "/paladin/holy-shock.png"
+        imagePath: "/paladin/holy-shock.png",
+        range: SkillRange.RANGED,
     })
 
     description: string | null = "Basic. Deal 6 damage to an enemy or restore 5 health to an ally."
@@ -94,7 +95,8 @@ export class OverwhelmingLight extends Skill {
         targetType: TargetType.TARGET_ANY,
         castTime: 1500,
         imagePath: "/paladin/overwhelming-light.png",
-        damage: 10
+        damage: 10,
+        range: SkillRange.RANGED,
     })
 
     description: string | null = "Deal 10 damage to any target, if they survive restore 20 health to them."
@@ -132,7 +134,8 @@ export class Smite extends Skill {
         castTime: 1500,
         imagePath: "/paladin/smite.png",
         damage: 10,
-        buffDuration: 6 * 1000
+        buffDuration: 6 * 1000,
+        range: SkillRange.RANGED,
     })
 
     description: string | null = "Deal 10 magic damage to an enemy, restore 8 health to the first ally that attacks them."
@@ -157,7 +160,8 @@ export class BlessingOfProtection extends Skill {
         targetType: TargetType.TARGET_FRIENDLY,
         castTime: 500,
         imagePath: "/paladin/blessing-of-protection.png",
-        buffDuration: 8 * 1000
+        buffDuration: 8 * 1000,
+        range: SkillRange.RANGED,
     })
 
     description: string | null = "Buff an ally to give them 3 armor for a long duration"
