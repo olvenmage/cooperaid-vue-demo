@@ -21,6 +21,7 @@ import { reactive } from 'vue';
 import GameSettings from '@/core/settings';
 import type CharacterState from './state/character-state';
 import type Battle from '@/core/battle';
+import CharacterPowers from './character-powers';
 
 
 export default class Character {
@@ -37,7 +38,10 @@ export default class Character {
     public buffs = new CharacterBuffs(this)
     private characterSkills: CharacterSkills
 
+    public baseStats: CharacterStats
     public stats: CharacterStats
+
+    characterPowers: CharacterPowers
 
     public player: Player|null = null
 
@@ -53,15 +57,19 @@ export default class Character {
         this.characterSkills = characterSkills
         this.healthBar = new Healthbar(identity.baseStats.maxHealth.value)
         this.stats = reactive(identity.baseStats.clone()) as CharacterStats
+        this.baseStats = reactive(identity.baseStats.clone()) as CharacterStats
+        this.characterPowers = new CharacterPowers()
         this.energyBar = new EnergyBar(this.stats)
         this.isFriendly = isFriendly
 
         this.buffs.onBuffsChanged(() => this.recalculateStats())
+        this.characterPowers.onPowersChanged(() => this.recalculateStats())
         this.recalculateStats()
     }
 
     recalculateStats() {
-        this.stats.recalculateBasedOn(this.identity.baseStats)
+        this.stats.recalculateBasedOn(this.baseStats)
+        this.characterPowers.mutateStats(this.stats)
         this.buffs.mutateStats(
             this.stats
         )

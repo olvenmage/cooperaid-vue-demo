@@ -12,6 +12,8 @@ import SkillData from '../skill-data';
 import Taunt from '../skills/taunt';
 import type SkillUpgradeGem from '../skill-upgrade';
 import ShieldBlockAlliesSkillGem from '../skill-upgrades/juggernaut/shield-block-allies-skill-gem';
+import ShieldShatteredBuff from '../buffs/shield-shattered';
+import ArmorPower from '../power/armor-power';
 
 
 export default class Juggernaut extends PlayerIdentity {
@@ -38,6 +40,8 @@ export default class Juggernaut extends PlayerIdentity {
     public skills = [
         new BodySlam(),
         new ShieldBlock(),
+        new ShieldShatter(),
+        new Fortify()
     ]
 
     generateResistanceOnDamage({ character, actualDamage, originalDamage }: OnDamageTrigger) {
@@ -100,6 +104,52 @@ export class ShieldBlock extends Skill {
         targets.forEach((target) => {
             target.addBuff(new ShieldBlockBuff(this.skillData.buffDuration, ), castBy)
         })
+    }
+}
+
+export class ShieldShatter extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Shield Shatter",
+        energyCost: 6,
+        cooldown: 8 * 1000,
+        targetType: TargetType.TARGET_ALL_ENEMIES,
+        castTime: 1200,
+        imagePath: "/juggernaut/shield-shatter.png",
+        range: SkillRange.MELEE,
+        buffDuration: 4 * 1000,
+        damage: 4,
+    })
+
+    description: string | null = "Consume all your armor and deal the amount + 4 in piercing damage to all enemies. You lose your armor for a duration"
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => {
+            castBy.dealDamageTo({ amount: castBy.stats.armor.value + this.skillData.damage, target, type: DamageType.PHYSICAL, minAmount: castBy.stats.armor.value, threatModifier: 1.3 })
+        })
+
+        if (castBy.buffs.hasBuff(ShieldBlockBuff)) {
+            castBy.buffs.removeBuffByType(ShieldBlockBuff)
+        }
+
+        castBy.addBuff(new ShieldShatteredBuff(this.skillData.buffDuration), castBy)
+    }
+}
+
+export class Fortify extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Fortify",
+        energyCost: 4,
+        cooldown: 6 * 1000,
+        targetType: TargetType.TARGET_SELF,
+        castTime: 1000,
+        imagePath: "/juggernaut/fortify.png",
+        range: SkillRange.MELEE,
+    })
+
+    description: string | null = "Increases your armor by 1 for the rest of the combat"
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => target.characterPowers.addPower(new ArmorPower()))
     }
 }
 
