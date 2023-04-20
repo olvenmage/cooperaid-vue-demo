@@ -25,10 +25,10 @@ export default class Halbadier extends Identity {
 
 class Parry extends Skill {
     public skillData: SkillData = new SkillData({
-        name: "Clobber",
+        name: "Parry",
         energyCost: 8,
         cooldown: 10 * 1000,
-        castTime: 8 * 1000,
+        castTime: 1 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         imagePath: null,
         range: SkillRange.MELEE,
@@ -39,7 +39,6 @@ class Parry extends Skill {
         targets.forEach((target) => castBy.dealDamageTo({ amount: 14, target, type: DamageType.PHYSICAL }))
     }
 }
-
 
 class Poke extends Skill {
     public skillData: SkillData = new SkillData({
