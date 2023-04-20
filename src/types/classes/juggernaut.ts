@@ -117,14 +117,13 @@ export class ShieldShatter extends Skill {
         imagePath: "/juggernaut/shield-shatter.png",
         range: SkillRange.MELEE,
         buffDuration: 4 * 1000,
-        damage: 4,
     })
 
-    description: string | null = "Consume all your armor and deal the amount + 4 in piercing damage to all enemies. You lose your armor for a duration"
+    description: string | null = "Consume all your armor and deal double the amount in piercing damage to all enemies. You lose your armor for a duration"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: castBy.stats.armor.value + this.skillData.damage, target, type: DamageType.PHYSICAL, minAmount: castBy.stats.armor.value, threatModifier: 1.3 })
+            castBy.dealDamageTo({ amount: castBy.stats.armor.value * 2, target, type: DamageType.PHYSICAL, minAmount: castBy.stats.armor.value, threatModifier: 1.3 })
         })
 
         if (castBy.buffs.hasBuff(ShieldBlockBuff)) {
