@@ -13,7 +13,7 @@ import ParryBuff from '../buffs/parry';
 
 export default class Halbadier extends Identity {
     public name = "Halbadier"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 75, armor: 2, magicalArmor: 0 })
+    public baseStats = CharacterStats.fromObject({ maxHealth: 65, armor: 2, magicalArmor: 0 })
     public imagePath = "/enemies/halbadier.png"
 
     public skills = [

@@ -23,9 +23,12 @@ export default class EnergyBar {
     }
 
     increase(amount: number) {
-        if (this.current < this.max) {
-            this.current += amount;
-        }
+        this.current = Math.min(this.current + amount, this.max)
+    }
+
+    
+    decrease(amount: number) {
+        this.current = Math.max(this.current - amount, 0)
     }
 
     start(character: Character) {

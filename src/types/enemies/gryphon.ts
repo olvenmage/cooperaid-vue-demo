@@ -12,7 +12,7 @@ import FlyingBuff from '../buffs/flying'
 
 export default class Gryphon extends Identity {
     public name = "Gryphon"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 150, armor: 2, magicalArmor: 2, energyBoost: 40 })
+    public baseStats = CharacterStats.fromObject({ maxHealth: 140, armor: 2, magicalArmor: 2, energyBoost: 40 })
     public imagePath = "/enemies/gryphon.png"
 
     public skills = [

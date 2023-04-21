@@ -8,9 +8,17 @@ import Gryphon from "@/types/enemies/gryphon";
 import Barbarian from "@/types/classes/barbarian";
 import Halbadier from "@/types/enemies/halbadier";
 import Archer from "@/types/enemies/archer";
+import Bandit from "@/types/enemies/bandit"
 
 const mainRoute: Encounter[] = [
     new TestEncounter(),
+    new CombatEncounter([
+      new Enemy(new Bandit()),
+      new Enemy(new Bandit()),
+      new Enemy(new Bandit()),
+      new Enemy(new Bandit()),
+      new Enemy(new Bandit()),
+    ]),
     new CombatEncounter(
       [
         new Enemy(new Halbadier()),

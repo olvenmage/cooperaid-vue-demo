@@ -42,7 +42,8 @@ export default class Paladin extends PlayerIdentity {
     public skills = [
         new Smite(),
         new BlessingOfProtection(),
-        new OverwhelmingLight()
+        new OverwhelmingLight(),
+        new LayOnHands(),
     ]
 }
 
@@ -176,5 +177,51 @@ export class BlessingOfProtection extends Skill {
 
     override getCastPriority(castBy: Character, target: Character) {
         return 10
+    }
+}
+
+export class LayOnHands extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Lay on Hands",
+        energyCost: 0,
+        cooldown: 20 * 1000,
+        targetType: TargetType.TARGET_FRIENDLY,
+        castTime: 800,
+        imagePath: "/paladin/lay-on-hands.png",
+        range: SkillRange.RANGED,
+    })
+
+    description: string | null = "Spend all your energy to heal an ally for the amount * 3"
+
+    canCast(castBy: Character): boolean {
+        if (castBy.energyBar.current == 0) {
+            return false
+        }
+
+        return super.canCast(castBy)
+    }
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => {
+            const consumeAmount = target.energyBar.current
+            
+            target.restoreHealth(consumeAmount * 3, castBy, 0)
+
+            target.energyBar.decrease(consumeAmount)
+        })
+    }
+
+    override getCastPriority(castBy: Character, target: Character) {
+        const targetHealthPercentage = target.healthBar.current / target.healthBar.max;
+
+        if (targetHealthPercentage < 0.5 && castBy.energyBar.current < 5) {
+            return 25
+        }
+
+        if (targetHealthPercentage < 0.3 && castBy.energyBar.current > 3) {
+            return 25
+        }
+
+        return 0
     }
 }

@@ -47,7 +47,7 @@ function startCast(skill: Skill) {
   <div class="char-wrapper">
       <CharacterWindow :character="character" :color="color" :class="{'casting-skill': castingSkill != null, 'saving-graced': hasSavingGrace}"></CharacterWindow>
       <Healthbar :health-bar="character.healthBar" :saving-grace="hasSavingGrace"></Healthbar>
-      <Energybar  :energy-bar="character.energyBar"></Energybar>
+      <Energybar v-if="character.isFriendly"  :energy-bar="character.energyBar"></Energybar>
       <Classbar v-if="character.classBar" :class-bar="character.classBar"></Classbar>
       <div v-if="!isEnemy" class="char-spell-list">
     <div

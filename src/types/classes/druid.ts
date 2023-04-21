@@ -42,7 +42,8 @@ export default class Druid extends PlayerIdentity {
     public skills = [
         new Thorns(),
         new Regrowth(),
-        new Renewal()
+        new Entangle(),
+        new Renewal(),
     ]
 
     generateFerocityOnDamage({character, actualDamage, damagedBy}: OnDamageTrigger) {

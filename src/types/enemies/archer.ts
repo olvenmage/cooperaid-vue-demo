@@ -9,7 +9,7 @@ import RapidFireBuff from '../buffs/rapid-fire';
 
 export default class Archer extends Identity {
     public name = "Archer"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 60, armor: 1, magicalArmor: 0, energyBoost: 25 })
+    public baseStats = CharacterStats.fromObject({ maxHealth: 50, armor: 1, magicalArmor: 0, energyBoost: 25 })
     public imagePath = "/enemies/archer.png"
 
     public skills = [

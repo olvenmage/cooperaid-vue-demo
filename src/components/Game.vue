@@ -29,7 +29,7 @@ Game.onShopChanged(() => inShop.value = Game.inShop)
 </script>
 
 <template>
-  <section>
+  <section style="width: 100%; height: 100%;">
 
     <GameoverScreen v-if="isGameover"></GameoverScreen>
     <Battlefield v-else-if="inCombat"></Battlefield>

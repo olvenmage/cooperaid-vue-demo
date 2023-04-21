@@ -119,18 +119,21 @@ function selectCharacter(selectedCharacter: Character) {
 
 .battlefield {
   position: relative;
-  width: 4000px;
-  height: 1200px
+  width: 100%;
+  height: 100%
 }
 
 .battlefield .background {
-  object-fit: scale-down;
+  object-fit: fill;
   pointer-events: none;
   position: absolute;
   z-index: -1;
   max-width: 100%;
   height: auto;
-  width: auto; /* ie8 */
+  width: 100%; /* ie8 */
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 }
 
 .player-box {
@@ -138,8 +141,8 @@ function selectCharacter(selectedCharacter: Character) {
   display: flex;
   align-items: center;
   justify-content: start;
-  left: 10px;
-  top: 520px;
+  left: 600px;
+  bottom: 230px;
 }
 .char-wrapper {
   width: 220px;
@@ -152,7 +155,7 @@ function selectCharacter(selectedCharacter: Character) {
   display: flex;
   align-items: center;
   justify-content: start;
-  left: 940px;
-  top: 440px;
+  left: 600px;
+  top: 30px;
 }
 </style>
