@@ -138,7 +138,7 @@ export class Fortify extends Skill {
     skillData: SkillData = new SkillData({
         name: "Fortify",
         energyCost: 5,
-        cooldown: 10 * 1000,
+        cooldown: 12 * 1000,
         targetType: TargetType.TARGET_SELF,
         castTime: 1250,
         imagePath: "/juggernaut/fortify.png",

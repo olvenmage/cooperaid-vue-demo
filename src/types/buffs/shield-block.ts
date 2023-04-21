@@ -40,11 +40,11 @@ export default class ShieldBlockBuff extends Buff implements StatMutatingBuff {
         stats.armor.set(stats.armor.value + this.ARMOR_VALUE)
         stats.magicalArmor.set(stats.magicalArmor.value + stats.armor.value)
 
-        // transform armor to +mag armor
-        stats.armor.onChange((newVal, oldVal) => {
-            stats.magicalArmor.set(stats.magicalArmor.value - oldVal)
-            stats.magicalArmor.set(stats.magicalArmor.value + newVal)
-        })
+        // // transform armor to +mag armor
+        // stats.armor.onChange((newVal, oldVal) => {
+        //     stats.magicalArmor.set(stats.magicalArmor.value - oldVal)
+        //     stats.magicalArmor.set(stats.magicalArmor.value + newVal)
+        // })
     
         return stats
     }
