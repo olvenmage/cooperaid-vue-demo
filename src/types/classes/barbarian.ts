@@ -25,7 +25,6 @@ export default class Barbarian extends PlayerIdentity {
         new Rampage(),
         new AxeThrow(),
         new HeavyNet()
-
     ]
 
     override onCreated(character: Character) {

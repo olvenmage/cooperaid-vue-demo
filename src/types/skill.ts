@@ -7,6 +7,8 @@ import type SkillData from './skill-data';
 import type { SkillDataParams } from './skill-data';
 import type SkillUpgrade from './skill-upgrade';
 import type Battle from '@/core/battle';
+import Game from '@/core/game';
+import shuffleArray from '@/utils/shuffleArray';
 
 enum TargetType {
     TARGET_ENEMY,
@@ -179,7 +181,29 @@ export default abstract class Skill {
             this.casted = true
             this.castingTimer = 0
             this.casting = false
-            this.doCast(castBy, this.currentTargets)
+
+            if (this.areTargetsValid(castBy, this.currentTargets)) {
+                this.doCast(castBy, this.currentTargets)
+            } else {
+                const battle = Game.currentBattle
+
+                if (!battle) {
+                    return false;
+                }
+
+                const newValidTargets = shuffleArray(battle.combatants.filter((cb) => this.isTargetValid(castBy, cb)))
+                this.currentTargets = this.currentTargets.map((target) => {
+                    const newTarget = newValidTargets[0] ?? null
+
+                    if (newTarget != null) {
+                        newValidTargets.splice(0, 1)
+                    }
+
+                    return newTarget
+                }).filter((v) => v != null)
+
+                this.doCast(castBy, this.currentTargets)
+            }
             this.removeDamageTakenCallback(castBy)
             this.currentTargets = []
             return

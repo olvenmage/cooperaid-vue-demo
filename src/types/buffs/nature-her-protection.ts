@@ -45,7 +45,7 @@ export default class NaturesProtectionBuff extends Buff implements StatMutatingB
 
     giveFerocityToDruid(trigger: OnDamageTrigger) {
         if (this.givenBy?.classBar != null) {
-            this.givenBy.classBar.increase(4 * this.stackAmount)
+            this.givenBy.classBar.increase(3 * this.stackAmount)
         }
     }
 

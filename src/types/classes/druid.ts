@@ -14,6 +14,7 @@ import Game from '@/core/game';
 import { globalThreatEvent } from '@/core/events';
 import Taunt from '../skills/taunt';
 import RegrowthBuff from '../buffs/regrowth';
+import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
 export default class Druid extends PlayerIdentity {
     public name = "Druid"
@@ -32,12 +33,23 @@ export default class Druid extends PlayerIdentity {
                 character.addBuff(new Ferocious(), character)
             }
         }
+
+        this.onDamageTakenTriggers.push(this.generateFerocityOnDamage)
     }
 
     public skills = [
         new Thorns(),
-        new Regrowth()
+        new Regrowth(),
+        new Renewal()
     ]
+
+    generateFerocityOnDamage({character, actualDamage, damagedBy}: OnDamageTrigger) {
+        if (character.classBar == null || character.dead || actualDamage == 0) {
+            return
+        }
+
+        character.classBar.increase(100)
+    }
 }
 
 export class CommandNature extends Skill implements EmpowerableSKill {
@@ -78,7 +90,7 @@ export class CommandNature extends Skill implements EmpowerableSKill {
         }
       
         if (!this.empowered && castBy.classBar != null) {
-            castBy.classBar.increase(10)
+            castBy.classBar.increase(5)
         }
     }
 
@@ -133,7 +145,7 @@ export class Thorns extends Skill implements EmpowerableSKill {
             })
 
             if (castBy.classBar instanceof FerocityBar) {
-                castBy.classBar.increase(12)
+                castBy.classBar.increase(8)
             }
         }
     }
@@ -154,6 +166,66 @@ export class Thorns extends Skill implements EmpowerableSKill {
     unempower(castBy: Character): void {
         this.empowered = false
         this.skillData.transformBack()
+    }
+}
+
+export class Renewal extends Skill implements EmpowerableSKill {
+    skillData: SkillData = new SkillData({
+        name: "Renewal",
+        energyCost: 8,
+        cooldown: 18 * 1000,
+        targetType: TargetType.TARGET_ANY,
+        castTime: 1200,
+        imagePath: "/druid/renewal.png",
+        range: SkillRange.RANGED,
+    })
+
+    description: string | null = "Refresh the duration of buffs on an ally, or debuffs on an enemy."
+
+    empowered = false
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        if (this.skillData.isTransformed) {
+            if (castBy.classBar instanceof FerocityBar) {
+                castBy.classBar.decrease(25)
+            }
+        } else {
+            targets.forEach((target) => {
+                target.buffs.forEach((buff) => {
+                    if (target.isEnemyTo(castBy) && !buff.givenBy?.isEnemyTo(target)) {
+                        buff.durationCounter = 0
+                    } else if (!target.isEnemyTo(castBy) && buff.givenBy?.isEnemyTo(target)) {
+                        buff.durationCounter = 0
+                    }
+                })
+            })
+
+            if (castBy.classBar instanceof FerocityBar) {
+                castBy.classBar.increase(6)
+            }
+        }
+    }
+
+    empower(castBy: Character): void {
+        this.skillData.transform({
+            name: "Calm",
+            energyCost: 3,
+            targetType: TargetType.TARGET_NONE,
+            imagePath: "/druid/bear/calm.png",
+            castTime: 1000,
+            canCastOnCooldown: true
+        })
+
+        this.empowered = true
+    }
+
+    unempower(castBy: Character): void {
+        this.empowered = false
+        this.skillData.transformBack()
+    }
+
+    override getCastPriority(castBy: Character, target: Character) {
+        return 95 - (target.healthBar.current / target.healthBar.max * 100)
     }
 }
 
