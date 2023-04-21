@@ -176,7 +176,7 @@ export class HeavyNet extends Skill {
         range: SkillRange.RANGED,
         imagePath: "barbarian/heavy-net.png",
         castTime: 1500,
-        buffDuration: 8 * 1000
+        buffDuration: 10 * 1000
     })
 
     description: string | null = "Throw a net on an enemy at range, slowing them tremendously and grounding them"

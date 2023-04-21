@@ -41,6 +41,7 @@ export default class Ferocious extends TickBuff implements StatMutatingBuff {
             character.skills.forEach((sk) => {
                 if (isEmpowerableSkil(sk)) {
                     sk.empower(character)
+                    sk.finishCooldown()
                 }
             })
         }
@@ -60,6 +61,7 @@ export default class Ferocious extends TickBuff implements StatMutatingBuff {
                 character.skills.forEach((sk) => {
                     if (isEmpowerableSkil(sk)) {
                         sk.unempower(character)
+                        sk.finishCooldown()
                     }
                 })
             }

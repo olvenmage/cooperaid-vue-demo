@@ -15,7 +15,9 @@ export default class RapidFireBuff extends TickBuff implements StatMutatingBuff 
    
 
     tickEffect(character: Character) {
-        this.buildAmount++
+        if (!character.stats.stunned) {
+            this.buildAmount++
+        }
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {

@@ -1,5 +1,5 @@
 import type Character from '../character'
-import Skill, { AiTargetting, SkillRange, TargetType } from '../skill';
+import Skill, { AiTargetting, SkillRange, TargetType, type CastSkillResponse } from '../skill';
 import PlayerIdentity, { PlayerClass } from '../player-identity'
 import Ferocious from '../buffs/ferocious';
 import DamageType from '../damage-type';
@@ -14,7 +14,9 @@ import Game from '@/core/game';
 import { globalThreatEvent } from '@/core/events';
 import Taunt from '../skills/taunt';
 import RegrowthBuff from '../buffs/regrowth';
+import EntangleBuff from '../buffs/entangle'
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
+import BestialWrathBuff from '../buffs/bestial-wrath';
 
 export default class Druid extends PlayerIdentity {
     public name = "Druid"
@@ -48,7 +50,7 @@ export default class Druid extends PlayerIdentity {
             return
         }
 
-        character.classBar.increase(100)
+        character.classBar.increase(3)
     }
 }
 
@@ -186,9 +188,9 @@ export class Renewal extends Skill implements EmpowerableSKill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
-            if (castBy.classBar instanceof FerocityBar) {
-                castBy.classBar.decrease(25)
-            }
+            targets.forEach((target) => {
+                target.addBuff(new BestialWrathBuff(10 * 1000), castBy)
+            })
         } else {
             targets.forEach((target) => {
                 target.buffs.forEach((buff) => {
@@ -208,10 +210,10 @@ export class Renewal extends Skill implements EmpowerableSKill {
 
     empower(castBy: Character): void {
         this.skillData.transform({
-            name: "Calm",
-            energyCost: 3,
-            targetType: TargetType.TARGET_NONE,
-            imagePath: "/druid/bear/calm.png",
+            name: "Bestial Wrath",
+            energyCost: 5,
+            targetType: TargetType.TARGET_SELF,
+            imagePath: "/druid/bear/bestial-wrath.png",
             castTime: 1000,
             canCastOnCooldown: true
         })
@@ -232,10 +234,10 @@ export class Renewal extends Skill implements EmpowerableSKill {
 export class Regrowth extends Skill implements EmpowerableSKill {
     skillData: SkillData = new SkillData({
         name: "Regrowth",
-        energyCost: 3,
+        energyCost: 4,
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
-        castTime: 1400,
+        castTime: 1200,
         imagePath: "/druid/regrowth.png",
         buffDuration: 12 * 1000,
         range: SkillRange.RANGED,
@@ -248,7 +250,7 @@ export class Regrowth extends Skill implements EmpowerableSKill {
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
             if (castBy.classBar instanceof FerocityBar) {
-                castBy.classBar.decrease(25)
+                castBy.classBar.decrease(35)
             }
         } else {
             targets.forEach((target) => {
@@ -264,7 +266,7 @@ export class Regrowth extends Skill implements EmpowerableSKill {
     empower(castBy: Character): void {
         this.skillData.transform({
             name: "Calm",
-            energyCost: 3,
+            energyCost: 2,
             targetType: TargetType.TARGET_NONE,
             imagePath: "/druid/bear/calm.png",
             castTime: 1000,
@@ -278,8 +280,51 @@ export class Regrowth extends Skill implements EmpowerableSKill {
         this.empowered = false
         this.skillData.transformBack()
     }
+}
 
-    override getCastPriority(castBy: Character, target: Character) {
-        return 95 - (target.healthBar.current / target.healthBar.max * 100)
+export class Entangle extends Skill implements EmpowerableSKill {
+    skillData: SkillData = new SkillData({
+        name: "Entangle",
+        energyCost: 4,
+        cooldown: 14 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        range: SkillRange.RANGED,
+        imagePath: "druid/entangle.png",
+        castTime: 1500,
+        buffDuration: 4 * 1000
+    })
+
+    description: string | null = "Entangles an enemy for a short duration, setting their speed and energy boost to 0."
+
+    castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
+        if (this.skillData.isTransformed) {
+            targets.forEach((target) => {
+                castBy.dealDamageTo({ amount: 14, target, type: DamageType.PHYSICAL, threatModifier: 1.4 })
+
+                if (target.castingSkill) {
+                    target.castingSkill.interupt()
+                }
+            })
+        } else {
+            targets.forEach((target) => {
+                target.addBuff(new EntangleBuff(this.skillData.buffDuration), castBy)
+                target.raiseThreat(castBy, 10)
+            })
+        }
+    }
+
+    empower(castBy: Character): void {
+        this.skillData.transform({
+            name: "Big Bite",
+            energyCost: 6,
+            targetType: TargetType.TARGET_ENEMY,
+            imagePath: "/druid/bear/big-bite.png",
+            castTime: 1400,
+            damage: 14
+        })
+    }
+
+    unempower(castBy: Character): void {
+        this.skillData.transformBack()
     }
 }
