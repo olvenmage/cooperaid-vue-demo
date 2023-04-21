@@ -145,7 +145,7 @@ export class Fortify extends Skill {
         range: SkillRange.MELEE,
     })
 
-    description: string | null = "Increases your armor by 1 for the rest of the combat"
+    description: string | null = "Increases your armor by 1 for the rest of combat"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => target.characterPowers.addPower(new ArmorPower()))
