@@ -22,8 +22,10 @@ import Lobby from '@/components/setup/Lobby.vue';
 let inCombat = ref(Game.inCombat)
 let inShop = ref(Game.inShop)
 let isGameover = ref(Game.isGameover)
+let inLobby = ref(Game.inLobby)
 
 Game.onCombatChanged(() => inCombat.value = Game.inCombat)
+Game.onInLobbyChanged(() => inLobby.value = Game.inLobby)
 Game.onGameover(() => isGameover.value = Game.isGameover)
 Game.onShopChanged(() => inShop.value = Game.inShop)
 </script>
@@ -34,6 +36,9 @@ Game.onShopChanged(() => inShop.value = Game.inShop)
     <GameoverScreen v-if="isGameover"></GameoverScreen>
     <Battlefield v-else-if="inCombat"></Battlefield>
     <Shop v-else-if="inShop"></Shop>
-    <Lobby v-else></Lobby>
+    <Lobby v-else-if="inLobby"></Lobby>
+    <div v-else>
+      <h1> Cooperaid </h1>
+    </div>
   </section>
 </template>

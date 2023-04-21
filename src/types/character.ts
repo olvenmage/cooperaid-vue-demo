@@ -26,6 +26,7 @@ import CharacterPowers from './character-powers';
 
 export default class Character {
     public id: string;
+    public subId = "sub" + Math.random().toString(16).slice(2)
     public identity: Identity
     public dead = false
     public castingSkill: Skill|null = null

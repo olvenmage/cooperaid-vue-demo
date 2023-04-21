@@ -92,9 +92,9 @@ export default abstract class Skill {
         })
     }
 
-    isTargetValid(castBy: Character, target: Character) {
+    isTargetValid(castBy: Character|undefined, target: Character|undefined) {
         // todo: if can not target dead
-        if (target.dead) {
+        if (!target || !castBy || target.dead) {
             return false
         }
 

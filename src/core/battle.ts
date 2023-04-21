@@ -9,6 +9,7 @@ import Game from "./game"
 import GameSettings from "./settings"
 import { pubUpdateBattleState } from "../client-socket/OutgoingMessages"
 import { subCastSkill } from "../client-socket/IncomingMessages"
+import { HolyShock } from "@/types/classes/paladin"
 
 const settings = {
     enemyInteractSpeed: 1
@@ -32,7 +33,7 @@ export default class Battle {
         this.enemies = enemies
         this.combatants = [
             ...this.enemies,
-            ...Game.players.value.map((char) => char.createCharacter())
+            ...Game.players.value.map((player) => player.createCharacter())
         ]
     }
 
@@ -61,7 +62,7 @@ export default class Battle {
             })
         })
 
-        presenterSocket.subscribe(subCastSkill, (event) => {
+        const unsubSkill = presenterSocket.subscribe(subCastSkill, (event) => {
             const player = Game.getPlayer(event.body.playerId)
 
             if (!player || !player.combatCharacter) {
@@ -81,6 +82,7 @@ export default class Battle {
 
         this.onCombatFinished(() => {
             unsubscribe();
+            unsubSkill.unsubscribe();
         })
 
         this.initializeCombatants()
@@ -145,7 +147,7 @@ export default class Battle {
                     state: {
                         enemies,
                         allies: allyStates.filter((a) => a.id != player.id),
-                        self: allyStates.find((a) => a.id == player.id) || player.combatCharacter!.getState(this)
+                        self: allyStates.find((a) => a.id == player.id) || player.combatCharacter!.value.getState(this)
                     }
                 })
             )

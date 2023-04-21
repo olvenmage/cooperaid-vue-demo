@@ -21,16 +21,20 @@ export default abstract class Game {
     private static route: Encounter[]
     static isGameover = false
     static inShop = false
+    static inLobby = true
 
     private static onCombatChangedListeners: (() => void)[] = []
     private static onShopChangedListeners: (() => void)[] = []
     private static onGameoverListeners: (() => void)[] = []
+    private static onInLobbyChangedListeners: (() => void)[] = []
 
     static get inCombat(): boolean {
         return this.currentBattle != null
     }
 
     static async startGame(params: StartGameParams): Promise<void> {
+        this.inLobby = false
+        this.onInLobbyChangedListeners.forEach((cb) => cb())
         this.players.value = params.players.map((char) => reactive(char)) as Player[]
         this.route = params.route
 
@@ -88,6 +92,10 @@ export default abstract class Game {
         this.onGameoverListeners.push(callback)
     }
 
+    static onInLobbyChanged(callback: () => void) {
+        this.onInLobbyChangedListeners.push(callback)
+    }
+
     static onCombatChanged(callback: () => void) {
         this.onCombatChangedListeners.push(callback)
     }
@@ -137,7 +145,7 @@ export default abstract class Game {
         this.onCombatChangedListeners.forEach((cb) => cb())
 
         Game.players.value.forEach(player => {
-            player.combatCharacter = null
+            player.removeCharacter()
         });
     }
 }

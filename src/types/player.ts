@@ -73,7 +73,6 @@ class Player {
     }
 
     constructor(public readonly id: string, public readonly name: string, public controledExternally: boolean, playerClass: PlayerIdentity|null) {
-        
         this.playerNumber = PlayerNumberRegistry.getNumber()
         this.playerColor = PlayerNumberRegistry.getColor(this.playerNumber)
 
@@ -104,7 +103,7 @@ class Player {
         character.player = this
 
         this.combatCharacter = character
-
+        
         if (this.aiEnabled) {
             character.enableAI()
         }

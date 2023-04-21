@@ -104,8 +104,8 @@ export class OverwhelmingLight extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, target})
-            target.restoreHealth(this.skillData.damage! * 2, castBy, 0.8)
+            castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, target, threatModifier: 0})
+            target.restoreHealth(this.skillData.damage! * 2, castBy, 0.5)
         })
 
         if (castBy.classBar != null) {
@@ -206,6 +206,10 @@ export class LayOnHands extends Skill {
             const consumeAmount = target.energyBar.current
             
             target.restoreHealth(consumeAmount * 3, castBy, 0)
+
+            if (castBy.classBar != null) {
+                castBy.classBar.increase(consumeAmount * 3)
+            }
 
             target.energyBar.decrease(consumeAmount)
         })

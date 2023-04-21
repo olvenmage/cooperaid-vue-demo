@@ -21,7 +21,9 @@ export class CombatEncounter extends Encounter {
                 }, 2000)
             }
 
-            resolve(result.playersWon)
+            setTimeout(() => {
+                resolve(result.playersWon)
+            }, 4000)
         })
     }
 }

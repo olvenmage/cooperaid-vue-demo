@@ -14,10 +14,6 @@ const mainRoute: Encounter[] = [
     new TestEncounter(),
     new CombatEncounter([
       new Enemy(new Bandit()),
-      new Enemy(new Bandit()),
-      new Enemy(new Bandit()),
-      new Enemy(new Bandit()),
-      new Enemy(new Bandit()),
     ]),
     new CombatEncounter(
       [
