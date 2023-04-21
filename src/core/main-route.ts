@@ -26,7 +26,12 @@ const mainRoute: Encounter[] = [
         new Enemy(new Gryphon()),
         new Enemy(new Archer())
       ]
-    )
+    ),
+    new CombatEncounter([
+      new Enemy(new DragonEgg()),
+      new Enemy(new DragonBoss()),
+      new Enemy(new DragonEgg()),
+    ])
 ]
 
 export default mainRoute
