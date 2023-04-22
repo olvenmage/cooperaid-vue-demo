@@ -10,6 +10,8 @@ export default class Ferocious extends TickBuff implements StatMutatingBuff {
     // interval in miliseconds (1000 = every second)
     public tickInterval: number = 1000
 
+    public imagePath: string | null = null
+
     START_DURATION = 1
     CONSUME_AMOUNT = 12
 

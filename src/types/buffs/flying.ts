@@ -5,6 +5,8 @@ import type StatMutatingBuff from '../stat-mutating-buff';
 export default class FlyingBuff extends Buff implements StatMutatingBuff {
     duration: number = 6 * 1000
 
+    public imagePath: string | null = "/buffs/flying.png"
+
     constructor(newDuration: number) {
         super()
         this.duration = newDuration

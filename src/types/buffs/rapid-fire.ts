@@ -8,6 +8,8 @@ export default class RapidFireBuff extends TickBuff implements StatMutatingBuff 
     // interval in miliseconds (1000 = every second)
     public tickInterval: number = 1000
 
+    public imagePath: string | null = "/buffs/rapid-fire.png"
+
     duration: number = 14 * 1000
     public unique: boolean = true
 

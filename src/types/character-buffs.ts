@@ -1,9 +1,11 @@
+import { reactive } from "vue";
 import { BuffPriority } from "./buff";
 import type Buff from "./buff";
 import type Character from "./character";
 import type CharacterStats from "./character-stats";
 import { isStackingBuff } from "./stacking-buff";
 import { isStatMutatingBuff } from "./stat-mutating-buff";
+import type { BuffState } from "./state/character-state";
 
 export default class CharacterBuffs {
     private character: Character
@@ -32,6 +34,10 @@ export default class CharacterBuffs {
         return Object.values(this.collection).flat()
     }
 
+    getState(): BuffState[] {
+        return this.buffs.map((buff) => buff.getState())
+    }
+
     addBuff(buff: Buff, givenBy: Character|null = null) {
         if (isStackingBuff(buff) || buff.unique) {
             const existingBuff = this.getExistingBuffForInstance(buff)
@@ -58,7 +64,7 @@ export default class CharacterBuffs {
             }
         })
 
-        this.collection[buff.priority].push(buff)      
+        this.collection[buff.priority].push(reactive(buff) as Buff)      
 
         buff.startBuff(this.character, givenBy)
         this.onBuffsChangedCallbacks.forEach((cb) => cb())  

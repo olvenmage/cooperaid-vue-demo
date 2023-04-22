@@ -10,6 +10,7 @@ import BlessingOfProtectionBuff from '../buffs/blessing-of-protection'
 import SmittenBuff from '../buffs/smitten';
 import CharacterStats from '../character-stats';
 import SkillData from '../skill-data';
+import HolyPowerBar from '../special-bar/holy-power-bar';
 
 
 export default class Paladin extends PlayerIdentity {
@@ -22,7 +23,7 @@ export default class Paladin extends PlayerIdentity {
     public description = "The Paladin vows to protect the weak and bring justice to the unjust They are equiped with plate armor so they can confront the toughest of foes, and the blessing of their God allows them to heal wounds and wield powerful holy magic to vanquish evil."
 
     override onCreated(character: Character) {
-        character.classBar = new ClassBar(100, 'gold')
+        character.classBar = new HolyPowerBar()
 
         Game.eventBus.subscribe(characterDiedEvent, event => {
             if (character.classBar?.isFull() && character.classBar?.activated == false) {
@@ -30,12 +31,10 @@ export default class Paladin extends PlayerIdentity {
                     return
                 }
 
-                character.classBar.activated = true
-                event.payload.character.dead = false
-                event.payload.character.addBuff(new SavingGrace(), character)
-                event.payload.character.healthBar.current = 1
+                if (character.classBar instanceof HolyPowerBar) {
+                    character.classBar.saveTarget(character, event.payload.character)
+                }
             }
-           
         })
     }
 
@@ -165,7 +164,7 @@ export class BlessingOfProtection extends Skill {
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Buff an ally to give them 3 armor for a long duration"
+    description: string | null = "Buff an ally to give them 2 armor for a duration"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => { 

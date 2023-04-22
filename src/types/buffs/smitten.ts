@@ -6,6 +6,9 @@ import type OnDamageTrigger from '../triggers/on-damage-trigger';
 export default class SmittenBuff extends Buff {
     duration: number = 6 * 1000
 
+    public imagePath: string | null = "/skills/paladin/smite.png"
+    
+
     callback = this.consumeSmitten.bind(this)
 
     constructor(newDuration: number) {

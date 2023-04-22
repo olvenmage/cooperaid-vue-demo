@@ -8,6 +8,8 @@ export default class ThickSkinBuff extends Buff implements StatMutatingBuff {
     duration: number = 10 * 1000
     callback = this.giveFerocityToBear.bind(this)
 
+    public imagePath: string | null = "/skills/druid/bear/thick-skin.png"
+
     override startEffect(character: Character): void {
         if (character.classBar) {
             character.identity.onDamageTakenTriggers.push(this.callback)

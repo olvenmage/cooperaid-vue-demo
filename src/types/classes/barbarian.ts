@@ -9,6 +9,7 @@ import CharacterStats from '../character-stats';
 import SkillData from '../skill-data';
 import type SkillDamageUpgrade from '../skill-upgrades/generic/damage-increase-skill-gem';
 import NettedBuff from '../buffs/netted';
+import RageBar from '../special-bar/rage-bar';
 
 
 export default class Barbarian extends PlayerIdentity {
@@ -30,11 +31,11 @@ export default class Barbarian extends PlayerIdentity {
     override onCreated(character: Character) {
         this.onDamageTakenTriggers = []
 
-        character.classBar = new ClassBar(100, 'red')
+        character.classBar = new RageBar()
+
         if (character.classBar != null) {
             character.classBar.onFilled = () => {
-                if (character.classBar == null || character.classBar.activated) return
-                character.addBuff(new Enrage(), character)
+                character.classBar?.activate(character)
             }
         }
      

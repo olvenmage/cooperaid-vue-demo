@@ -9,6 +9,8 @@ import type OnDamageTrigger from '../triggers/on-damage-trigger';
 export default class DismantleBuff extends Buff implements StatMutatingBuff {
     duration: number = 8 * 1000
 
+    public imagePath: string | null = "/skills/rogue/dismantle.png"
+
     callback = this.giveFocusPerHit.bind(this)
 
     constructor(newDuration: number) {

@@ -15,6 +15,8 @@ export default class SleepBuff extends TickBuff implements StatMutatingBuff {
     triggered = false
 
     callback = this.breakSleep.bind(this)
+    
+    public imagePath: string | null = "/skills/rogue/sleep-dart.png"
 
     constructor(newDuration: number) {
         super()

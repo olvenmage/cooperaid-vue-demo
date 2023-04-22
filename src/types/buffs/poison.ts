@@ -8,6 +8,8 @@ export default class PoisonBuff extends TickBuff implements StackingBuff {
     public tickInterval: number = 2000
     public duration = 100
 
+    public imagePath: string | null = "/skills/rogue/poisoned-strike.png"
+
     stackAmount = 1
 
     constructor(private damagePerStack: number, newDuration: number, private maxStack: number) {

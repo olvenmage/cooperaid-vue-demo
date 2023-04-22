@@ -10,6 +10,8 @@ export default class NaturesProtectionBuff extends Buff implements StatMutatingB
     callback = this.giveFerocityToDruid.bind(this)
     stackAmount = 1
 
+    public imagePath: string | null = "/skills/druid/command-nature.png"
+
     maxStacks = 3
 
     constructor(newDuration: number = 5 * 1000) {

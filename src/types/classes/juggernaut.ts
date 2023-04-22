@@ -14,6 +14,7 @@ import type SkillUpgradeGem from '../skill-upgrade';
 import ShieldBlockAlliesSkillGem from '../skill-upgrades/juggernaut/shield-block-allies-skill-gem';
 import ShieldShatteredBuff from '../buffs/shield-shattered';
 import ArmorPower from '../power/armor-power';
+import RetaliationBar from '../special-bar/retaliation-bar';
 
 
 export default class Juggernaut extends PlayerIdentity {
@@ -27,11 +28,10 @@ export default class Juggernaut extends PlayerIdentity {
 
     override onCreated(character: Character) {
         this.onDamageTakenTriggers = []
-        character.classBar = new ClassBar(100, 'silver')
+        character.classBar = new RetaliationBar()
 
         character.classBar.onFilled = () => {
-            if (character.classBar == null || character.classBar.activated) return
-            character.addBuff(new Untouchable(), character)
+            character.classBar?.activate(character)
         }
 
         this.onDamageTakenTriggers.push(this.generateResistanceOnDamage)

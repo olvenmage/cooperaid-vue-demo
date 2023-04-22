@@ -27,8 +27,7 @@ export default class Rogue extends PlayerIdentity {
 
         if (character.classBar != null) {
             character.classBar.onFilled = () => {
-                if (character.classBar == null || character.classBar.activated) return
-                character.addBuff(new AdrenalineRush(), character)
+                character.classBar?.activate(character)
             }
         }
     }
@@ -110,6 +109,7 @@ export class Dismantle extends Skill {
             }
 
             target.addBuff(new DismantleBuff(this.skillData.buffDuration!), castBy)
+            target.ai?.raiseThreat(castBy, 8)
         })
     }
 }

@@ -6,6 +6,8 @@ export default class EntangleBuff extends Buff implements StatMutatingBuff {
     duration: number = 3 * 1000
     priority = BuffPriority.LAST_2
 
+    public imagePath: string | null = "/skills/druid/entangle.png"
+
     constructor(newDuration: number) {
         super()
         this.duration = newDuration

@@ -12,6 +12,8 @@ export default class ThornsBuff extends Buff {
     unique = true
     private returnDamageCallback = this.returnDamage.bind(this)
 
+    public imagePath: string | null = "/skills/druid/thorns.png"
+
     constructor(newDuration = 10 * 1000) {
         super()
         this.duration = newDuration

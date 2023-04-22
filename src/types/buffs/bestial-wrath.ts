@@ -14,6 +14,8 @@ export default class BestialWrathBuff extends TickBuff implements StatMutatingBu
     duration: number = 10 * 1000
     public unique: boolean = true
 
+    public imagePath: string | null = "/skills/druid/bear/bestial-wrath.png"
+
     buildAmount = 1
     callback = this.enrage.bind(this)
 

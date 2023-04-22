@@ -8,6 +8,7 @@ import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
 export class ParryHasteBuff extends Buff implements StatMutatingBuff {
     duration: number = 6 * 1000
+    public imagePath: string | null = "/buffs/parry-haste.png"
 
     mutateStats(stats: CharacterStats): CharacterStats {
         stats.energyBoost.set(stats.energyBoost.value + (25))
@@ -20,6 +21,8 @@ export class ParryHasteBuff extends Buff implements StatMutatingBuff {
 export default class ParryBuff extends Buff {
     duration: number = 6 * 1000
     priority = BuffPriority.LAST_1
+
+    public imagePath: string | null = "/buffs/parry.png"
 
     ARMOR_VALUE = 8
 

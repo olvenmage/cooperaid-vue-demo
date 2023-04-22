@@ -14,6 +14,7 @@ import type OnDamageTrigger from '@/types/triggers/on-damage-trigger';
 import FloatingDamage from './FloatingDamage.vue';
 import GameSettings from '@/core/settings';
 import CharacterWindow from './CharacterWindow.vue';
+import BuffDisplay from './character/BuffDisplay.vue';
 
 const props = defineProps<{
   character: Character,
@@ -49,6 +50,8 @@ function startCast(skill: Skill) {
       <Healthbar :health-bar="character.healthBar" :saving-grace="hasSavingGrace"></Healthbar>
       <Energybar v-if="character.isFriendly"  :energy-bar="character.energyBar"></Energybar>
       <Classbar v-if="character.classBar" :class-bar="character.classBar"></Classbar>
+    <Castbar  :character="character"></Castbar>
+      <BuffDisplay :character="character"> </BuffDisplay>
       <div v-if="!isEnemy" class="char-spell-list">
     <div
       class="spell-item"
@@ -67,7 +70,6 @@ function startCast(skill: Skill) {
   </span>
   </div>
   </div>
-  <Castbar  :character="character"></Castbar>
   </div>
 
 </template>

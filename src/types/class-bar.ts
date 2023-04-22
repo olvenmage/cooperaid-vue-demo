@@ -1,11 +1,20 @@
+import GameSettings from "@/core/settings"
 import type Character from "./character"
+import type CharacterStats from "./character-stats"
 
-export default class ClassBar {
+export default abstract class ClassBar {
     public current: number
     public max: number
     public color: string
     public activated = false
     public onFilled: (() => void)|null = null
+
+    onActivedCallbacks: (() => void)[] = []
+
+    abstract tickConsumeAmount: number
+    abstract tickInterval: number
+
+    abstract tickEffect(character: Character, consumeEffectiveness: number): void
 
     constructor(maxResource: number, color: string) {
         this.max = maxResource;
@@ -14,10 +23,6 @@ export default class ClassBar {
     }
 
     increase(amount: number) {
-        // if (this.activated) {
-        //     return
-        // }
-
         this.current = Math.min(this.current + amount, this.max);
 
         if (this.isFull() && this.onFilled) {
@@ -31,5 +36,47 @@ export default class ClassBar {
 
     isFull() {
         return this.current >= this.max
+    }
+
+    activate(character: Character) {
+        if (this.activated) {
+            return
+        }
+        this.activated = true;
+        this.onActivedCallbacks.forEach((cb) => cb())
+
+        this.onActivatedStart(character)
+        this.activeTick(character)
+    }
+
+    mutateStats(stats: CharacterStats): CharacterStats {
+        return stats
+    }
+
+    onActivatedStart(character: Character) {
+        return
+    }
+
+    onActivatedEnd(character: Character) {
+        return
+    }
+
+    private activeTick(character: Character) {
+        const consumedAmount = Math.min(this.tickConsumeAmount, this.current)
+        this.decrease(consumedAmount)
+        const consumeEffectiveness = (this.tickConsumeAmount / consumedAmount)
+
+        this.tickEffect(character, consumeEffectiveness)
+
+        if (this.current <= 0) {
+            this.activated = false
+            this.onActivedCallbacks.forEach((cb) => cb())
+            this.onActivatedEnd(character)
+            return
+        }
+
+        setTimeout(() => {
+            this.activeTick(character)
+        }, this.tickInterval / GameSettings.speedFactor);
     }
 }

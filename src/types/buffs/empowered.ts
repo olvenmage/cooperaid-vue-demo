@@ -14,6 +14,7 @@ export default class Empowered extends TickBuff {
     START_DURATION = 1
     CONSUME_AMOUNT = 15
 
+    public imagePath: string | null = null
     duration: number = this.START_DURATION
 
     tickEffect(character: Character) {

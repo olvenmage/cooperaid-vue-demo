@@ -9,6 +9,8 @@ export default class ShieldBlockBuff extends Buff implements StatMutatingBuff {
     duration: number = 5 * 1000
     priority = BuffPriority.LAST_1
 
+    public imagePath: string | null = "/skills/juggernaut/shield-block.png"
+
     ARMOR_VALUE = 8
 
     triggered = false

@@ -5,6 +5,7 @@ import type StatMutatingBuff from '../stat-mutating-buff';
 export default class NettedBuff extends Buff implements StatMutatingBuff {
     duration: number = 8 * 1000
     priority = BuffPriority.LAST_3
+    public imagePath: string | null = "/skills/barbarian/heavy-net.png"
 
     constructor(newDuration: number) {
         super()

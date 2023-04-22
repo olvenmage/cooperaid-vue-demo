@@ -6,6 +6,8 @@ export default class ShieldShatteredBuff extends Buff implements StatMutatingBuf
     duration: number = 8 * 1000
     public priority: BuffPriority = BuffPriority.EARLY_1
 
+    public imagePath: string | null = "/buffs/shield-shattered.png"
+
     constructor(newDuration: number) {
         super()
         this.duration = newDuration

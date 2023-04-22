@@ -28,7 +28,7 @@ export default interface CharacterState {
     }|null
     basicSkill: CharacterSkill|null
     skills: CharacterSkill[]
-    buffs: CharacterBuff[]
+    buffs: BuffState[]
     stats: StatsState
     dead: boolean
 }
@@ -48,8 +48,10 @@ export interface CharacterSkill {
     castTime: number // in ms speed relative
 }
 
-export interface CharacterBuff {
+export interface BuffState {
     name: string,
-    duration: number,
+    durationLeft: number,
     positive: boolean
+    imagePath: string|null
+    showDuration: boolean
 }

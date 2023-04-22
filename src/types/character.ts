@@ -75,6 +75,10 @@ export default class Character {
             this.stats
         )
 
+        if (this.classBar?.activated) {
+            this.classBar?.mutateStats(this.stats)
+        }
+
         this.healthBar.max = this.stats.maxHealth.value
     }
 
@@ -204,6 +208,11 @@ export default class Character {
     initializeCombat(): void {
         this.characterSkills.applyUpgrades()
         this.identity.onCreated(this)
+
+        this.classBar?.onActivedCallbacks.push(() => {
+            this.recalculateStats()
+        })
+
         this.energyBar.start(this)
     }
 
@@ -231,7 +240,7 @@ export default class Character {
                 color: this.classBar.color
             } : null,
             stats: this.stats.getState(),
-            buffs: [],
+            buffs: this.buffs.getState(),
             dead: this.dead
         }
         

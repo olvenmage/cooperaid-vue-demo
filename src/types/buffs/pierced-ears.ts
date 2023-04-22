@@ -5,6 +5,8 @@ import type StatMutatingBuff from '../stat-mutating-buff';
 export default class PiercedEarsBuff extends Buff implements StatMutatingBuff {
     duration: number = 6 * 1000
 
+    public imagePath: string | null = "/buffs/pierced-ears.png"
+
     mutateStats(stats: CharacterStats): CharacterStats {
         stats.armor.set(stats.armor.value - 1)
         stats.speed.set(stats.speed.value - 50)

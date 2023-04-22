@@ -7,6 +7,8 @@ import TickBuff from '../tick-buff';
 export default class RegrowthBuff extends TickBuff {
     public tickInterval: number = 1500
     public duration = 12 * 1000
+    
+    public imagePath: string | null = "/skills/druid/regrowth.png"
 
     constructor(newDuration: number) {
         super()
@@ -22,6 +24,6 @@ export default class RegrowthBuff extends TickBuff {
             this.givenBy.classBar.increase(2)
         }
 
-        character.restoreHealth(2, this.givenBy, 0.65)
+        character.restoreHealth(2, this.givenBy, 0.5)
     }
 }

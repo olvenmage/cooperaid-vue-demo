@@ -9,6 +9,8 @@ export default class BlessingOfProtectionBuff extends Buff implements StatMutati
     duration: number = 8 * 1000
     callback = this.giveHolyToPaladin.bind(this)
 
+    public imagePath: string | null = "/skills/paladin/blessing-of-protection.png"
+
     constructor(newDuration: number) {
         super()
         this.duration = newDuration
@@ -39,7 +41,7 @@ export default class BlessingOfProtectionBuff extends Buff implements StatMutati
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.armor.set(stats.armor.value + 3)
+        stats.armor.set(stats.armor.value + 2)
         return stats
     }
 }

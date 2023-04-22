@@ -29,11 +29,9 @@ export default class Druid extends PlayerIdentity {
 
     override onCreated(character: Character) {
         character.classBar = new FerocityBar()
-        if (character.classBar != null) {
-            character.classBar.onFilled = () => {
-                if (character.classBar == null || character.classBar.activated) return
-                character.addBuff(new Ferocious(), character)
-            }
+
+        character.classBar.onFilled = () => {
+            character.classBar?.activate(character)
         }
 
         this.onDamageTakenTriggers.push(this.generateFerocityOnDamage)
@@ -197,7 +195,7 @@ export class Renewal extends Skill implements EmpowerableSKill {
                 target.buffs.forEach((buff) => {
                     if (target.isEnemyTo(castBy) && !buff.givenBy?.isEnemyTo(target)) {
                         buff.durationCounter = 0
-                    } else if (!target.isEnemyTo(castBy) && buff.givenBy?.isEnemyTo(target)) {
+                    } else if (!target.isEnemyTo(castBy) && !buff.givenBy?.isEnemyTo(target)) {
                         buff.durationCounter = 0
                     }
                 })

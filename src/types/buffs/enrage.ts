@@ -12,6 +12,8 @@ export default class Enrage extends TickBuff implements StatMutatingBuff {
     CONSUME_AMOUNT = 25
 
     duration: number = this.START_DURATION
+
+    public imagePath: string | null = null
    
 
     tickEffect(character: Character) {

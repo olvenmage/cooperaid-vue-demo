@@ -7,12 +7,14 @@ export default abstract class TickBuff extends Buff {
     // interval in miliseconds
     public abstract tickInterval: number
     public durationCounter: number = 0
+    private tickCounter = 0
 
     public attachedCharacter: Character|null = null
 
     abstract tickEffect(character: Character): void
 
-    protected override incrementDuration(character: Character) {
+
+    protected incrementDuration(character: Character) {
         if (this.durationCounter >= this.duration / GameSettings.speedFactor) {
             this.durationCounter = 0
             if (this.attachedCharacter) {
@@ -22,15 +24,22 @@ export default abstract class TickBuff extends Buff {
         }
 
         setTimeout(() => {
-            this.durationCounter += this.tickInterval / GameSettings.speedFactor
-            this.tickEffect(character)
+            this.durationCounter += 100
+            this.tickCounter += 100
+
+            if (this.tickCounter >= this.tickInterval) {
+                this.tickEffect(character)
+                this.tickCounter -= this.tickInterval
+            }
+
             this.incrementDuration(character)
-        }, this.tickInterval / GameSettings.speedFactor)
+        }, 100)
     }
 
     override startBuff(attachedCharacter: Character, givenBy: Character|null) {
         this.attachedCharacter = attachedCharacter
         this.givenBy = givenBy
+        this.tickCounter = 0
         this.startEffect(attachedCharacter)
         this.incrementDuration(attachedCharacter)
     }

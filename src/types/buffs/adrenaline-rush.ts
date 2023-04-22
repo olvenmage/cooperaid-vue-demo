@@ -12,6 +12,8 @@ export default class AdrenalineRush extends TickBuff implements StatMutatingBuff
     CONSUME_AMOUNT = 18
 
     duration: number = this.START_DURATION
+
+    public imagePath: string | null = null
    
 
     tickEffect(character: Character) {

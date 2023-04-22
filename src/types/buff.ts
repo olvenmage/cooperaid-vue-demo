@@ -1,5 +1,6 @@
 import GameSettings from '@/core/settings';
 import type Character from './character';
+import type { BuffState } from './state/character-state';
 
 export enum BuffPriority {
     EARLY_1 = 0,
@@ -19,10 +20,12 @@ export enum BuffPriority {
 export default abstract class Buff {
     // duration in microseconds
     protected abstract duration: number
+    public abstract imagePath: string|null
     public durationCounter: number = 0
     public id: string = "buff" + Math.random().toString(16).slice(2)
 
     protected expiredTriggers: (() => void)[] = []
+    public showDuration = true
 
     public attachedCharacter: Character|null = null
     public givenBy: Character|null = null
@@ -30,6 +33,10 @@ export default abstract class Buff {
     public priority: BuffPriority = BuffPriority.NORMAL_1
 
     private ended = false
+
+    get durationLeft() {
+        return ( this.duration / GameSettings.speedFactor) - this.durationCounter
+    }
 
     startBuff(attachedCharacter: Character, givenBy: Character|null) {
         this.attachedCharacter = attachedCharacter
@@ -56,9 +63,9 @@ export default abstract class Buff {
         }
 
         setTimeout(() => {
-            this.durationCounter += 100
+            this.durationCounter += 200
             this.incrementDuration(character)
-        }, 100)
+        }, 200)
     }
 
     endEffect(character: Character) {
@@ -73,5 +80,15 @@ export default abstract class Buff {
 
     addExpiredTrigger(trigger: () => void) {
         this.expiredTriggers.push(trigger)
+    }
+
+    getState(): BuffState {
+        return {
+            durationLeft: this.durationLeft,
+            name: "",
+            imagePath: this.imagePath,
+            positive: true,
+            showDuration: this.showDuration
+        }
     }
 }
