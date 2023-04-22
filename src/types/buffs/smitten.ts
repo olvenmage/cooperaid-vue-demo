@@ -36,7 +36,7 @@ export default class SmittenBuff extends Buff {
         if (trigger.actualDamage > 0 && trigger.damagedBy && trigger.character.isEnemyTo(trigger.damagedBy)) {
             this.endEffect(trigger.character)
 
-            trigger.damagedBy?.restoreHealth(8, this.givenBy, 0.5)
+            trigger.damagedBy?.restoreHealth(6, this.givenBy, 0.5)
 
             if (this.givenBy?.classBar) {
                 this.givenBy.classBar.increase(10)

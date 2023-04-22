@@ -103,7 +103,7 @@ export class HolyStrike extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL})
+            castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL, threatModifier: 1.1 })
 
             const battle = Game.currentBattle
 
@@ -143,7 +143,7 @@ export class OverwhelmingLight extends Skill {
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, target, threatModifier: 0})
-            target.restoreHealth(this.skillData.damage! * 2, castBy, 0.5)
+            target.restoreHealth(this.skillData.damage! * 2, castBy, 0.6)
         })
 
         if (castBy.classBar != null) {
@@ -167,17 +167,17 @@ export class OverwhelmingLight extends Skill {
 export class Smite extends Skill {
     skillData: SkillData = new SkillData({
         name: "Smite",
-        energyCost: 5,
+        energyCost: 4,
         cooldown: 5 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         castTime: 1500,
         imagePath: "/paladin/smite.png",
-        damage: 10,
+        damage: 8,
         buffDuration: 6 * 1000,
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Deal 10 magic damage to an enemy, restore 8 health to the first ally that attacks them."
+    description: string | null = "Deal 8 magic damage to an enemy, restore 6 health to the first ally that attacks them."
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (castBy.classBar) {

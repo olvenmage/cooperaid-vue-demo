@@ -199,19 +199,27 @@ export class Backstab extends Skill {
             }
 
             let damage = this.skillData.damage
+            let threatModifier = 1
 
-            if (target.ai) {
-                if (target.ai.getHighestThreatTarget()?.id !== castBy.id) {
-                    damage *= 2
+            const backstabBonus = (target.ai && target.ai.getHighestThreatTarget()?.id !== castBy.id) || target.stats.stunned
+
+            if (!target.ai) {
+                if (castBy.classBar instanceof FocusBar) {
+                    castBy.classBar.increase(3)
                 }
-            } else {
+                damage = Math.round(damage * 1.3)
+                
+            } else if (backstabBonus) {
+                damage *= 2
+
                 if (castBy.classBar instanceof FocusBar) {
                     castBy.classBar.increase(5)
                 }
-                damage = Math.round(damage * 1.3)
+
+                threatModifier += 0.25
             }
 
-            castBy.dealDamageTo({ target, type: DamageType.PHYSICAL, amount: damage })
+            castBy.dealDamageTo({ target, type: DamageType.PHYSICAL, amount: damage, threatModifier })
         })
     }
 }
