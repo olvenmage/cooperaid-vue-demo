@@ -241,7 +241,7 @@ export class LayOnHands extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            const consumeAmount = target.energyBar.current
+            const consumeAmount = castBy.energyBar.current
             
             target.restoreHealth(consumeAmount * 3, castBy, 0)
 
@@ -249,7 +249,7 @@ export class LayOnHands extends Skill {
                 castBy.classBar.increase(consumeAmount * 3)
             }
 
-            target.energyBar.decrease(consumeAmount)
+            castBy.energyBar.decrease(consumeAmount)
         })
     }
 

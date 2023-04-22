@@ -130,6 +130,7 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
         damageType: DamageType.PHYSICAL,
         maxStacks: 3,
         range: SkillRange.RANGED,
+        damage: 8
     })
 
     description: string | null = "Basic. Deal 5 physical damage to an enemy, or deal 1 piercing damage to an ally and give them a stacking speed buff"
@@ -139,13 +140,13 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
             targets.forEach((target) => {
-                castBy.dealDamageTo({ amount: 12, type: this.skillData.damageType!, target, threatModifier: 1.5})
+                castBy.dealDamageTo({ amount: this.skillData.damage, type: this.skillData.damageType!, target, threatModifier: 1.5})
             })
     
         } else {
             targets.forEach((target) => {
                 if (target.isEnemyTo(castBy)) {
-                    castBy.dealDamageTo({ amount: 5, type: this.skillData.damageType!, target})
+                    castBy.dealDamageTo({ amount: this.skillData.damage, type: this.skillData.damageType!, target})
                 } else {
                     target.addBuff(new NaturesProtectionBuff(this.skillData.buffDuration), castBy)
                     Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 2}))
@@ -173,6 +174,7 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
             castTime: 1000,
             damageType: DamageType.PHYSICAL,
             range: SkillRange.MELEE,
+            damage: 12
         })
 
         this.empowered = true
@@ -279,7 +281,6 @@ export class Renewal extends Skill implements EmpowerableSKill {
             targetType: TargetType.TARGET_SELF,
             imagePath: "/druid/bear/bestial-wrath.png",
             castTime: 1000,
-            canCastOnCooldown: true
         })
 
         this.empowered = true
@@ -334,7 +335,6 @@ export class Regrowth extends Skill implements EmpowerableSKill {
             targetType: TargetType.TARGET_NONE,
             imagePath: "/druid/bear/calm.png",
             castTime: 1000,
-            canCastOnCooldown: true
         })
 
         this.empowered = true

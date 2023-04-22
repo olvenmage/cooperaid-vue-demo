@@ -200,8 +200,8 @@ export class Backstab extends Skill {
 
             let damage = this.skillData.damage
 
-            if (castBy.ai) {
-                if (castBy.ai.getHighestThreatTarget()?.id !== castBy.id) {
+            if (target.ai) {
+                if (target.ai.getHighestThreatTarget()?.id !== castBy.id) {
                     damage *= 2
                 }
             } else {

@@ -147,7 +147,7 @@ export default class Battle {
                     state: {
                         enemies,
                         allies: allyStates.filter((a) => a.id != player.id),
-                        self: allyStates.find((a) => a.id == player.id) || player.combatCharacter!.value.getState(this)
+                        self: allyStates.find((a) => a.id == player.id) || player.combatCharacter!.getState(this)
                     }
                 })
             )

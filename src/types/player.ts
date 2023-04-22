@@ -1,3 +1,4 @@
+import pickRandom from '@/utils/pickRandom';
 import Character from './character';
 import CharacterAI from './character-ai';
 import CharacterSkills from './character-skills';
@@ -65,6 +66,7 @@ class Player {
             this.skills = [
                 ...newVal.skills
             ]
+            this.basicSkill = pickRandom(newVal.basicSkills) as Skill|null
         } else {
             this.skills = [];
         }
