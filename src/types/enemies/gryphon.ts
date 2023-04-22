@@ -98,7 +98,7 @@ class TakeFlight extends Skill {
         name: "Take Flight",
         energyCost: 5,
         cooldown: 25 * 1000,
-        castTime: 3 * 1000,
+        castTime: 4.5 * 1000,
         targetType: TargetType.TARGET_SELF,
         imagePath: null,
         range: SkillRange.RANGED,

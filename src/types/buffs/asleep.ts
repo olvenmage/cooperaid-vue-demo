@@ -10,7 +10,7 @@ import TickBuff from '../tick-buff';
 
 export default class SleepBuff extends TickBuff implements StatMutatingBuff {
     public tickInterval: number = 1000;
-    duration: number = 6 * 1000
+    duration: number = 7 * 1000
 
     triggered = false
 
@@ -26,7 +26,7 @@ export default class SleepBuff extends TickBuff implements StatMutatingBuff {
     tickEffect(character: Character): void {
         if (this.givenBy?.classBar instanceof FocusBar) {
             this.givenBy.classBar.increase(
-                4
+                3
             )
         }
     }

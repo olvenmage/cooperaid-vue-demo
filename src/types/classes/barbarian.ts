@@ -2,12 +2,10 @@ import type Character from '../character'
 import Skill, { TargetType, type CastSkillResponse, SkillRange } from '../skill';
 import PlayerIdentity, { PlayerClass } from '../player-identity'
 import ClassBar from '../class-bar';
-import Enrage from '../buffs/enrage';
 import DamageType from '../damage-type';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import CharacterStats from '../character-stats';
 import SkillData from '../skill-data';
-import type SkillDamageUpgrade from '../skill-upgrades/generic/damage-increase-skill-gem';
 import NettedBuff from '../buffs/netted';
 import RageBar from '../special-bar/rage-bar';
 
@@ -24,7 +22,7 @@ export default class Barbarian extends PlayerIdentity {
     public skills = [
         new RagingBlow(),
         new Rampage(),
-        new AxeThrow(),
+        new Shout(),
         new HeavyNet()
     ]
 

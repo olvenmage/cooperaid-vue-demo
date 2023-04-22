@@ -35,9 +35,9 @@ const classes = [
 
 const playerAssignment: Record<number, Player|null> = reactive({
   0: null,
-  // 1: null,
-  // 2: null,
-  // 3: null
+  1: null,
+  2: null,
+  3: null
 })
 
 const availableClasses = computed<PlayerIdentity[]>(() => {
@@ -108,7 +108,6 @@ function requestClassChange(playerId: string, selectIndex: number) {
 }
 
 function start() {
-  GameSettings.speedFactor = 0.5
   Game.startGame({
     players: Game.players.value as Player[],
     route: mainRoute,

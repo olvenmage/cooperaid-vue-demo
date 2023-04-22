@@ -1,7 +1,6 @@
 import type Character from '../character'
 import Skill, { AiTargetting, SkillRange, TargetType, type CastSkillResponse } from '../skill';
 import PlayerIdentity, { PlayerClass } from '../player-identity'
-import Ferocious from '../buffs/ferocious';
 import DamageType from '../damage-type';
 import CharacterStats from '../character-stats';
 import type EmpowerableSKill from '../skill-types/empowerable-skill';

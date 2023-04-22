@@ -29,6 +29,10 @@ export default class CharacterSkills {
         this.onSkillsChangedCallbacks.push(callback)
     }
 
+    resetCooldowns() {
+        this.skills.forEach((skill) => skill.finishCooldown())
+    }
+
     applyUpgrades(): void {
         this.collection.forEach((skill) => {
             skill.skillData.resetToBase()

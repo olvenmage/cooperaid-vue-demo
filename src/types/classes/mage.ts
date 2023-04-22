@@ -6,7 +6,6 @@ import DamageType from '../damage-type';
 import CharacterStats from '../character-stats';
 import DismantleBuff from '../buffs/dismantle';
 import type EmpowerableSKill from '../skill-types/empowerable-skill';
-import Empowered from '../buffs/empowered';
 import FrozenBuff from '../buffs/frozen'
 import SkillData from '../skill-data';
 import EmpowerBar from '../special-bar/empower-bar';

@@ -15,7 +15,10 @@ import Paladin from "@/types/classes/paladin";
 const mainRoute: Encounter[] = [
     new TestEncounter(),
     new CombatEncounter([
-      new Enemy(new Barbarian()),
+      new Enemy(new Bandit()),
+    ]),
+    new CombatEncounter([
+      new Enemy(new Bandit()),
     ]),
     new CombatEncounter(
       [

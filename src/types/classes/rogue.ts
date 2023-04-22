@@ -9,7 +9,6 @@ import SleepBuff from '../buffs/asleep';
 import PoisonBuff from '../buffs/poison';
 import FocusBar from '../special-bar/focus-bar'
 import SkillData from '../skill-data';
-import AdrenalineRush from '../buffs/adrenaline-rush';
 
 export default class Rogue extends PlayerIdentity {
     public name = "Rogue"
