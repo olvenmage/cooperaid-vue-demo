@@ -9,7 +9,7 @@ export default class PrimalStrikedBuff extends Buff implements StatMutatingBuff,
     duration: number = 5 * 1000
     stackAmount = 1
 
-    public imagePath: string | null = "/skills/druid/primal-striked.png"
+    public imagePath: string | null = "/skills/druid/primal-strike.png"
 
     maxStacks = 4
 
