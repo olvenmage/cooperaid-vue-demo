@@ -241,7 +241,8 @@ export default class Character {
             } : null,
             stats: this.stats.getState(),
             buffs: this.buffs.getState(),
-            dead: this.dead
+            dead: this.dead,
+            highestThreatId: this.ai?.getHighestThreatTarget()?.id ?? null
         }
         
     }

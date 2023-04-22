@@ -31,6 +31,7 @@ export default interface CharacterState {
     buffs: BuffState[]
     stats: StatsState
     dead: boolean
+    highestThreatId: string|null
 }
 
 export interface CharacterSkill {
