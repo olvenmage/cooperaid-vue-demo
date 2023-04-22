@@ -16,6 +16,7 @@ import RegrowthBuff from '../buffs/regrowth';
 import EntangleBuff from '../buffs/entangle'
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import BestialWrathBuff from '../buffs/bestial-wrath';
+import PrimalStrikedBuff from '../buffs/primal-striked';
 
 export default class Druid extends PlayerIdentity {
     public name = "Druid"
@@ -128,12 +129,12 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
         imagePath: "/druid/primal-strike.png",
         buffDuration: 5 * 1000,
         damageType: DamageType.PHYSICAL,
-        maxStacks: 3,
-        range: SkillRange.RANGED,
+        maxStacks: 4,
+        range: SkillRange.MELEE,
         damage: 8
     })
 
-    description: string | null = "Basic. Deal 5 physical damage to an enemy, or deal 1 piercing damage to an ally and give them a stacking speed buff"
+    description: string | null = "Basic. Deal 8 physical damage to an enemy, or deal 1 piercing damage to an ally and give them a stacking speed buff"
 
     empowered = false
 
@@ -148,9 +149,10 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
                 if (target.isEnemyTo(castBy)) {
                     castBy.dealDamageTo({ amount: this.skillData.damage, type: this.skillData.damageType!, target})
                 } else {
-                    target.addBuff(new NaturesProtectionBuff(this.skillData.buffDuration), castBy)
-                    Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 2}))
-                    Game.eventBus.publish(globalThreatEvent({ healer: castBy, amount: 2}))
+                    castBy.dealDamageTo({ amount: 1, minAmount: 1, type: DamageType.PHYSICAL, target })
+                    target.addBuff(new PrimalStrikedBuff(this.skillData.buffDuration), castBy)
+                    Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 3}))
+                    Game.eventBus.publish(globalThreatEvent({ healer: castBy, amount: 1}))
                 }
             })
     
