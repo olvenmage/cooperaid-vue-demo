@@ -24,7 +24,7 @@ export default class BestialWrathBuff extends TickBuff implements StatMutatingBu
    
 
     tickEffect(character: Character) {
-        if ((!(character.classBar instanceof FerocityBar)) && !character.classBar?.activated) {
+        if (!this.givenBy?.classBar?.activated) {
             this.endEffect(character)
             return
         }

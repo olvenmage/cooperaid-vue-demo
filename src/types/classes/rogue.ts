@@ -50,7 +50,7 @@ export class FanOfKnives extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         castTime: 1000,
         imagePath: "/rogue/blade-flurry.png",
-        damage: 3,
+        damage: 9,
         range: SkillRange.RANGED,
     })
 
@@ -62,11 +62,17 @@ export class FanOfKnives extends Skill {
     FOCUS_PER_ACTUAL_DAMAGE_DEALT = 2
 
     castSkill(castBy: Character, targets: Character[]): void {
+        let damage = this.skillData.damage
+
         targets.forEach((target) => {
             for (let i = 0; i < this.AMOUNT_OF_ATTACKS; i++) {
+                const daggerDamage = Math.round(damage / (this.AMOUNT_OF_ATTACKS - i))
+
+                damage -= daggerDamage
+
                 setTimeout(() => {
                     const damageResult = castBy.dealDamageTo({
-                        amount: this.skillData.damage!,
+                        amount: daggerDamage,
                         target,
                         type: DamageType.PHYSICAL,
                         threatModifier: 1.1,
@@ -74,7 +80,7 @@ export class FanOfKnives extends Skill {
                     })
 
                     if (damageResult && castBy.classBar instanceof FocusBar) {
-                        castBy.classBar.increase(Math.max(damageResult.actualDamage, this.skillData.damage!) * this.FOCUS_PER_ACTUAL_DAMAGE_DEALT)
+                        castBy.classBar.increase(Math.max(damageResult.actualDamage, daggerDamage) * this.FOCUS_PER_ACTUAL_DAMAGE_DEALT)
                     }
                 }, i * this.MS_DELAY_BETWEEN_ATTACK)
             }
