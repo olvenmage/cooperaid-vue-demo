@@ -120,7 +120,7 @@ export default class CharacterAIBrain {
         if (aiPreferredTarget == AiTargetting.RANDOM) {
             let randomTarget = pickRandom(validTargets) as Character
             bestSkill.cast(character,  () => {
-                if (randomTarget.dead) {
+                if (!randomTarget || randomTarget.dead) {
                     randomTarget = pickRandom(validTargets) as Character
                 }
 
