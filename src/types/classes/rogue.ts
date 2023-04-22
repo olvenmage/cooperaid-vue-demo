@@ -16,7 +16,7 @@ export default class Rogue extends PlayerIdentity {
     public maxHealth = 35
     public imagePath = "/classes/rogue.png"
     public playerClass = PlayerClass.ROGUE
-    public basicSkill: Skill = new PoisonedStrike()
+    public basicSkills: Skill[] = [new PoisonedStrike(), new Backstab(), new Switchblade()]
     public armor = 2
     public color = "#AB6DAC";
     public description: string = "For the rogue, the only code is the contract, and their honor is purchased in gold. Free from the constraints of a conscience, these merceranier rely on brutal and efficient tactics. Lethal assassins and masters of deception and control."
@@ -142,6 +142,80 @@ export class PoisonedStrike extends Skill {
         })
     }
 }
+
+export class Switchblade extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Switchblade",
+        energyCost: 2,
+        cooldown: 0 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        aiTargetting: AiTargetting.RANDOM,
+        castTime: 1000,
+        imagePath: "/rogue/switchblade.png",
+        damageType: DamageType.PHYSICAL,
+        damage: 4,
+        range: SkillRange.MELEE,
+    })
+
+    description: string | null = "Basic. Deal 4 + target enemy's armor in piercing damage"
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => {
+            if (castBy.classBar instanceof FocusBar) {
+                castBy.classBar.increase(2)
+            }
+
+            const damage = this.skillData.damage + target.stats.armor.value
+
+            if (castBy.classBar instanceof FocusBar) {
+                castBy.classBar.increase(target.stats.armor.value)
+            }
+
+            castBy.dealDamageTo({ target, type: DamageType.PHYSICAL, amount: damage, minAmount: damage })
+        })
+    }
+}
+
+export class Backstab extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Backstab",
+        energyCost: 2,
+        cooldown: 0 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        aiTargetting: AiTargetting.RANDOM,
+        castTime: 1000,
+        imagePath: "/rogue/backstab.png",
+        damageType: DamageType.PHYSICAL,
+        damage: 5,
+        range: SkillRange.MELEE,
+    })
+
+    description: string | null = "Basic. Deal 5 damage to an enemy, deals double damage if the enemy is attacking someone else."
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => {
+            if (castBy.classBar instanceof FocusBar) {
+                castBy.classBar.increase(3)
+            }
+
+            let damage = this.skillData.damage
+
+            if (castBy.ai) {
+                if (castBy.ai.getHighestThreatTarget()?.id !== castBy.id) {
+                    damage *= 2
+                }
+            } else {
+                if (castBy.classBar instanceof FocusBar) {
+                    castBy.classBar.increase(5)
+                }
+                damage = Math.round(damage * 1.3)
+            }
+
+            castBy.dealDamageTo({ target, type: DamageType.PHYSICAL, amount: damage })
+        })
+    }
+}
+
 
 export class Kick extends Skill {
     skillData: SkillData = new SkillData({

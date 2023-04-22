@@ -22,7 +22,7 @@ export default class Druid extends PlayerIdentity {
     public baseStats = CharacterStats.fromObject({ maxHealth: 35, armor: 1, magicalArmor: 1})
     public imagePath = "/classes/druid.png"
     public playerClass = PlayerClass.DRUID
-    public basicSkill: Skill = new CommandNature()
+    public basicSkills: Skill[] = [new CommandNature(), new PrimalStrike()]
     public color = "#105E26";
     public description: string = "The Druid harnesses the vast powers of nature to preserve balance and protect life. They are filled with the primal rage of nature and they have the ability to unleash it when pushed far enough."
 
@@ -91,6 +91,72 @@ export class CommandNature extends Skill implements EmpowerableSKill {
       
         if (!this.empowered && castBy.classBar != null) {
             castBy.classBar.increase(5)
+        }
+    }
+
+    getCastPriority(castBy: Character, target: Character): number {
+        return 20
+    }
+
+    empower(castBy: Character): void {
+        this.skillData.transform({
+            name: "Swipe",
+            energyCost: 3,
+            targetType: TargetType.TARGET_ENEMY,
+            imagePath: "/druid/bear/swipe.png",
+            castTime: 1000,
+            damageType: DamageType.PHYSICAL,
+            range: SkillRange.MELEE,
+        })
+
+        this.empowered = true
+    }
+
+    unempower(castBy: Character): void {
+        this.empowered = false
+        this.skillData.transformBack()
+    }
+}
+
+export class PrimalStrike extends Skill implements EmpowerableSKill {
+    skillData: SkillData = new SkillData({
+        name: "Primal Strike",
+        energyCost: 2,
+        cooldown: 0 * 1000,
+        targetType: TargetType.TARGET_ANY,
+        castTime: 1000,
+        imagePath: "/druid/primal-strike.png",
+        buffDuration: 5 * 1000,
+        damageType: DamageType.PHYSICAL,
+        maxStacks: 3,
+        range: SkillRange.RANGED,
+    })
+
+    description: string | null = "Basic. Deal 5 physical damage to an enemy, or deal 1 piercing damage to an ally and give them a stacking speed buff"
+
+    empowered = false
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        if (this.skillData.isTransformed) {
+            targets.forEach((target) => {
+                castBy.dealDamageTo({ amount: 12, type: this.skillData.damageType!, target, threatModifier: 1.5})
+            })
+    
+        } else {
+            targets.forEach((target) => {
+                if (target.isEnemyTo(castBy)) {
+                    castBy.dealDamageTo({ amount: 5, type: this.skillData.damageType!, target})
+                } else {
+                    target.addBuff(new NaturesProtectionBuff(this.skillData.buffDuration), castBy)
+                    Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 2}))
+                    Game.eventBus.publish(globalThreatEvent({ healer: castBy, amount: 2}))
+                }
+            })
+    
+        }
+      
+        if (!this.empowered && castBy.classBar != null) {
+            castBy.classBar.increase(7)
         }
     }
 

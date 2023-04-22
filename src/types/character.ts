@@ -53,7 +53,7 @@ export default class Character {
         this.identity = identity;
 
         if (characterSkills == null) {
-            characterSkills = new CharacterSkills(identity.skills, identity instanceof PlayerIdentity ? identity.basicSkill : null)
+            characterSkills = new CharacterSkills(identity.skills, null)
         }
         this.characterSkills = characterSkills
         this.healthBar = new Healthbar(identity.baseStats.maxHealth.value)

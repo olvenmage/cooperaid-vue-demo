@@ -15,14 +15,14 @@ export default class Barbarian extends PlayerIdentity {
     public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 2})
     public imagePath = "/classes/barbarian.png"
     public playerClass = PlayerClass.BARBARIAN
-    public basicSkill: Skill = new RecklessStrike()
+    public basicSkills: Skill[] = [new RecklessStrike(), new Shout()]
     public color = "#E7623E";
     public description: string = "The Barbarian, different as they might be, are defined by their rage: unbridled, unquenchable, and unthinking fury. With unmatched combat prowess, they are willing to go to any length to ensure victory."
 
     public skills = [
         new RagingBlow(),
         new Rampage(),
-        new Shout(),
+        new AxeThrow(),
         new HeavyNet()
     ]
 
@@ -152,17 +152,18 @@ export class Shout extends Skill {
     skillData: SkillData = new SkillData({
         name: "Shout",
         energyCost: 2,
-        cooldown: 6 * 1000,
+        cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
         castTime: 1000,
         imagePath: "/barbarian/shout.png",
         range: SkillRange.RANGED,
+        damage: 2
     })
 
-    description: string | null = "Deal 3 piercing damage to all enemies, generates a lot of threat"
+    description: string | null = "Deal 2 piercing damage to all enemies, generates a lot of threat"
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 3, target, type: DamageType.PHYSICAL, threatModifier: 3.5, minAmount: 3 }))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL, threatModifier: 3.5, minAmount: this.skillData.damage }))
     }
 }
 

@@ -9,4 +9,5 @@ export default interface IdentityState {
 export interface PlayerIdentityState extends IdentityState {
     description: string,
     skills: CharacterSkill[]
+    basicSkills: CharacterSkill[]
 }

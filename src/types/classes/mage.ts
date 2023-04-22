@@ -15,7 +15,7 @@ export default class Mage extends PlayerIdentity {
     public baseStats = CharacterStats.fromObject({ maxHealth: 30, armor: 1, magicalArmor: 1})
     public imagePath = "/classes/mage.png"
     public playerClass = PlayerClass.MAGE
-    public basicSkill: Skill = new FrostBolt()
+    public basicSkills: Skill[] = [new FrostBolt()]
     public color = "#51A5C5";
     public description: string = "The mage wields great and powerful arcane magic to incinerate their enemies or freeze them in place. To avoid interference with their spellcasting, the mage only wears cloth armor, but arcane shields and enchantments gives them and their allies additional protection."
 

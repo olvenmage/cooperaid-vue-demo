@@ -16,7 +16,7 @@ export default class Juggernaut extends PlayerIdentity {
     public baseStats = CharacterStats.fromObject({ maxHealth: 52, armor: 3})
     public imagePath = "/classes/juggernaut.png"
     public playerClass = PlayerClass.JUGGERNAUT
-    public basicSkill: Skill = new Bash()
+    public basicSkills: Skill[] = [new Bash(), new BodySlam()]
     public color = "#7F513E";
     public description: string = "The Juggernaut is a fearsome warrior covered in thick armor. They use their armor to protect allies and reduce incoming damage but do not underestimate them as their armor is also their greatest weapon."
 
@@ -32,7 +32,6 @@ export default class Juggernaut extends PlayerIdentity {
     }
 
     public skills = [
-        new BodySlam(),
         new ShieldBlock(),
         new ShieldShatter(),
         new Fortify()
@@ -77,6 +76,27 @@ export class Bash extends Skill {
             threatModifier: 1.2,
             minAmount: 1
         }))
+    }
+}
+
+export class BodySlam extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Body Slam",
+        energyCost: 2,
+        cooldown: 0 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        castTime: 1000,
+        imagePath: "/juggernaut/body-slam.png",
+        range: SkillRange.MELEE,
+    })
+
+    description: string | null = "Basic. Body slam the target, you deal twice your armor in damage to them, but they also deal damage to you based on their armor."
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => {
+            castBy.dealDamageTo({ amount: castBy.stats.armor.value * 2, target, type: DamageType.PHYSICAL, threatModifier: 1.2})
+            target.dealDamageTo({ amount: target.stats.armor.value, target: castBy, type: DamageType.PHYSICAL, threatModifier: 1.2})
+        })
     }
 }
 
@@ -143,26 +163,5 @@ export class Fortify extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => target.characterPowers.addPower(new ArmorPower()))
-    }
-}
-
-export class BodySlam extends Skill {
-    skillData: SkillData = new SkillData({
-        name: "Body Slam",
-        energyCost: 3,
-        cooldown: 1 * 1000,
-        targetType: TargetType.TARGET_ENEMY,
-        castTime: 1000,
-        imagePath: "/juggernaut/body-slam.png",
-        range: SkillRange.MELEE,
-    })
-
-    description: string | null = "Body slam the target, you deal twice your armor in damage to them, but they also deal damage to you based on their armor."
-
-    castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: castBy.stats.armor.value * 2, target, type: DamageType.PHYSICAL, threatModifier: 1.2})
-            target.dealDamageTo({ amount: target.stats.armor.value, target: castBy, type: DamageType.PHYSICAL, threatModifier: 1.2})
-        })
     }
 }

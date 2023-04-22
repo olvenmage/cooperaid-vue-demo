@@ -18,7 +18,7 @@ export default class Paladin extends PlayerIdentity {
     public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 2, magicalArmor: 1 })
     public imagePath = "/classes/paladin.png"
     public playerClass = PlayerClass.PALADIN
-    public basicSkill: Skill = new HolyShock()
+    public basicSkills: Skill[] = [new HolyShock(), new HolyStrike()]
     public color = "#B59E54";
     public description = "The Paladin vows to protect the weak and bring justice to the unjust They are equiped with plate armor so they can confront the toughest of foes, and the blessing of their God allows them to heal wounds and wield powerful holy magic to vanquish evil."
 
@@ -78,6 +78,45 @@ export class HolyShock extends Skill {
                 }
 
                 castBy.classBar.increase(holyPowerAmount)
+            }
+        })
+    }
+
+    override getCastPriority(castBy: Character, target: Character) {
+        return 95 - (target.healthBar.current / target.healthBar.max * 100)
+    }
+}
+
+export class HolyStrike extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Holy Strike",
+        energyCost: 2,
+        cooldown: 0 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        castTime: 1250,
+        imagePath: "/paladin/holy-strike.png",
+        range: SkillRange.MELEE,
+        damage: 7
+    })
+
+    description: string | null = "Basic. Deal 7 damage to an enemy and restore 3 health to the lowest health ally."
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => {
+            castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL})
+
+            const battle = Game.currentBattle
+
+            if (battle) {
+                const alliesSortedByLowHealth = battle.combatants.filter((c) => !c.isEnemyTo(castBy) && !c.dead).sort((c1, c2) => Math.sign(c1.healthBar.current - c2.healthBar.current))
+                
+                if (alliesSortedByLowHealth[0]) {
+                    alliesSortedByLowHealth[0].restoreHealth(3, castBy, 0.8)
+                }
+            }
+
+            if (castBy.classBar != null) {
+                castBy.classBar.increase(8)
             }
         })
     }

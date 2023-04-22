@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { nextTick, computed, onMounted, reactive, watch } from 'vue';
-import { TargetType } from '@/types/skill';
+import Skill, { TargetType } from '@/types/skill';
 import Game from '@/core/game';
 import Barbarian from '@/types/classes/barbarian';
 import Rogue from '@/types/classes/rogue';
@@ -13,13 +13,14 @@ import type Identity from '@/types/identity';
 import type IdentityState from '@/types/state/identity-state';
 import type LobbyState from '@/types/state/lobby-state';
 import { pubUpdateLobbyState } from '@/client-socket/OutgoingMessages';
-import { subChangePlayerClass, subRequestClassChange } from '@/client-socket/IncomingMessages';
+import { subChangePlayerClass, subRequestClassChange, subRequestBasicSkillChange } from '@/client-socket/IncomingMessages';
 import type PlayerIdentity from '@/types/player-identity';
 import PlayerSelect from './PlayerSelect.vue';
 import type Player from '@/types/player';
 import GameSettings from '@/core/settings';
 import Druid from '@/types/classes/druid';
 import mainRoute from '@/core/main-route'
+import pickRandom from '@/utils/pickRandom';
 
 
 const players = Game.players.value
@@ -50,7 +51,12 @@ const availableClassStates = computed(() => {
 
 watch(players, () => {
   for (const index in players) {
-    playerAssignment[index] = players[index] as Player
+    const plr = players[index] as Player
+    playerAssignment[index] = plr
+
+    if (!plr.basicSkill) {
+      plr.basicSkill = pickRandom(playerAssignment[index]?.playerClass?.basicSkills ?? []) as Skill|null
+    }
   }
 })
 
@@ -61,8 +67,38 @@ function setClass(playerId: string, playerClassName: string) {
       const playerClass = availableClasses.value.find((cls) => cls.name == playerClassName)
 
       if (player && playerClass) {
+          player.basicSkill = playerClass.basicSkills[0]
           player.playerClass = playerClass
       }
+}
+
+function requestBasicSkillChange(playerId: string, direction: number) {
+  const player = players.find((plr) => plr.id == playerId)
+
+  if (!player || !player.playerClass) {
+    console.log("no player or class")
+    return
+  }
+
+  if (!player.basicSkill) {
+    player.basicSkill = player.playerClass.basicSkills[0]
+    console.log("no basic skill yet")
+    return
+  }
+
+  const currentBasicSkillIndex = player.playerClass.basicSkills.findIndex((s) => s.id == player.basicSkill?.id)
+
+  if (currentBasicSkillIndex == -1) {
+    return
+  }
+
+  let newIndex = currentBasicSkillIndex + direction
+
+  if (!player.playerClass.basicSkills[newIndex]) {
+    newIndex = direction == -1 ? player.playerClass.basicSkills.length - 1 : 0
+  }
+
+  player.basicSkill = player.playerClass.basicSkills[newIndex]
 }
 
 // carousel class change
@@ -120,7 +156,11 @@ onMounted(() => {
   })
 
   presenterSocket.subscribe(subRequestClassChange , (event) => {
-    requestClassChange(event.body.playerId, event.body.selectIndex)
+    requestClassChange(event.body.playerId, event.body.direction)
+  })
+
+  presenterSocket.subscribe(subRequestBasicSkillChange , (event) => {
+    requestBasicSkillChange(event.body.playerId, event.body.direction)
   })
 
   setInterval(() => {

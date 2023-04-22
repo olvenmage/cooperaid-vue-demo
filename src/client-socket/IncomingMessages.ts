@@ -18,13 +18,18 @@ const subChangePlayerClass = createSubscribeDefinition<{
 
 const subRequestClassChange = createSubscribeDefinition<{
     playerId: string,
-    selectIndex: number
+    direction: number
 }>('RequestClassChange')
 
+const subRequestBasicSkillChange = createSubscribeDefinition<{
+    playerId: string,
+    direction: number
+}>('RequestBasicSkillChange')
 
 export {
     playerJoinMessage,
     subCastSkill,
     subChangePlayerClass,
-    subRequestClassChange
+    subRequestClassChange,
+    subRequestBasicSkillChange
 }

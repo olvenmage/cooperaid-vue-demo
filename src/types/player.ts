@@ -65,7 +65,6 @@ class Player {
             this.skills = [
                 ...newVal.skills
             ]
-            this.basicSkill = newVal.basicSkill
         } else {
             this.skills = [];
         }
@@ -120,7 +119,8 @@ class Player {
         return {
             id: this.id,
             name: this.name,
-            playerClass: this.playerClass?.getPlayerIdentityState() || null
+            playerClass: this.playerClass?.getPlayerIdentityState() || null,
+            basicSkill: this.basicSkill?.getState(null, null) || null
         }
     }
 
