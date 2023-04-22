@@ -191,7 +191,7 @@ export class SleepDart extends Skill {
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             target.addBuff(new SleepBuff(this.skillData.buffDuration!), castBy)
-            target.ai?.raiseThreat(castBy, 20)
+            target.ai?.raiseThreat(castBy, 6)
         })
     }
 }

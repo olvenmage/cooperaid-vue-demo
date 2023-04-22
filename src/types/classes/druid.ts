@@ -47,7 +47,7 @@ export default class Druid extends PlayerIdentity {
     ]
 
     generateFerocityOnDamage({character, actualDamage, damagedBy}: OnDamageTrigger) {
-        if (character.classBar == null || character.dead || actualDamage == 0) {
+        if (character.classBar == null || character.dead || actualDamage == 0 || damagedBy?.id == character.id) {
             return
         }
 
@@ -175,7 +175,7 @@ export class Thorns extends Skill implements EmpowerableSKill {
 export class Renewal extends Skill implements EmpowerableSKill {
     skillData: SkillData = new SkillData({
         name: "Renewal",
-        energyCost: 8,
+        energyCost: 7,
         cooldown: 18 * 1000,
         targetType: TargetType.TARGET_ANY,
         castTime: 1200,

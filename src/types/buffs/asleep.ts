@@ -14,7 +14,7 @@ export default class SleepBuff extends TickBuff implements StatMutatingBuff {
 
     triggered = false
 
-    callback = this.breakSap.bind(this)
+    callback = this.breakSleep.bind(this)
 
     constructor(newDuration: number) {
         super()
@@ -51,9 +51,14 @@ export default class SleepBuff extends TickBuff implements StatMutatingBuff {
         return stats
     }
 
-    breakSap(trigger: OnDamageTrigger): number {
+    breakSleep(trigger: OnDamageTrigger): number {
         if (!this.triggered && trigger.actualDamage > 0) {
             this.triggered = true
+
+            if (trigger.damagedBy) {
+                trigger.character.ai?.raiseThreat(trigger.damagedBy, 10)
+            }
+
             this.endEffect(trigger.character)
         }
 

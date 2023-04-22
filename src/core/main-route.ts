@@ -9,11 +9,13 @@ import Barbarian from "@/types/classes/barbarian";
 import Halbadier from "@/types/enemies/halbadier";
 import Archer from "@/types/enemies/archer";
 import Bandit from "@/types/enemies/bandit"
+import Rogue from "@/types/classes/rogue";
+import Paladin from "@/types/classes/paladin";
 
 const mainRoute: Encounter[] = [
     new TestEncounter(),
     new CombatEncounter([
-      new Enemy(new Bandit()),
+      new Enemy(new Barbarian()),
     ]),
     new CombatEncounter(
       [
