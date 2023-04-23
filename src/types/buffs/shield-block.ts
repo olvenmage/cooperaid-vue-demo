@@ -5,6 +5,11 @@ import DamageType from '../damage-type';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
+interface ShieldBlockBuffParams {
+    duration: number
+    durability: number
+}
+
 export default class ShieldBlockBuff extends Buff implements StatMutatingBuff {
     duration: number = 5 * 1000
     priority = BuffPriority.LAST_1
@@ -13,13 +18,13 @@ export default class ShieldBlockBuff extends Buff implements StatMutatingBuff {
 
     ARMOR_VALUE = 8
 
-    triggered = false
-
     callback = this.shieldBlock.bind(this)
+    params: ShieldBlockBuffParams
 
-    constructor(newDuration: number) {
+    constructor(params: ShieldBlockBuffParams) {
         super()
-        this.duration = newDuration
+        this.duration = params.duration
+        this.params = params
     }
 
     override startEffect(character: Character): void {
@@ -42,20 +47,19 @@ export default class ShieldBlockBuff extends Buff implements StatMutatingBuff {
         stats.armor.set(stats.armor.value + this.ARMOR_VALUE)
         stats.magicalArmor.set(stats.magicalArmor.value + stats.armor.value)
 
-        // // transform armor to +mag armor
-        // stats.armor.onChange((newVal, oldVal) => {
-        //     stats.magicalArmor.set(stats.magicalArmor.value - oldVal)
-        //     stats.magicalArmor.set(stats.magicalArmor.value + newVal)
-        // })
-    
         return stats
     }
 
     shieldBlock(trigger: OnDamageTrigger): number {
-        if (!this.triggered && trigger.damagedBy && trigger.originalDamage > (trigger.character.stats.armor.value - this.ARMOR_VALUE)) {
-            this.triggered = true
+        if (this.params.durability > 0 && trigger.damagedBy && trigger.originalDamage > (trigger.character.stats.armor.value - this.ARMOR_VALUE)) {
             trigger.character?.dealDamageTo({amount: Math.ceil(trigger.character.stats.armor.value / 2), target: trigger.damagedBy, type: DamageType.PHYSICAL, threatModifier: 2})
-            this.endEffect(trigger.character)
+            
+            this.params.durability -= 1
+
+            console.log("SHIELD BLOCK!")
+            if (this.params.durability == 0) {
+                this.endEffect(trigger.character)
+            }
         }
 
         return trigger.actualDamage

@@ -9,7 +9,7 @@ import SkillData from '../skill-data';
 import ShieldShatteredBuff from '../buffs/shield-shattered';
 import ArmorPower from '../power/armor-power';
 import RetaliationBar from '../special-bar/retaliation-bar';
-
+import DurableShieldBlockSkillGem from '../skill-upgrades/juggernaut/durable-shield-block-skill-gem copy';
 
 export default class Juggernaut extends PlayerIdentity {
     public name = "Juggernaut"
@@ -30,6 +30,8 @@ export default class Juggernaut extends PlayerIdentity {
 
         this.onDamageTakenTriggers.push(this.generateResistanceOnDamage)
     }
+
+   
 
     public skills = [
         new ShieldBlock(),
@@ -116,7 +118,10 @@ export class ShieldBlock extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            target.addBuff(new ShieldBlockBuff(this.skillData.buffDuration, ), castBy)
+            target.addBuff(new ShieldBlockBuff({
+                duration: this.skillData.buffDuration, 
+                durability: this.socketedUpgrade instanceof DurableShieldBlockSkillGem ? 2 : 1
+            }), castBy)
         })
     }
 }

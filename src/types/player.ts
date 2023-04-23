@@ -8,6 +8,11 @@ import type PlayerIdentity from './player-identity';
 import type Skill from './skill';
 import type PlayerState from './state/player-state';
 import { reactive } from 'vue'
+import Healthbar from './health-bar';
+import PlayerInventory from './player-inventory';
+import Game from '@/core/game';
+import { subStartSocketing } from '@/client-socket/IncomingMessages';
+import { pubUpdateGemSocketingState } from '@/client-socket/OutgoingMessages';
 
 abstract class PlayerNumberRegistry {
     static currentPlayerIndex = 0
@@ -34,6 +39,16 @@ abstract class PlayerNumberRegistry {
     }
 }
 
+class PlayerWorkflowState {
+    choosingReward: boolean
+    socketing: boolean
+
+    constructor() {
+        this.choosingReward = false
+        this.socketing = false;
+    }
+}
+
 class Player {
     public playerColor: string
     public playerNumber: number
@@ -43,6 +58,10 @@ class Player {
     public combatCharacter: Character|null = null
     public skills: Skill[] = []
     public basicSkill: Skill|null = null
+    public healthBar: Healthbar = new Healthbar(20)
+    public inventory = new PlayerInventory()
+
+    public state = new PlayerWorkflowState()
 
     private innerPlayerClass: PlayerIdentity|null = null
 
@@ -67,6 +86,7 @@ class Player {
                 ...newVal.skills
             ]
             this.basicSkill = pickRandom(newVal.basicSkills) as Skill|null
+            this.healthBar = new Healthbar(newVal.baseStats.maxHealth.value)
         } else {
             this.skills = [];
         }
@@ -80,6 +100,22 @@ class Player {
         if (playerClass) {
             this.setClass(playerClass)
         }
+
+
+        Game.webSocket.subscribe(subStartSocketing, () => {
+            this.state.socketing = true;
+
+            while (this.state.socketing) {
+                Game.webSocket.publish(pubUpdateGemSocketingState({
+                    playerId: this.id,
+                    state: {
+                        basicSkill: this.basicSkill!.getState(this.combatCharacter, null),
+                        skills: this.skills.map((skill) => skill.getState(this.combatCharacter, null)),
+                        inventory: this.inventory.getState(this)
+                    }
+                }))
+            }
+        })
     }
 
     setClass(playerClass: PlayerIdentity) {
@@ -102,9 +138,11 @@ class Player {
         charSkills.resetCooldowns()
         const character = reactive(new Character(this.playerClass, true, charSkills)) as Character
 
+        character.healthBar = this.healthBar
         character.id = this.id
 
         character.player = this
+
 
         this.combatCharacter = character
         
@@ -113,6 +151,7 @@ class Player {
         }
 
         character.identity.onCreated(character)
+        character.classBar?.decrease(100)
 
         return character
     }

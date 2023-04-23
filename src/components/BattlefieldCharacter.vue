@@ -23,7 +23,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(['start-cast', 'cast-at-all-enemies'])
-const hasSavingGrace = computed(() => props.character.buffs.hasBuff(SavingGrace))
+const hasSavingGrace = computed(() => props.character?.buffs?.hasBuff(SavingGrace))
 const isEnemy = props.character instanceof Enemy
 
 let color = props.character.identity.color
@@ -45,7 +45,7 @@ function startCast(skill: Skill) {
 </script>
 
 <template>
-  <div class="char-wrapper">
+  <div class="char-wrapper" v-if="character">
       <CharacterWindow :character="character" :color="color" :class="{'casting-skill': castingSkill != null, 'saving-graced': hasSavingGrace}"></CharacterWindow>
       <Healthbar :health-bar="character.healthBar" :saving-grace="hasSavingGrace"></Healthbar>
       <Energybar v-if="character.isFriendly"  :energy-bar="character.energyBar"></Energybar>

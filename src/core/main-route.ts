@@ -1,5 +1,5 @@
 import type Encounter from "./encounter";
-import { CombatEncounter, TestEncounter } from '@/core/encounter';
+import { CombatEncounter, RewardEncounter, TestEncounter } from '@/core/encounter';
 import Enemy from '@/types/enemy';
 import DragonBoss from '@/types/enemies/dragon-boss';
 import DragonEgg from '@/types/enemies/dragon-egg';
@@ -13,10 +13,10 @@ import Rogue from "@/types/classes/rogue";
 import Paladin from "@/types/classes/paladin";
 
 const mainRoute: Encounter[] = [
-    new TestEncounter(),
     new CombatEncounter([
       new Enemy(new Bandit()),
     ]),
+    new RewardEncounter(),
     new CombatEncounter([
       new Enemy(new Bandit()),
     ]),

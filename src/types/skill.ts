@@ -82,6 +82,11 @@ export default abstract class Skill {
         return true;
     }
 
+    setGem(gem: SkillUpgrade|null): this {
+        this.socketedUpgrade = gem
+        return this
+    }
+
     areTargetsValid(castBy: Character, targets: Character[]): boolean {
         if (this.skillData.targetType == TargetType.TARGET_NONE) {
             return true

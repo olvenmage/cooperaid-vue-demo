@@ -7,10 +7,20 @@ import type Encounter from "./encounter";
 import type { AppSocket } from "@/app-socket/lib/core/types";
 import presenterSocket from '../client-socket/presenter-socket'
 import { pubUpdatePlayerState } from "@/client-socket/OutgoingMessages";
+import { allRewardsChosen } from "./events";
 
 interface StartGameParams {
     players: Player[],
     route: Encounter[]
+}
+
+export enum GameState {
+    IN_SHOP,
+    GAME_OVER,
+    IN_LOBBY,
+    WAITING,
+    CHOOSING_REWARD,
+    IN_COMBAT
 }
 
 export default abstract class Game {
@@ -19,31 +29,48 @@ export default abstract class Game {
     static players = ref<Player[]>([])
     static webSocket: AppSocket = presenterSocket
     private static route: Encounter[]
-    static isGameover = false
-    static inShop = false
-    static inLobby = true
 
-    private static onCombatChangedListeners: (() => void)[] = []
-    private static onShopChangedListeners: (() => void)[] = []
-    private static onGameoverListeners: (() => void)[] = []
-    private static onInLobbyChangedListeners: (() => void)[] = []
+
+    public static state: GameState = GameState.IN_LOBBY
+
+    private static onStateChangedListeners: (() => void)[] = []
+    private static currentRouteIndex = 0
 
     static get inCombat(): boolean {
         return this.currentBattle != null
     }
 
     static async startGame(params: StartGameParams): Promise<void> {
-        this.inLobby = false
-        this.onInLobbyChangedListeners.forEach((cb) => cb())
         this.players.value = params.players.map((char) => reactive(char)) as Player[]
         this.route = params.route
+        this.currentRouteIndex = -1
+        
+        this.nextEncounter()
+    }
 
-        for (const encounter of this.route) {
-            const success = await encounter.startEncounter()
+    private static setState(newState: GameState) {
+        this.state = newState;
+        this.onStateChangedListeners.forEach((cb) => cb())
+    }
 
-            if (!success) {
-                return
-            }
+    static async nextEncounter() {
+        this.currentRouteIndex++;
+
+        if (!this.route[this.currentRouteIndex]) {
+            this.gameover()
+            return;
+        }
+
+        const result = await this.route[this.currentRouteIndex].startEncounter()
+
+        if (result.gameover) {
+            this.gameover()
+            return
+        }
+
+        if (result.startNextEncounter) {
+            console.log("start next encounter!")
+            this.nextEncounter()
         }
     }
 
@@ -75,29 +102,14 @@ export default abstract class Game {
 
     static getPlayer(playerId: string): Player|null {
         return this.players.value.find((plr) => plr.id == playerId) as Player || null
-        
+    }
+
+    static onStateChanged(cb: () => void) {
+        this.onStateChangedListeners.push(cb)
     }
 
     static gameover(): void {
-        this.isGameover = true
-
-        this.onGameoverListeners.forEach((cb) => cb())
-    }
-
-    static onShopChanged(callback: () => void) {
-        this.onShopChangedListeners.push(callback)
-    }
-
-    static onGameover(callback: () => void) {
-        this.onGameoverListeners.push(callback)
-    }
-
-    static onInLobbyChanged(callback: () => void) {
-        this.onInLobbyChangedListeners.push(callback)
-    }
-
-    static onCombatChanged(callback: () => void) {
-        this.onCombatChangedListeners.push(callback)
+        this.setState(GameState.GAME_OVER)
     }
 
     static startCombat(enemies: Enemy[]): Promise<CombatFinishedParameters> {
@@ -108,10 +120,11 @@ export default abstract class Game {
         this.currentBattle = new Battle(enemies.map((char) => reactive(char)) as Enemy[]);
         this.currentBattle.startCombat()
 
-        this.onCombatChangedListeners.forEach((cb) => cb())
+        this.setState(GameState.IN_COMBAT)
 
         return new Promise((resolve, reject) => {
             this.currentBattle!.onCombatFinished((params: CombatFinishedParameters) => {
+                console.log("combat finished")
                 this.exitCombat()
 
                 resolve(params)
@@ -120,9 +133,16 @@ export default abstract class Game {
         })
     }
 
+    static handoutRewards() {
+        this.players.value.forEach(player => {
+            player.state.choosingReward = true
+        });
+
+        this.setState(GameState.CHOOSING_REWARD)
+    }
+
     static enterShop() {
-        this.inShop = true
-        this.onShopChangedListeners.forEach((cb) => cb())
+        this.setState(GameState.IN_SHOP)
     }
 
     static stopCombat() {
@@ -135,17 +155,15 @@ export default abstract class Game {
         })
 
         this.exitCombat()
-
-       
     }
 
     static exitCombat() {
         this.currentBattle = null
 
-        this.onCombatChangedListeners.forEach((cb) => cb())
-
         Game.players.value.forEach(player => {
             player.removeCharacter()
         });
+
+        this.setState(GameState.WAITING)
     }
 }

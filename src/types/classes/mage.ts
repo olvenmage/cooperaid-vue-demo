@@ -43,7 +43,7 @@ export class FrostBolt extends Skill implements EmpowerableSKill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: 7, type: DamageType.MAGICAL, target})
+            castBy.dealDamageTo({ amount: 700, type: DamageType.MAGICAL, target})
 
             if (this.skillData.isTransformed) {
                 target.addBuff(new FrozenBuff(), castBy)

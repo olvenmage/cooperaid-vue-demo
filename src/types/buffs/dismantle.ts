@@ -6,20 +6,31 @@ import FocusBar from '../special-bar/focus-bar';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
+interface DismantleBuffParams {
+    duration: number
+    nullifies: boolean
+}
+
 export default class DismantleBuff extends Buff implements StatMutatingBuff {
     duration: number = 8 * 1000
 
     public imagePath: string | null = "/skills/rogue/dismantle.png"
 
     callback = this.giveFocusPerHit.bind(this)
+    params: DismantleBuffParams
 
-    constructor(newDuration: number) {
+    constructor(params: DismantleBuffParams) {
         super()
-        this.duration = newDuration
+        this.duration = params.duration
+        this.params = params
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
         stats.armor.set(stats.armor.value - 3)
+
+        if (this.params.nullifies) {
+            stats.magicalArmor.set(stats.magicalArmor.value - 3)
+        }
         return stats
     }
 

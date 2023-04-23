@@ -4,10 +4,12 @@ import type Player from '../../types/player';
 import type Character from '@/types/character';
 import CharacterWindow from '../CharacterWindow.vue';
 import Game from '@/core/game';
+import Healthbar from '../character/Healthbar.vue';
 
 
 const props = defineProps<{
-    player: Player|null
+    player: Player|null,
+    showHealth?: boolean
 }>()
 
 let tempCharacter = ref<Character|null>(null)
@@ -38,6 +40,7 @@ function addCPU() {
     </div>
     <slot :player="player"></slot>
     <CharacterWindow style="margin-top: 10px;" v-if="tempCharacter" :hide-name="true" :casting-skill="null" :casting=false :character="tempCharacter" />
+    <Healthbar v-if="showHealth && tempCharacter" :health-bar="tempCharacter.healthBar" :saving-grace="false" ></Healthbar>
     <button v-if="!player" class="btn btn-lg btn-primary btn-block game-font" @click="addCPU">
         ADD CHAR
     </button>

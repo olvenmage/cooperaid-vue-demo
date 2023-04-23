@@ -8,6 +8,12 @@ import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import FocusBar from '../special-bar/focus-bar';
 import TickBuff from '../tick-buff';
 
+interface SleepBuffParams {
+    duration: number,
+    paralyzes: boolean,
+    exposes: boolean
+}
+
 export default class SleepBuff extends TickBuff implements StatMutatingBuff {
     public tickInterval: number = 1000;
     duration: number = 7 * 1000
@@ -17,10 +23,12 @@ export default class SleepBuff extends TickBuff implements StatMutatingBuff {
     callback = this.breakSleep.bind(this)
     
     public imagePath: string | null = "/skills/rogue/sleep-dart.png"
+    params: SleepBuffParams
 
-    constructor(newDuration: number) {
+    constructor(params: SleepBuffParams) {
         super()
-        this.duration = newDuration
+        this.duration = params.duration
+        this.params = params
     }
 
     tickEffect(character: Character): void {
@@ -49,6 +57,10 @@ export default class SleepBuff extends TickBuff implements StatMutatingBuff {
 
     mutateStats(stats: CharacterStats): CharacterStats {
         stats.stunned = true
+
+        if (this.params.paralyzes) {
+            stats.speed.set(stats.speed.value - 50)
+        }
     
         return stats
     }
@@ -62,6 +74,10 @@ export default class SleepBuff extends TickBuff implements StatMutatingBuff {
             }
 
             this.endEffect(trigger.character)
+
+            if (this.params.exposes) {
+                return Math.round(trigger.actualDamage * 1.5)
+            }
         }
 
         return trigger.actualDamage

@@ -26,10 +26,27 @@ const subRequestBasicSkillChange = createSubscribeDefinition<{
     direction: number
 }>('RequestBasicSkillChange')
 
+const subChooseUpgradeGem =createSubscribeDefinition<{
+    playerId: string,
+    gemName: string
+}>('ChooseUpgradeGem')
+
+const subChooseReward = createSubscribeDefinition<{
+    playerId: string,
+    rewardName: string
+}>('ChooseReward')
+
+const subStartSocketing = createSubscribeDefinition<{
+    playerId: string,
+}>('StartSocketing')
+
 export {
     playerJoinMessage,
     subCastSkill,
     subChangePlayerClass,
     subRequestClassChange,
-    subRequestBasicSkillChange
+    subRequestBasicSkillChange,
+    subChooseUpgradeGem,
+    subStartSocketing,
+    subChooseReward
 }

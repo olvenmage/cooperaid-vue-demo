@@ -3,9 +3,9 @@ import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
 import { TargetType } from "../../skill";
 
-export default class ShieldBlockAlliesSkillGem extends SkillUpgradeGem {
-    public description: string = "Allows Shield Block to be cast on allies"
-    public name = "Shield Block Allies Upgrade"
+export default class DurableShieldBlockSkillGem extends SkillUpgradeGem {
+    public description: string = "Shield Block can now take two hits before breaking"
+    public name = "Durable Shield Block Allies Upgrade"
 
     public imagePath = "/juggernaut/uncommon.png"
 
@@ -14,6 +14,5 @@ export default class ShieldBlockAlliesSkillGem extends SkillUpgradeGem {
     }
 
     applyUpgrade(item: Skill) {
-       item.skillData.targetType = TargetType.TARGET_FRIENDLY
     }
 }

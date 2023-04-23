@@ -1,3 +1,4 @@
+import type Character from "@/types/character";
 import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
 

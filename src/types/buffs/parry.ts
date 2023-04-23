@@ -19,7 +19,7 @@ export class ParryHasteBuff extends Buff implements StatMutatingBuff {
 }
 
 export default class ParryBuff extends Buff {
-    duration: number = 6 * 1000
+    duration: number = 4 * 1000
     priority = BuffPriority.LAST_1
 
     public imagePath: string | null = "/buffs/parry.png"

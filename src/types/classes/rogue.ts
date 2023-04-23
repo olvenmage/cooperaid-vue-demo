@@ -9,6 +9,11 @@ import SleepBuff from '../buffs/asleep';
 import PoisonBuff from '../buffs/poison';
 import FocusBar from '../special-bar/focus-bar'
 import SkillData from '../skill-data';
+import ParalyzingDartSkillGem from '../skill-upgrades/rogue/paralyzing-dart-skill-gem';
+import NullifyingDismantleSkillGem from '../skill-upgrades/rogue/nullifying-dismantle-skill-gem';
+import ExposingDartSkillGem from '../skill-upgrades/rogue/exposing-dart-skill-gem';
+import pickRandom from '@/utils/pickRandom';
+import KnifeStormSkillGem from '../skill-upgrades/rogue/knife-storm-skill-gem';
 
 export default class Rogue extends PlayerIdentity {
     public name = "Rogue"
@@ -52,37 +57,38 @@ export class FanOfKnives extends Skill {
         range: SkillRange.RANGED,
     })
 
-    AMOUNT_OF_ATTACKS = 3
+   
     MS_DELAY_BETWEEN_ATTACK = 50
 
-    description: string | null = "Deal 3 damage to an enemy three times. (Min 1 damage per hit)"
+    description: string | null = "Deal 9 damage divided between three ranged hits. (Min 1 damage per hit)"
 
     FOCUS_PER_ACTUAL_DAMAGE_DEALT = 2
 
     castSkill(castBy: Character, targets: Character[]): void {
         let damage = this.skillData.damage
+        console.log("FAN OF KNIVES DEALS DMG: " + this.skillData.damage)
+        const AMOUNT_OF_ATTACKS = this.socketedUpgrade instanceof KnifeStormSkillGem ? 5 : 3
 
-        targets.forEach((target) => {
-            for (let i = 0; i < this.AMOUNT_OF_ATTACKS; i++) {
-                const daggerDamage = Math.round(damage / (this.AMOUNT_OF_ATTACKS - i))
+        for (let i = 0; i < AMOUNT_OF_ATTACKS; i++) {
+            const daggerDamage = Math.round(damage / (AMOUNT_OF_ATTACKS - i))
+            const target = pickRandom(targets) as Character
 
-                damage -= daggerDamage
+            damage -= daggerDamage
 
-                setTimeout(() => {
-                    const damageResult = castBy.dealDamageTo({
-                        amount: daggerDamage,
-                        target,
-                        type: DamageType.PHYSICAL,
-                        threatModifier: 1.1,
-                        minAmount: 1
-                    })
+            setTimeout(() => {
+                const damageResult = castBy.dealDamageTo({
+                    amount: daggerDamage,
+                    target,
+                    type: DamageType.PHYSICAL,
+                    threatModifier: 1.1,
+                    minAmount: 1
+                })
 
-                    if (damageResult && castBy.classBar instanceof FocusBar) {
-                        castBy.classBar.increase(Math.max(damageResult.actualDamage, daggerDamage) * this.FOCUS_PER_ACTUAL_DAMAGE_DEALT)
-                    }
-                }, i * this.MS_DELAY_BETWEEN_ATTACK)
-            }
-        })
+                if (damageResult && castBy.classBar instanceof FocusBar) {
+                    castBy.classBar.increase(Math.max(damageResult.actualDamage, daggerDamage) * this.FOCUS_PER_ACTUAL_DAMAGE_DEALT)
+                }
+            }, i * this.MS_DELAY_BETWEEN_ATTACK)
+        }
     }
 }
 
@@ -107,7 +113,10 @@ export class Dismantle extends Skill {
                 castBy.classBar.increase(4)
             }
 
-            target.addBuff(new DismantleBuff(this.skillData.buffDuration!), castBy)
+            target.addBuff(new DismantleBuff({
+                duration: this.skillData.buffDuration,
+                nullifies: this.socketedUpgrade instanceof NullifyingDismantleSkillGem
+            }), castBy)
             target.ai?.raiseThreat(castBy, 8)
         })
     }
@@ -277,7 +286,11 @@ export class SleepDart extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            target.addBuff(new SleepBuff(this.skillData.buffDuration!), castBy)
+            target.addBuff(new SleepBuff({
+                duration: this.skillData.buffDuration,
+                paralyzes: this.socketedUpgrade instanceof ParalyzingDartSkillGem,
+                exposes: this.socketedUpgrade instanceof ExposingDartSkillGem
+            }), castBy)
             target.ai?.raiseThreat(castBy, 6)
         })
     }

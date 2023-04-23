@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, computed, onMounted, reactive, watch } from 'vue';
+import { nextTick, computed, onMounted, reactive, watch, onUnmounted } from 'vue';
 import Skill, { TargetType } from '@/types/skill';
 import Game from '@/core/game';
 import Barbarian from '@/types/classes/barbarian';
@@ -36,9 +36,9 @@ const classes = [
 
 const playerAssignment: Record<number, Player|null> = reactive({
   0: null,
-  1: null,
-  2: null,
-  3: null
+  // 1: null,
+  // 2: null,
+  // 3: null
 })
 
 const availableClasses = computed<PlayerIdentity[]>(() => {
@@ -163,7 +163,7 @@ onMounted(() => {
     requestBasicSkillChange(event.body.playerId, event.body.direction)
   })
 
-  setInterval(() => {
+  const updateLobbyStateInterval = setInterval(() => {
     const state: LobbyState = {
       availableClasses: availableClassStates.value,
       players: players.map((plr) => plr.getState())
@@ -185,6 +185,8 @@ onMounted(() => {
       }))
     })
   }, 500)
+
+  onUnmounted(() => clearInterval(updateLobbyStateInterval))
 })
 
 </script>
