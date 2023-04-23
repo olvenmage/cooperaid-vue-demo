@@ -17,6 +17,7 @@ import EntangleBuff from '../buffs/entangle'
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import BestialWrathBuff from '../buffs/bestial-wrath';
 import PrimalStrikedBuff from '../buffs/primal-striked';
+import HealthyCommandNatureSkillGem from '../skill-upgrades/druid/healthy-command-skill-gem';
 
 export default class Druid extends PlayerIdentity {
     public name = "Druid"
@@ -38,6 +39,10 @@ export default class Druid extends PlayerIdentity {
     }
 
     public skills = [
+        new Regrowth(),
+    ]
+
+    possibleSkills = [
         new Thorns(),
         new Regrowth(),
         new Entangle(),
@@ -82,7 +87,10 @@ export class CommandNature extends Skill implements EmpowerableSKill {
                     castBy.dealDamageTo({ amount: 5, type: this.skillData.damageType!, target})
 
                 } else {
-                    target.addBuff(new NaturesProtectionBuff(this.skillData.buffDuration), castBy)
+                    target.addBuff(new NaturesProtectionBuff({
+                        duration: this.skillData.buffDuration,
+                        restoresHealthOnExpire: this.socketedUpgrade instanceof HealthyCommandNatureSkillGem
+                    }), castBy)
                     Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 2}))
                     Game.eventBus.publish(globalThreatEvent({ healer: castBy, amount: 2}))
                 }
@@ -307,6 +315,7 @@ export class Regrowth extends Skill implements EmpowerableSKill {
         castTime: 1200,
         imagePath: "/druid/regrowth.png",
         buffDuration: 12 * 1000,
+        healing: 16,
         range: SkillRange.RANGED,
     })
 
@@ -321,7 +330,10 @@ export class Regrowth extends Skill implements EmpowerableSKill {
             }
         } else {
             targets.forEach((target) => {
-                target.addBuff(new RegrowthBuff(this.skillData.buffDuration), castBy)
+                target.addBuff(new RegrowthBuff({
+                    duration: this.skillData.buffDuration,
+                    totalHealAmount: this.skillData.healing
+                }), castBy)
             })
 
             if (castBy.classBar instanceof FerocityBar) {

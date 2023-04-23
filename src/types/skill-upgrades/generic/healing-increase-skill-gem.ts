@@ -10,8 +10,8 @@ export default class HealingIncreaseSkillGem extends SkillUpgradeGem {
     }
 
     applyUpgrade(item: Skill) {
-       if ( item.skillData.damage != null) {
-            item.skillData.healing *= 1.2
+       if ( item.skillData.healing > 0) {
+            item.skillData.healing = Math.round(item.skillData.healing * 1.2)
        }
     }
 }

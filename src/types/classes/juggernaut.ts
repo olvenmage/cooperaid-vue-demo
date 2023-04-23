@@ -9,7 +9,8 @@ import SkillData from '../skill-data';
 import ShieldShatteredBuff from '../buffs/shield-shattered';
 import ArmorPower from '../power/armor-power';
 import RetaliationBar from '../special-bar/retaliation-bar';
-import DurableShieldBlockSkillGem from '../skill-upgrades/juggernaut/durable-shield-block-skill-gem copy';
+import DurableShieldBlockSkillGem from '../skill-upgrades/juggernaut/durable-shield-block-skill-gem';
+import MegaFortificationSkillGem from '../skill-upgrades/juggernaut/mega-fortification';
 
 export default class Juggernaut extends PlayerIdentity {
     public name = "Juggernaut"
@@ -35,8 +36,13 @@ export default class Juggernaut extends PlayerIdentity {
 
     public skills = [
         new ShieldBlock(),
+       
+    ]
+
+    possibleSkills = [
         new ShieldShatter(),
-        new Fortify()
+        new Fortify(),
+        new ShieldBlock(),
     ]
 
     generateResistanceOnDamage({ character, actualDamage, originalDamage }: OnDamageTrigger) {
@@ -167,6 +173,12 @@ export class Fortify extends Skill {
     description: string | null = "Increases your armor by 1 for the rest of combat"
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => target.characterPowers.addPower(new ArmorPower()))
+        targets.forEach((target) => {
+            target.characterPowers.addPower(new ArmorPower())
+
+            if (this.socketedUpgrade instanceof MegaFortificationSkillGem) {
+                target.characterPowers.addPower(new ArmorPower())
+            }
+        })
     }
 }

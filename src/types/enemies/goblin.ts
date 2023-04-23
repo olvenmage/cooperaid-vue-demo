@@ -10,7 +10,7 @@ import SkillData from '../skill-data';
 
 export default class Goblin extends Identity {
     public name = "Goblin"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 1 })
+    public baseStats = CharacterStats.fromObject({ maxHealth: 14, armor: 1 })
     public imagePath = "/enemies/goblin.png"
 
     public skills = [
@@ -31,7 +31,7 @@ class GoblinClobber extends Skill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 14, target, type: DamageType.PHYSICAL }))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: 10, target, type: DamageType.PHYSICAL }))
     }
 }
 
@@ -48,6 +48,6 @@ class GoblinBite extends Skill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 5, target, type: DamageType.PHYSICAL }))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: 3, target, type: DamageType.PHYSICAL }))
     }
 }

@@ -58,7 +58,7 @@ export default abstract class Skill {
     description: string|null = null
 
     currentTargets: Character[] = []
-    readonly id = "skill" + Math.random().toString(16).slice(2)
+    public id = "skill" + Math.random().toString(16).slice(2)
 
     interuptsOnDamageTakenCallback = this.onDamageTaken.bind(this)
 
@@ -311,7 +311,8 @@ export default abstract class Skill {
             cooldown: this.skillData.cooldown / GameSettings.speedFactor,
             cooldownRemaining: this.onCooldownTimer,
             buffDuration: this.skillData.buffDuration / GameSettings.speedFactor,
-            castTime: this.skillData.castTime / GameSettings.speedFactor
+            castTime: this.skillData.castTime / GameSettings.speedFactor,
+            socketedGem: this.socketedUpgrade?.getState(castBy?.identity ?? null, []) ?? null
         }
     }
 

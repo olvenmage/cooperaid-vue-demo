@@ -11,7 +11,7 @@ export default class PlayerInventory {
 
     getState(player: Player): PlayerInventoryState {
         return {
-            skillGems: this.skillGems.map((gem) => gem.getState(player))
+            skillGems: this.skillGems.map((gem) => gem.getState(player.playerClass, player.allSkills))
         }
     }
 }

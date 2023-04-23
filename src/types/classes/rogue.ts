@@ -14,6 +14,7 @@ import NullifyingDismantleSkillGem from '../skill-upgrades/rogue/nullifying-dism
 import ExposingDartSkillGem from '../skill-upgrades/rogue/exposing-dart-skill-gem';
 import pickRandom from '@/utils/pickRandom';
 import KnifeStormSkillGem from '../skill-upgrades/rogue/knife-storm-skill-gem';
+import shuffleArray from '@/utils/shuffleArray';
 
 export default class Rogue extends PlayerIdentity {
     public name = "Rogue"
@@ -37,10 +38,15 @@ export default class Rogue extends PlayerIdentity {
     }
 
     public skills = [
+        new Kick(),
+    ]
+
+    public possibleSkills = [
         new FanOfKnives(),
         new Dismantle(),
         new Kick(),
-        new SleepDart()
+        new SleepDart(),
+        new HeartSeeker(),
     ]
 }
 
@@ -66,7 +72,6 @@ export class FanOfKnives extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         let damage = this.skillData.damage
-        console.log("FAN OF KNIVES DEALS DMG: " + this.skillData.damage)
         const AMOUNT_OF_ATTACKS = this.socketedUpgrade instanceof KnifeStormSkillGem ? 5 : 3
 
         for (let i = 0; i < AMOUNT_OF_ATTACKS; i++) {
@@ -293,6 +298,39 @@ export class SleepDart extends Skill {
             }), castBy)
             target.ai?.raiseThreat(castBy, 6)
         })
+    }
+}
+
+export class HeartSeeker extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Heartseeker",
+        energyCost: 6,
+        cooldown: 14 * 1000,
+        targetType: TargetType.TARGET_ALL_ENEMIES,
+        aiTargetting: AiTargetting.RANDOM,
+        castTime: 1500,
+        imagePath: "/rogue/heartseeker.png",
+        damage: 14,
+        range: SkillRange.RANGED,
+    })
+
+    description: string | null = "Deal 14 damage to the lowest health target, if that kills it, repeat this."
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        const shoot = () => {
+            const validTargets = shuffleArray(targets).filter((t) => !t.dead).sort((c1, c2) => Math.sign(c1.healthBar.current - c2.healthBar.current)) as Character[]
+            let target = validTargets[0] ?? null
+
+            if (target != null) {
+                castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL})
+
+                if (target.dead) {
+                    shoot()
+                }
+            }
+        }
+
+        shoot()
     }
 }
 

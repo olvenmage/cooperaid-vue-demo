@@ -14,12 +14,31 @@ import Paladin from "@/types/classes/paladin";
 
 const mainRoute: Encounter[] = [
     new CombatEncounter([
-      new Enemy(new Bandit()),
+      new Enemy(new Goblin()),
+      new Enemy(new Goblin()),
+      new Enemy(new Goblin()),
     ]),
     new RewardEncounter(),
     new CombatEncounter([
       new Enemy(new Bandit()),
+      new Enemy(new Bandit()),
+      new Enemy(new Bandit()),
+      new Enemy(new Bandit()),
     ]),
+    new RewardEncounter(),
+    new CombatEncounter(
+      [
+        new Enemy(new Halbadier()),
+        new Enemy(new Archer())
+      ]
+    ),
+    new RewardEncounter(),
+    new CombatEncounter(
+      [
+        new Enemy(new Gryphon()),
+      ]
+    ),
+    new RewardEncounter(),
     new CombatEncounter(
       [
         new Enemy(new Halbadier()),
@@ -28,6 +47,7 @@ const mainRoute: Encounter[] = [
         new Enemy(new Archer())
       ]
     ),
+    new RewardEncounter(),
     new CombatEncounter([
       new Enemy(new DragonEgg()),
       new Enemy(new DragonBoss()),

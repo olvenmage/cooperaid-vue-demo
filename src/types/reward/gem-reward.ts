@@ -13,26 +13,32 @@ export default class GemReward extends Reward {
     
     onChosen(player: Player): Promise<void> {
         const gems = GemLootProvider.getUpgradeGemOptions(player, 3) as SkillUpgradeGem[]
+        let hasPickedGem = false;
 
         return new Promise((resolve, reject) => {
             Game.webSocket.publish(pubUpdatePickUpgradeGemState({
                 playerId: player.id,
-                state: gems.map((gem) => gem.getState(player))
+                state: gems.map((gem) => gem.getState(player.playerClass, []))
             }))
 
             const updateGemsInterval = setInterval(() => {
+                if (hasPickedGem) return;
                 Game.webSocket.publish(pubUpdatePickUpgradeGemState({
                     playerId: player.id,
-                    state: gems.map((gem) => gem.getState(player))
+                    state: gems.map((gem) => gem.getState(player.playerClass, []))
                 }))
             }, 2000)
            
 
             const chooseGemSubscription = Game.webSocket.subscribe(subChooseUpgradeGem, (event) => {
+                if (event.body.playerId != player.id) return
+
                 const chosenGem = gems.find((gem) => gem.name == event.body.gemName)
-                if (!chosenGem) {
+                if (!chosenGem || hasPickedGem) {
                     return;
                 }
+                hasPickedGem = true;
+                chosenGem.id = "gem" + Math.random().toString(16).slice(2)
 
                 chooseGemSubscription.unsubscribe()
                 player.inventory.addGem(chosenGem)

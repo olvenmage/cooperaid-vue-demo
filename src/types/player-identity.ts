@@ -15,6 +15,7 @@ enum PlayerClass {
 abstract class PlayerIdentity extends Identity {
     abstract playerClass: PlayerClass
     abstract basicSkills: Skill[]
+    abstract possibleSkills: Skill[]
 
     abstract description: string
 
@@ -24,7 +25,7 @@ abstract class PlayerIdentity extends Identity {
             basicSkills: this.basicSkills.map((s) => s.getState(null)),
             skills: this.skills.map((sk) => sk.getState(null))
         }
-        ) as PlayerIdentity
+        ) as PlayerIdentityState
     }
 }
 

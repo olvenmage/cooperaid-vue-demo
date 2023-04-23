@@ -31,6 +31,11 @@ const subChooseUpgradeGem =createSubscribeDefinition<{
     gemName: string
 }>('ChooseUpgradeGem')
 
+const subChooseNewSkill =createSubscribeDefinition<{
+    playerId: string,
+    skillId: string
+}>('ChooseNewSkill')
+
 const subChooseReward = createSubscribeDefinition<{
     playerId: string,
     rewardName: string
@@ -40,6 +45,16 @@ const subStartSocketing = createSubscribeDefinition<{
     playerId: string,
 }>('StartSocketing')
 
+const subStopSocketing = createSubscribeDefinition<{
+    playerId: string,
+}>('StopSocketing')
+
+const subSocketGemIntoSkill = createSubscribeDefinition<{
+    playerId: string,
+    skillId: string,
+    gemId: string
+}>('SocketGemIntoSkill')
+
 export {
     playerJoinMessage,
     subCastSkill,
@@ -47,6 +62,9 @@ export {
     subRequestClassChange,
     subRequestBasicSkillChange,
     subChooseUpgradeGem,
+    subChooseNewSkill,
     subStartSocketing,
-    subChooseReward
+    subStopSocketing,
+    subChooseReward,
+    subSocketGemIntoSkill
 }

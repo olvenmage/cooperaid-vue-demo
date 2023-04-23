@@ -5,6 +5,11 @@ import type StackingBuff from '../stacking-buff';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
+interface NaturesProtectionBuffParams {
+    duration: number
+    restoresHealthOnExpire?: boolean
+}
+
 export default class NaturesProtectionBuff extends Buff implements StatMutatingBuff, StackingBuff {
     duration: number = 5 * 1000
     callback = this.giveFerocityToDruid.bind(this)
@@ -13,10 +18,12 @@ export default class NaturesProtectionBuff extends Buff implements StatMutatingB
     public imagePath: string | null = "/skills/druid/command-nature.png"
 
     maxStacks = 3
+    params: NaturesProtectionBuffParams
 
-    constructor(newDuration: number = 5 * 1000) {
+    constructor(params: NaturesProtectionBuffParams) {
         super()
-        this.duration = newDuration
+        this.duration = params.duration
+        this.params = params
     }
 
     override startEffect(character: Character): void {
@@ -40,6 +47,10 @@ export default class NaturesProtectionBuff extends Buff implements StatMutatingB
 
         if (index != -1) {
             character.identity.onDamageTakenTriggers.splice(index, 1)
+        }
+
+        if (this.params.restoresHealthOnExpire) {
+            character.restoreHealth(this.stackAmount * 3, this.givenBy, 0.7)
         }
 
         super.endEffect(character)

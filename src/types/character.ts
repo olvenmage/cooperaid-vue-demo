@@ -95,6 +95,10 @@ export default class Character {
         return !this.stats.stunned && !this.dead
     }
 
+    resetCooldowns() {
+        this.characterSkills.resetCooldowns()
+    }
+
     removeSkill(skillClass: typeof Skill): this {
         this.characterSkills.removeSkill(skillClass)
         return this

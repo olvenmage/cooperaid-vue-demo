@@ -39,10 +39,14 @@ export default class Paladin extends PlayerIdentity {
     }
 
     public skills = [
-        new Smite(),
-        new BlessingOfProtection(),
+        new OverwhelmingLight(),
+    ]
+
+    possibleSkills = [
         new OverwhelmingLight(),
         new LayOnHands(),
+        new BlessingOfProtection(),
+        new Smite(),
     ]
 }
 
@@ -54,20 +58,19 @@ export class HolyShock extends Skill {
         targetType: TargetType.TARGET_ANY,
         castTime: 1250,
         imagePath: "/paladin/holy-shock.png",
+        healing: 5,
+        damage: 6,
         range: SkillRange.RANGED,
     })
 
     description: string | null = "Basic. Deal 6 damage to an enemy or restore 5 health to an ally."
 
-    DAMAGE_AMOUNT = 6
-    HEAL_AMOUNT = 5
-
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             if (castBy.isEnemyTo(target)) {
-                castBy.dealDamageTo({ amount: this.DAMAGE_AMOUNT, target, type: DamageType.MAGICAL})
+                castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.MAGICAL})
             } else {
-                target.restoreHealth(this.HEAL_AMOUNT, castBy, 1.0)
+                target.restoreHealth(this.skillData.healing, castBy, 1.0)
             }
 
             if (castBy.classBar != null) {
@@ -96,7 +99,8 @@ export class HolyStrike extends Skill {
         castTime: 1250,
         imagePath: "/paladin/holy-strike.png",
         range: SkillRange.MELEE,
-        damage: 7
+        damage: 7,
+        healing: 3
     })
 
     description: string | null = "Basic. Deal 7 damage to an enemy and restore 3 health to the lowest health ally."
@@ -111,7 +115,7 @@ export class HolyStrike extends Skill {
                 const alliesSortedByLowHealth = battle.combatants.filter((c) => !c.isEnemyTo(castBy) && !c.dead).sort((c1, c2) => Math.sign(c1.healthBar.current - c2.healthBar.current))
                 
                 if (alliesSortedByLowHealth[0]) {
-                    alliesSortedByLowHealth[0].restoreHealth(3, castBy, 0.8)
+                    alliesSortedByLowHealth[0].restoreHealth(this.skillData.healing, castBy, 0.8)
                 }
             }
 
@@ -138,7 +142,7 @@ export class OverwhelmingLight extends Skill {
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Deal 10 damage to any target, if they survive restore 20 health to them."
+    description: string | null = "Deal 10 damage to any target, if they survive, heal them for double the amount."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {

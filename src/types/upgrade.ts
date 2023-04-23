@@ -1,8 +1,11 @@
 import Character from "./character"
+import type Identity from "./identity"
 import type Player from "./player"
+import type Skill from "./skill"
 import type UpgradeGemState from "./state/upgrade-gem-state"
 
 export default abstract class UpgradeGem<T> {
+    public id = "gem" + Math.random().toString(16).slice(2)
     public abstract name: string
     public abstract description: string
 
@@ -11,19 +14,21 @@ export default abstract class UpgradeGem<T> {
 
     imagePath: string|null = null
 
-    getState(player: Player): UpgradeGemState {
+    getState(playerClass: Identity|null, skills: Skill[]): UpgradeGemState {
         return {
+            id: this.id,
             name: this.name,
             description: this.description,
-            imagePath: this.getImagePath(player)
+            imagePath: this.getImagePath(playerClass),
+            appliesTo: skills.filter((sk) => this.applies(sk)).map((sk) => sk.id)
         }
     }
 
-    getImagePath(player: Player): string|null {
+    getImagePath(playerClass: Identity|null): string|null {
         if (this.imagePath) {
             return this.imagePath
         }
 
-        return `/${player.playerClass?.name.toLocaleLowerCase()}/basic.png`
+        return `/${playerClass?.name.toLocaleLowerCase()}/basic.png`
     }
 }

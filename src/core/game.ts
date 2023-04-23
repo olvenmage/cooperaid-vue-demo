@@ -161,6 +161,7 @@ export default abstract class Game {
         this.currentBattle = null
 
         Game.players.value.forEach(player => {
+            player.combatCharacter?.resetCooldowns()
             player.removeCharacter()
         });
 

@@ -20,10 +20,15 @@ export default class Barbarian extends PlayerIdentity {
     public description: string = "The Barbarian, different as they might be, are defined by their rage: unbridled, unquenchable, and unthinking fury. With unmatched combat prowess, they are willing to go to any length to ensure victory."
 
     public skills = [
+        new Rampage(),
+    ]
+
+    possibleSkills: Skill[] = [
         new RagingBlow(),
         new Rampage(),
         new AxeThrow(),
-        new HeavyNet()
+        new HeavyNet(),
+        new Whirlwind(),
     ]
 
     override onCreated(character: Character) {
@@ -164,6 +169,25 @@ export class Shout extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         targets.forEach((target) => castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL, threatModifier: 3.5, minAmount: this.skillData.damage }))
+    }
+}
+
+export class Whirlwind extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Whirlwind",
+        energyCost: 8,
+        cooldown: 9 * 1000,
+        targetType: TargetType.TARGET_ALL_ENEMIES,
+        castTime: 1500,
+        imagePath: "/barbarian/whirlwind.png",
+        range: SkillRange.MELEE,
+        damage: 12
+    })
+
+    description: string | null = "Deal 12 damage to all enemies"
+
+    castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
+        targets.forEach((target) => castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL, threatModifier: 0.9 }))
     }
 }
 

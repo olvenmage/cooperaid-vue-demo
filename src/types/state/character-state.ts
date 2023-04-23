@@ -1,4 +1,5 @@
 import type StatsState from "./stats-state"
+import type UpgradeGemState from "./upgrade-gem-state"
 
 export enum CharacterSkillTargetType {
     TARGET_ENEMY,
@@ -43,6 +44,7 @@ export interface CharacterSkill {
     energyCost: number,
     validTargets: string[],
     targetType: CharacterSkillTargetType
+    socketedGem: UpgradeGemState|null
     cooldownRemaining: number // in ms speed relative,
     cooldown: number // in ms speed relative
     buffDuration: number // in ms speed relative

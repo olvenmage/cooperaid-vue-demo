@@ -11,8 +11,8 @@ import { reactive } from 'vue'
 import Healthbar from './health-bar';
 import PlayerInventory from './player-inventory';
 import Game from '@/core/game';
-import { subStartSocketing } from '@/client-socket/IncomingMessages';
-import { pubUpdateGemSocketingState } from '@/client-socket/OutgoingMessages';
+import { subSocketGemIntoSkill, subStartSocketing, subStopSocketing } from '@/client-socket/IncomingMessages';
+import { pubSetWaitingState, pubUpdateGemSocketingState } from '@/client-socket/OutgoingMessages';
 
 abstract class PlayerNumberRegistry {
     static currentPlayerIndex = 0
@@ -102,19 +102,68 @@ class Player {
         }
 
 
-        Game.webSocket.subscribe(subStartSocketing, () => {
+        Game.webSocket.subscribe(subStartSocketing, (event) => {
+            if (event.body.playerId != this.id) return
+
             this.state.socketing = true;
 
-            while (this.state.socketing) {
+            const socketingInterval = setInterval(() => {
+                const allSkills = [
+                    this.basicSkill!,
+                    ...this.skills
+                ]
+
                 Game.webSocket.publish(pubUpdateGemSocketingState({
                     playerId: this.id,
                     state: {
-                        basicSkill: this.basicSkill!.getState(this.combatCharacter, null),
-                        skills: this.skills.map((skill) => skill.getState(this.combatCharacter, null)),
+                        skills: allSkills?.map((skill) => skill.getState(this.combatCharacter, null)) ?? [],
                         inventory: this.inventory.getState(this)
                     }
                 }))
-            }
+            }, 1000)
+
+            const socketIntoSkillSubscription = Game.webSocket.subscribe(subSocketGemIntoSkill, (event) => {
+                if (event.body.playerId != this.id) return
+
+                const skill = this.allSkills.find((sk) => sk.id == event.body.skillId)
+
+                if (!skill) {
+                    return
+                }
+
+                const gemIndex = this.inventory.skillGems.findIndex((gem) => gem.id == event.body.gemId)
+
+                if (gemIndex == -1) {
+                    return
+                }
+
+                const gem = this.inventory.skillGems[gemIndex]
+
+                if (!gem.applies(skill)) {
+                    return
+                }
+
+                if (skill.socketedUpgrade) {
+                    this.inventory.addGem(skill.socketedUpgrade)
+                }
+
+                skill.socketedUpgrade = gem
+                this.inventory.skillGems.splice(gemIndex, 1)
+            })
+
+            const stopSubscription = Game.webSocket.subscribe(subStopSocketing, (event) => {
+                if (event.body.playerId != this.id) return
+                clearInterval(socketingInterval)
+                socketIntoSkillSubscription.unsubscribe()
+                stopSubscription.unsubscribe()
+                this.state.socketing = false
+
+                Game.webSocket.publish(pubSetWaitingState({
+                    playerId: this.id
+                }))
+            })
+
+            
         })
     }
 

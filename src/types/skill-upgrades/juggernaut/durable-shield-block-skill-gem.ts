@@ -5,7 +5,7 @@ import { TargetType } from "../../skill";
 
 export default class DurableShieldBlockSkillGem extends SkillUpgradeGem {
     public description: string = "Shield Block can now take two hits before breaking"
-    public name = "Durable Shield Block Allies Upgrade"
+    public name = "Durable Shield Block"
 
     public imagePath = "/juggernaut/uncommon.png"
 

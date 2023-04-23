@@ -5,7 +5,7 @@ import { TargetType } from "../../skill";
 
 export default class ShieldBlockAlliesSkillGem extends SkillUpgradeGem {
     public description: string = "Allows Shield Block to be cast on allies"
-    public name = "Shield Block Allies Upgrade"
+    public name = "Guarding Shield Block"
 
     public imagePath = "/juggernaut/uncommon.png"
 

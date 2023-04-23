@@ -11,7 +11,7 @@ export default class DamageIncreaseSkillGem extends SkillUpgradeGem {
 
     applyUpgrade(item: Skill) {
        if ( item.skillData.damage != null) {
-            item.skillData.damage *= 1.2
+            item.skillData.damage = Math.round(item.skillData.damage * 1.2)
        }
     }
 }

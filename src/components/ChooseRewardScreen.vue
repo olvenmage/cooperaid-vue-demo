@@ -23,23 +23,28 @@ function nextEncounter(): void {
 
 
 function updateRewardsInterval() {
-    const rewardOptions = [
-        new HealingReward(),
-        new SkillReward(),
-        new GemReward(),
-    ]
 
     for (const player of players.value) {
         if (player.state.choosingReward) {
+            const validRewards = [
+              new HealingReward(),
+              new GemReward(),
+            ]
+
+            if (player.skills.length < 4) {
+                validRewards.push(new SkillReward())
+            }
+
             Game.webSocket.publish(pubUpdatePickRewardState({
                 playerId: player.id,
-                state: rewardOptions.map((r) => r.getState())
+                state: validRewards.map((r) => r.getState())
             }))
 
             const chooseRewardSubscription = Game.webSocket.subscribe(subChooseReward, async (event) => {
-                const chosenReward = rewardOptions.find((reward) => reward.name == event.body.rewardName)
+                if (event.body.playerId != player.id) return
+                const chosenReward = validRewards.find((reward) => reward.name == event.body.rewardName)
 
-                if (!chosenReward) {
+                if (!chosenReward || !player.state.choosingReward) {
                   return
                 }
 
@@ -48,7 +53,6 @@ function updateRewardsInterval() {
                 chooseRewardSubscription.unsubscribe()
 
                 await chosenReward.onChosen(player)
-
             })
         }
     }

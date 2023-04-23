@@ -9,11 +9,13 @@ import CooldownReductionSkillGem from './generic/cooldown-reduction-skill-gem'
 import DamageIncreaseSkillGem from './generic/damage-increase-skill-gem'
 import HealingIncreaseSkillGem from './generic/healing-increase-skill-gem'
 import ShieldBlockAlliesSkillGem from './juggernaut/shield-block-allies-skill-gem'
-import DurableShieldBlockSkillGem from './juggernaut/durable-shield-block-skill-gem copy'
+import DurableShieldBlockSkillGem from './juggernaut/durable-shield-block-skill-gem'
 import ExposingDartSkillGem from './rogue/exposing-dart-skill-gem'
 import KnifeStormSkillGem from './rogue/knife-storm-skill-gem'
 import NullifyingDismantleSkillGem from './rogue/nullifying-dismantle-skill-gem'
 import ParalyzingDartSkillGem from './rogue/paralyzing-dart-skill-gem'
+import MegaFortificationSkillGem from './juggernaut/mega-fortification'
+import HealthyCommandNatureSkillGem from './druid/healthy-command-skill-gem'
 
 const GEMS = [
     new BuffDurationSkillGem(),
@@ -25,11 +27,14 @@ const GEMS = [
 
     new ShieldBlockAlliesSkillGem(),
     new DurableShieldBlockSkillGem(),
+    new MegaFortificationSkillGem(),
 
     new ExposingDartSkillGem(),
     new KnifeStormSkillGem(),
     new NullifyingDismantleSkillGem(),
     new ParalyzingDartSkillGem(),
+
+    new HealthyCommandNatureSkillGem()
 ]
 
 export default abstract class GemLootProvider {
