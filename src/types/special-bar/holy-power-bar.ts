@@ -21,10 +21,12 @@ export default class HolyPowerBar extends ClassBar {
     }
 
     saveTarget(character: Character, target: Character) {
-        this.activate(character)
-        target.dead = false
-        target.addBuff(this.savingGrace, character)
-        target.healthBar.current = 1
+        if (!this.activated) {
+            this.activate(character)
+            target.dead = false
+            target.addBuff(this.savingGrace, character)
+            target.healthBar.current = 1
+        }
     }
 
     override onActivatedEnd(character: Character): void {

@@ -36,13 +36,13 @@ export default class Juggernaut extends PlayerIdentity {
 
     public skills = [
         new ShieldBlock(),
-       
     ]
 
     possibleSkills = [
         new ShieldShatter(),
         new Fortify(),
         new ShieldBlock(),
+        new Overpower()
     ]
 
     generateResistanceOnDamage({ character, actualDamage, originalDamage }: OnDamageTrigger) {
@@ -104,6 +104,31 @@ export class BodySlam extends Skill {
         targets.forEach((target) => {
             castBy.dealDamageTo({ amount: castBy.stats.armor.value * 2, target, type: DamageType.PHYSICAL, threatModifier: 1.2})
             target.dealDamageTo({ amount: target.stats.armor.value, target: castBy, type: DamageType.PHYSICAL, threatModifier: 1.2})
+        })
+    }
+}
+
+export class Overpower extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Overpower",
+        energyCost: 6,
+        cooldown: 8 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        castTime: 1500,
+        imagePath: "/juggernaut/overpower.png",
+        range: SkillRange.MELEE,
+        damage: 12
+    })
+
+    description: string | null = "Deal 12 damage to a target. If you have more armor than the target, interupt spell casting."
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => {
+            castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL, threatModifier: 1.2})
+
+            if (castBy.stats.armor.value > target.stats.armor.value && target.castingSkill) {
+                target.castingSkill.interupt()
+            }
         })
     }
 }

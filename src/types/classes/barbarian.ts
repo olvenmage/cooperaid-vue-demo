@@ -8,6 +8,8 @@ import CharacterStats from '../character-stats';
 import SkillData from '../skill-data';
 import NettedBuff from '../buffs/netted';
 import RageBar from '../special-bar/rage-bar';
+import BloodthirstyRampage from '../skill-upgrades/barbarian/bloodthirsty-rampage';
+import AngryYellingSkillGem from '../skill-upgrades/barbarian/angry-yelling';
 
 
 export default class Barbarian extends PlayerIdentity {
@@ -149,7 +151,13 @@ export class Rampage extends Skill {
         const damageToDeal = Math.ceil((this.skillData.damage ?? 10) * (2 - missingHealthPercentage))
         const threatModifier = 2.5 * missingHealthPercentage
 
-        targets.forEach((target) => castBy.dealDamageTo({ amount: damageToDeal, target, type: DamageType.PHYSICAL, threatModifier }))
+        targets.forEach((target) => {
+            const damageDealt = castBy.dealDamageTo({ amount: damageToDeal, target, type: DamageType.PHYSICAL, threatModifier })
+
+            if (damageDealt && this.socketedUpgrade instanceof BloodthirstyRampage) {
+                castBy.restoreHealth(Math.floor(damageDealt.actualDamage * 0.3), castBy, 0.4)
+            }
+        })
     }
 }
 
@@ -162,13 +170,21 @@ export class Shout extends Skill {
         castTime: 1000,
         imagePath: "/barbarian/shout.png",
         range: SkillRange.RANGED,
-        damage: 2
+        damage: 8
     })
 
-    description: string | null = "Deal 2 piercing damage to all enemies, generates a lot of threat"
+    description: string | null = "Deal 8 piercing damage divided amongst all enemies, generates a lot of threat"
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL, threatModifier: 3.5, minAmount: this.skillData.damage }))
+        const damage = Math.ceil(this.skillData.damage / targets.length)
+
+        targets.forEach((target) => {
+            castBy.dealDamageTo({ amount: damage, target, type: DamageType.PHYSICAL, threatModifier: 3, minAmount: damage })
+        })
+
+        if (this.socketedUpgrade instanceof AngryYellingSkillGem && castBy.classBar) {
+            castBy.classBar.increase(targets.length)
+        }
     }
 }
 

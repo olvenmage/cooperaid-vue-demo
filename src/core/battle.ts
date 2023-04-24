@@ -95,6 +95,13 @@ export default class Battle {
 
         this.onCombatFinishedListeners.forEach((cb) => cb(combatFinishedParams))
         this.onCombatFinishedListeners = [];
+
+        if (combatFinishedParams.playersWon) {
+            Game.players.value.forEach((player) => {
+                console.log(player.combatCharacter)
+                player.combatCharacter?.buffs?.removeAllBuffs()
+            })
+        }
     }
 
     private initializeCombatants() {

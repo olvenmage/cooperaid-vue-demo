@@ -19,13 +19,19 @@ abstract class PlayerIdentity extends Identity {
 
     abstract description: string
 
+    protected onDeletedCallbacks: (() => void)[] = []
+
     getPlayerIdentityState(): PlayerIdentityState {
         return Object.assign({}, this.getState(), {
             description: this.description,
-            basicSkills: this.basicSkills.map((s) => s.getState(null)),
-            skills: this.skills.map((sk) => sk.getState(null))
+            basicSkills: this.basicSkills.map((s) => s.getState(null, null)),
+            skills: this.skills.map((sk) => sk.getState(null, null))
         }
         ) as PlayerIdentityState
+    }
+
+    onDeleted() {
+        this.onDeletedCallbacks.forEach((cb) => cb())
     }
 }
 

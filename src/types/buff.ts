@@ -32,7 +32,7 @@ export default abstract class Buff {
     public unique = false
     public priority: BuffPriority = BuffPriority.NORMAL_1
 
-    private ended = false
+    protected ended = false
 
     get durationLeft() {
         return ( this.duration / GameSettings.speedFactor) - this.durationCounter
@@ -41,6 +41,7 @@ export default abstract class Buff {
     startBuff(attachedCharacter: Character, givenBy: Character|null) {
         this.attachedCharacter = attachedCharacter
         this.givenBy = givenBy
+        this.ended = false
         this.startEffect(attachedCharacter)
         this.incrementDuration(attachedCharacter)
     }
@@ -71,6 +72,7 @@ export default abstract class Buff {
     endEffect(character: Character) {
         if (this.ended) return
         this.expiredTriggers.forEach((trigger) => trigger())
+        this.expiredTriggers = [];
         this.ended = true
     }
 

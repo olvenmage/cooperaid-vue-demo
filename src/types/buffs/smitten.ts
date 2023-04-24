@@ -3,17 +3,24 @@ import type Character from '../character';
 import DamageType from '../damage-type';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
+interface SmittenBuffParams {
+    duration: number
+    branding?: boolean
+}
+
 export default class SmittenBuff extends Buff {
     duration: number = 6 * 1000
 
     public imagePath: string | null = "/skills/paladin/smite.png"
+    params: SmittenBuffParams
     
 
-    callback = this.consumeSmitten.bind(this)
+    callback = this.restoreHealthToAlly.bind(this)
 
-    constructor(newDuration: number) {
+    constructor(params: SmittenBuffParams) {
         super()
-        this.duration = newDuration
+        this.duration = params.duration
+        this.params = params
     }
 
     override startEffect(character: Character): void {
@@ -32,14 +39,16 @@ export default class SmittenBuff extends Buff {
         super.endEffect(character)
     }
 
-    consumeSmitten(trigger: OnDamageTrigger): void {
+    restoreHealthToAlly(trigger: OnDamageTrigger): void {
         if (trigger.actualDamage > 0 && trigger.damagedBy && trigger.character.isEnemyTo(trigger.damagedBy)) {
-            this.endEffect(trigger.character)
-
-            trigger.damagedBy?.restoreHealth(6, this.givenBy, 0.5)
+            if (this.params.branding) {
+                this.givenBy?.dealDamageTo({ amount: 2, target: trigger.character, type: DamageType.MAGICAL })
+            } else {
+                trigger.damagedBy?.restoreHealth(2, this.givenBy, 0.5)
+            }
 
             if (this.givenBy?.classBar) {
-                this.givenBy.classBar.increase(10)
+                this.givenBy.classBar.increase(2)
             }
         }
     }

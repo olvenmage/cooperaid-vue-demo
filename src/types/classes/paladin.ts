@@ -11,6 +11,11 @@ import SmittenBuff from '../buffs/smitten';
 import CharacterStats from '../character-stats';
 import SkillData from '../skill-data';
 import HolyPowerBar from '../special-bar/holy-power-bar';
+import type { AppSocketSubscription } from '@/app-socket/lib/core/types';
+import OverwhelmingMartyrdom from '../skill-upgrades/paladin/overwhelming-martyrdom';
+import RejuvenatingLight from '../skill-upgrades/paladin/rejuvenating-light';
+import FinishingStrikeSkilGem from '../skill-upgrades/paladin/finishing-strike';
+import BrandingSmiteSkillGem from '../skill-upgrades/paladin/branding-smite';
 
 
 export default class Paladin extends PlayerIdentity {
@@ -22,10 +27,11 @@ export default class Paladin extends PlayerIdentity {
     public color = "#B59E54";
     public description = "The Paladin vows to protect the weak and bring justice to the unjust They are equiped with plate armor so they can confront the toughest of foes, and the blessing of their God allows them to heal wounds and wield powerful holy magic to vanquish evil."
 
+
     override onCreated(character: Character) {
         character.classBar = new HolyPowerBar()
 
-        Game.eventBus.subscribe(characterDiedEvent, event => {
+        const unsub = Game.eventBus.subscribe(characterDiedEvent, event => {
             if (character.classBar?.isFull() && character.classBar?.activated == false) {
                 if (character.isEnemyTo(event.payload.character) || !event.payload.character.dead || event.payload.character.buffs.hasBuff(SavingGrace)) {
                     return
@@ -36,10 +42,12 @@ export default class Paladin extends PlayerIdentity {
                 }
             }
         })
+
+        this.onDeletedCallbacks.push(unsub)
     }
 
     public skills = [
-        new OverwhelmingLight(),
+        new Smite(),
     ]
 
     possibleSkills = [
@@ -114,8 +122,14 @@ export class HolyStrike extends Skill {
             if (battle) {
                 const alliesSortedByLowHealth = battle.combatants.filter((c) => !c.isEnemyTo(castBy) && !c.dead).sort((c1, c2) => Math.sign(c1.healthBar.current - c2.healthBar.current))
                 
+                let healing = this.skillData.healing
+
+                if (this.socketedUpgrade instanceof FinishingStrikeSkilGem && target.dead) {
+                    healing *= 3
+                }
+
                 if (alliesSortedByLowHealth[0]) {
-                    alliesSortedByLowHealth[0].restoreHealth(this.skillData.healing, castBy, 0.8)
+                    alliesSortedByLowHealth[0].restoreHealth(healing, castBy, 0.8)
                 }
             }
 
@@ -146,7 +160,11 @@ export class OverwhelmingLight extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, target, threatModifier: 0})
+            if (this.socketedUpgrade instanceof OverwhelmingMartyrdom) {
+                castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, target: castBy, threatModifier: 0})
+            } else {
+                castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, target, threatModifier: 0})
+            }
             target.restoreHealth(this.skillData.damage! * 2, castBy, 0.6)
         })
 
@@ -156,7 +174,7 @@ export class OverwhelmingLight extends Skill {
     }
 
     override getCastPriority(castBy: Character, target: Character) {
-        if (!castBy.isEnemyTo(target) && target.healthBar.current < this.skillData.damage!) {
+        if (castBy.isEnemyTo(target) && (target.healthBar.current < this.skillData.damage! || this.socketedUpgrade instanceof OverwhelmingMartyrdom)) {
             return -50
         }
 
@@ -181,7 +199,7 @@ export class Smite extends Skill {
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Deal 8 magic damage to an enemy, restore 6 health to the first ally that attacks them."
+    description: string | null = "Smite an enemy, dealing 8 magic damage and marking them. For a duration each ally restores 2 health when they attack it."
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (castBy.classBar) {
@@ -190,7 +208,10 @@ export class Smite extends Skill {
    
         targets.forEach((target) => {
             castBy.dealDamageTo({ amount: this.skillData.damage!, target, type: DamageType.MAGICAL})
-            target.addBuff(new SmittenBuff(this.skillData.buffDuration), castBy)
+            target.addBuff(new SmittenBuff({
+                duration: this.skillData.buffDuration,
+                branding: this.socketedUpgrade instanceof BrandingSmiteSkillGem
+            }), castBy)
         })
     }
 }
@@ -248,6 +269,10 @@ export class LayOnHands extends Skill {
             const consumeAmount = castBy.energyBar.current
             
             target.restoreHealth(consumeAmount * 3, castBy, 0)
+
+            if (this.socketedUpgrade instanceof RejuvenatingLight) {
+                target.energyBar.increase(2)
+            }
 
             if (castBy.classBar != null) {
                 castBy.classBar.increase(consumeAmount * 3)

@@ -48,6 +48,8 @@ export default class Character {
 
     public isFriendly: boolean
 
+    deleted: boolean = false
+
     constructor(identity: Identity, isFriendly = false, characterSkills: CharacterSkills|null = null) {
         this.id = "char" + Math.random().toString(16).slice(2)
         this.identity = identity;
@@ -69,6 +71,11 @@ export default class Character {
     }
 
     recalculateStats() {
+        if (this.deleted) {
+            console.error("Dont recalc deleted character")
+            return
+        }
+
         this.stats.recalculateBasedOn(this.baseStats)
         this.characterPowers.mutateStats(this.stats)
         this.buffs.mutateStats(
@@ -248,6 +255,10 @@ export default class Character {
             dead: this.dead,
             highestThreatId: this.ai?.getHighestThreatTarget()?.id ?? null
         }
-        
+    }
+
+    deleteCharacter() {
+        this.buffs.removeAllBuffs()
+        this.deleted = true
     }
 }

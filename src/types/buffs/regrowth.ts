@@ -17,10 +17,23 @@ export default class RegrowthBuff extends TickBuff {
     public imagePath: string | null = "/skills/druid/regrowth.png"
     params: RegrowthBuffParams
 
+    totalTicks: number
+    tickCount: number = 0
+    leftoverHealing: number
+
     constructor(params: RegrowthBuffParams) {
         super()
         this.duration = params.duration
         this.params = params
+
+        this.totalTicks = Math.floor(this.duration / this.tickInterval)
+        this.leftoverHealing = params.totalHealAmount
+    }
+
+    startEffect(character: Character): void {
+        this.tickCount = 0
+        this.leftoverHealing = this.params.totalHealAmount
+        super.startEffect(character)
     }
 
     tickEffect(character: Character) {
@@ -32,12 +45,16 @@ export default class RegrowthBuff extends TickBuff {
             this.givenBy.classBar.increase(2)
         }
 
-        const tickAmount = Math.round(this.params.totalHealAmount / (this.duration / this.tickInterval))
+        const healAmount = Math.round(this.leftoverHealing / (this.totalTicks - this.tickCount))
+
+        this.leftoverHealing -= healAmount
 
         if (character.isEnemyTo(this.givenBy)) {
-            this.givenBy.dealDamageTo({ target: character, type: DamageType.MAGICAL, amount: tickAmount})
+            this.givenBy.dealDamageTo({ target: character, type: DamageType.MAGICAL, amount: healAmount})
         } else {
-            character.restoreHealth(tickAmount, this.givenBy, 0.5)
+            character.restoreHealth(healAmount, this.givenBy, 0.5)
         }
+
+        this.tickCount++;
     }
 }

@@ -13,6 +13,7 @@ import PlayerInventory from './player-inventory';
 import Game from '@/core/game';
 import { subSocketGemIntoSkill, subStartSocketing, subStopSocketing } from '@/client-socket/IncomingMessages';
 import { pubSetWaitingState, pubUpdateGemSocketingState } from '@/client-socket/OutgoingMessages';
+import PlayerSocketing from './player-socketing';
 
 abstract class PlayerNumberRegistry {
     static currentPlayerIndex = 0
@@ -41,11 +42,23 @@ abstract class PlayerNumberRegistry {
 
 class PlayerWorkflowState {
     choosingReward: boolean
-    socketing: boolean
 
-    constructor() {
+    public socketing: PlayerSocketing
+
+    constructor(player: Player) {
         this.choosingReward = false
-        this.socketing = false;
+        this.socketing = (new PlayerSocketing(player)).startListening()
+    }
+
+
+    stateInterval() {
+        if (this.socketing.active) {
+            this.socketing.publishSocketingState()
+        }
+    }
+
+    resetState() {
+        this.socketing.stopSocketing()
     }
 }
 
@@ -61,7 +74,8 @@ class Player {
     public healthBar: Healthbar = new Healthbar(20)
     public inventory = new PlayerInventory()
 
-    public state = new PlayerWorkflowState()
+    public state = new PlayerWorkflowState(this)
+
 
     private innerPlayerClass: PlayerIdentity|null = null
 
@@ -97,74 +111,11 @@ class Player {
         this.playerNumber = PlayerNumberRegistry.getNumber()
         this.playerColor = PlayerNumberRegistry.getColor(this.playerNumber)
 
+        setInterval(() => this.state.stateInterval(), 1000)
+
         if (playerClass) {
             this.setClass(playerClass)
         }
-
-
-        Game.webSocket.subscribe(subStartSocketing, (event) => {
-            if (event.body.playerId != this.id) return
-
-            this.state.socketing = true;
-
-            const socketingInterval = setInterval(() => {
-                const allSkills = [
-                    this.basicSkill!,
-                    ...this.skills
-                ]
-
-                Game.webSocket.publish(pubUpdateGemSocketingState({
-                    playerId: this.id,
-                    state: {
-                        skills: allSkills?.map((skill) => skill.getState(this.combatCharacter, null)) ?? [],
-                        inventory: this.inventory.getState(this)
-                    }
-                }))
-            }, 1000)
-
-            const socketIntoSkillSubscription = Game.webSocket.subscribe(subSocketGemIntoSkill, (event) => {
-                if (event.body.playerId != this.id) return
-
-                const skill = this.allSkills.find((sk) => sk.id == event.body.skillId)
-
-                if (!skill) {
-                    return
-                }
-
-                const gemIndex = this.inventory.skillGems.findIndex((gem) => gem.id == event.body.gemId)
-
-                if (gemIndex == -1) {
-                    return
-                }
-
-                const gem = this.inventory.skillGems[gemIndex]
-
-                if (!gem.applies(skill)) {
-                    return
-                }
-
-                if (skill.socketedUpgrade) {
-                    this.inventory.addGem(skill.socketedUpgrade)
-                }
-
-                skill.socketedUpgrade = gem
-                this.inventory.skillGems.splice(gemIndex, 1)
-            })
-
-            const stopSubscription = Game.webSocket.subscribe(subStopSocketing, (event) => {
-                if (event.body.playerId != this.id) return
-                clearInterval(socketingInterval)
-                socketIntoSkillSubscription.unsubscribe()
-                stopSubscription.unsubscribe()
-                this.state.socketing = false
-
-                Game.webSocket.publish(pubSetWaitingState({
-                    playerId: this.id
-                }))
-            })
-
-            
-        })
     }
 
     setClass(playerClass: PlayerIdentity) {
@@ -215,6 +166,8 @@ class Player {
     }
 
     removeCharacter() {
+        this.combatCharacter?.deleteCharacter()
+        this.playerClass?.onDeleted()
         this.combatCharacter = null 
     }
 }

@@ -18,6 +18,7 @@ import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import BestialWrathBuff from '../buffs/bestial-wrath';
 import PrimalStrikedBuff from '../buffs/primal-striked';
 import HealthyCommandNatureSkillGem from '../skill-upgrades/druid/healthy-command-skill-gem';
+import HealingIncreaseSkillGem from '../skill-upgrades/generic/healing-increase-skill-gem';
 
 export default class Druid extends PlayerIdentity {
     public name = "Druid"
@@ -39,7 +40,7 @@ export default class Druid extends PlayerIdentity {
     }
 
     public skills = [
-        new Regrowth(),
+        new Regrowth().setGem(new HealingIncreaseSkillGem()),
     ]
 
     possibleSkills = [

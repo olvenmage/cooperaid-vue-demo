@@ -61,6 +61,10 @@ export default abstract class Game {
             return;
         }
 
+        for (const player of Game.players.value) {
+            player.state.resetState()
+        }
+
         const result = await this.route[this.currentRouteIndex].startEncounter()
 
         if (result.gameover) {

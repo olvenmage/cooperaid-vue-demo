@@ -50,7 +50,7 @@ function castAtAllEnemies(skill: Skill, character: Character) {
 
   skill.cast(
     character,
-    () => combatants.filter((char) => character.isEnemyTo(char))
+    () => combatants.filter((char) => !character.dead && character.isEnemyTo(char))
   )
 }
 

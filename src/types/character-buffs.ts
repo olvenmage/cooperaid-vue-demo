@@ -94,6 +94,13 @@ export default class CharacterBuffs {
         }
     }
 
+    removeAllBuffs() {
+        this.forEach((buff) => {
+            console.log(`removing buff ${buff.constructor.name}`)
+            buff.endEffect(buff.attachedCharacter!)
+        })
+    }
+
     hasBuff(buffClass: any): boolean {
         return this.getExistingBuffByType(buffClass) != null
     }

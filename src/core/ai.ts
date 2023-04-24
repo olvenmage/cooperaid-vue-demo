@@ -62,7 +62,7 @@ export default class CharacterAIBrain {
         }
 
         if (bestSkill.skillData.targetType == TargetType.TARGET_ALL_ENEMIES) {
-            bestSkill.cast(character, () => battle.combatants.filter((combatant) => character.isEnemyTo(combatant)))
+            bestSkill.cast(character, () => battle.combatants.filter((combatant) => !character.dead && character.isEnemyTo(combatant)))
             return
         }
 
