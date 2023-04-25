@@ -39,8 +39,11 @@ function toLobby() {
 .root-div {
   width: 100vw;
   height: 100vh;
-  background: url("/src/assets/title-screen.png");
+  background: url("/src/assets/title-screen-with-characters.png");
   background-repeat: no-repeat;
   background-size: 100vw 100vh;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 }
 </style>
