@@ -41,7 +41,7 @@ class GangUp extends Skill {
             damage = battle.combatants.filter((c) => !c.dead && !c.isEnemyTo(castBy)).length * 3
         }
 
-        targets.forEach((target) => castBy.dealDamageTo({ amount: damage, target, type: DamageType.PHYSICAL }))
+        castBy.dealDamageTo({ amount: damage, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -58,6 +58,6 @@ class Slice extends Skill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 5, target, type: DamageType.PHYSICAL }))
+        castBy.dealDamageTo({ amount: 5, targets, type: DamageType.PHYSICAL })
     }
 }

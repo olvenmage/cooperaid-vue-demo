@@ -18,7 +18,7 @@ import shuffleArray from '@/utils/shuffleArray';
 
 export default class Rogue extends PlayerIdentity {
     public name = "Rogue"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 35, armor: 2})
+    public baseStats = CharacterStats.fromObject({ maxHealth: 35, armor: 2, crit: 10 })
     public maxHealth = 35
     public imagePath = "/classes/rogue.png"
     public playerClass = PlayerClass.ROGUE
@@ -83,14 +83,14 @@ export class FanOfKnives extends Skill {
             setTimeout(() => {
                 const damageResult = castBy.dealDamageTo({
                     amount: daggerDamage,
-                    target,
+                    targets: [target],
                     type: DamageType.PHYSICAL,
                     threatModifier: 1.1,
                     minAmount: 1
                 })
 
-                if (damageResult && castBy.classBar instanceof FocusBar) {
-                    castBy.classBar.increase(Math.max(damageResult.actualDamage, daggerDamage) * this.FOCUS_PER_ACTUAL_DAMAGE_DEALT)
+                if (damageResult[0] && castBy.classBar instanceof FocusBar) {
+                    castBy.classBar.increase(Math.max(damageResult[0].actualDamage, daggerDamage) * this.FOCUS_PER_ACTUAL_DAMAGE_DEALT)
                 }
             }, i * this.MS_DELAY_BETWEEN_ATTACK)
         }
@@ -146,12 +146,13 @@ export class PoisonedStrike extends Skill {
     description: string | null = "Basic. Deal 4 damage to an enemy and apply a stacking poison debuff for a medium duration (stacks 3 times)"
 
     castSkill(castBy: Character, targets: Character[]): void {
+        castBy.dealDamageTo({ targets, type: DamageType.PHYSICAL, amount: this.skillData.damage! })
+
         targets.forEach((target) => {
             if (castBy.classBar instanceof FocusBar) {
                 castBy.classBar.increase(2)
             }
-
-            castBy.dealDamageTo({ target, type: DamageType.PHYSICAL, amount: this.skillData.damage! })
+           
             target.addBuff(new PoisonBuff(1, this.skillData.buffDuration!, this.skillData.maxStacks!), castBy)
         })
     }
@@ -185,7 +186,7 @@ export class Switchblade extends Skill {
                 castBy.classBar.increase(target.stats.armor.value)
             }
 
-            castBy.dealDamageTo({ target, type: DamageType.PHYSICAL, amount: damage, minAmount: damage })
+            castBy.dealDamageTo({ targets: [target], type: DamageType.PHYSICAL, amount: damage, minAmount: damage })
         })
     }
 }
@@ -233,7 +234,7 @@ export class Backstab extends Skill {
                 threatModifier += 0.25
             }
 
-            castBy.dealDamageTo({ target, type: DamageType.PHYSICAL, amount: damage, threatModifier })
+            castBy.dealDamageTo({ targets: [target], type: DamageType.PHYSICAL, amount: damage, threatModifier })
         })
     }
 }
@@ -257,7 +258,7 @@ export class Kick extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: this.skillData.damage!, target, type: this.skillData.damageType!, threatModifier: 1.3 })
+            castBy.dealDamageTo({ amount: this.skillData.damage!, targets: [target], type: this.skillData.damageType!, threatModifier: 1.3 })
 
             if (castBy.classBar instanceof FocusBar) {
                 castBy.classBar.increase(4)
@@ -322,7 +323,7 @@ export class HeartSeeker extends Skill {
             let target = validTargets[0] ?? null
 
             if (target != null) {
-                castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL})
+                castBy.dealDamageTo({ amount: this.skillData.damage, targets: [target], type: DamageType.PHYSICAL})
 
                 if (target.dead) {
                     shoot()

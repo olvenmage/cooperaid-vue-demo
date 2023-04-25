@@ -43,7 +43,7 @@ class BeakAttack extends Skill {
     }
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 12, target, type: DamageType.PHYSICAL }))
+        castBy.dealDamageTo({ amount: 12, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -68,7 +68,7 @@ class SkyDive extends Skill {
     }
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL }))
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -86,8 +86,9 @@ class Squawk extends Skill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
+        castBy.dealDamageTo({ amount: 2, targets, type: DamageType.PHYSICAL, minAmount: 2 })
+
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: 2, target, type: DamageType.PHYSICAL, minAmount: 2 })
             target.addBuff(new PiercedEarsBuff(), castBy)
         })
     }

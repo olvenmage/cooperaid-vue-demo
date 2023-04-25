@@ -72,7 +72,7 @@ export class WhelpBite extends Skill {
 
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 5, target, type: DamageType.PHYSICAL }))
+        castBy.dealDamageTo({ amount: 5, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -88,6 +88,6 @@ export class Ember extends Skill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 8, target, type: DamageType.MAGICAL }))
+        castBy.dealDamageTo({ amount: 8, targets, type: DamageType.MAGICAL })
     }
 }

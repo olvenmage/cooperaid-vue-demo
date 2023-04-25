@@ -31,7 +31,7 @@ class GoblinClobber extends Skill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 12, target, type: DamageType.PHYSICAL }))
+        castBy.dealDamageTo({ amount: 12, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -48,6 +48,6 @@ class GoblinBite extends Skill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 4, target, type: DamageType.PHYSICAL }))
+        castBy.dealDamageTo({ amount: 4, targets, type: DamageType.PHYSICAL })
     }
 }

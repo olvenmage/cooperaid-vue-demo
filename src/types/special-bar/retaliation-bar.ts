@@ -44,9 +44,10 @@ export default class RetaliationBar extends ClassBar {
 
         params.character.dealDamageTo({
             amount: params.originalDamage - params.actualDamage,
-            target: params.damagedBy,
+            targets: [params.damagedBy],
             type: DamageType.PHYSICAL,
-            threatModifier: 2
+            threatModifier: 2,
+            noCrit: true
         })
     }
 }   

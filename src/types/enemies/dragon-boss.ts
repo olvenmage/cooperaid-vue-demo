@@ -36,7 +36,7 @@ export class DragonThrash extends Skill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 12, target, type: DamageType.PHYSICAL }))
+        castBy.dealDamageTo({ amount: 12, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -52,8 +52,7 @@ export class DragonSwipe extends Skill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 12, target, type: DamageType.PHYSICAL }))
+        castBy.dealDamageTo({ amount: 12, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -91,13 +90,13 @@ export class FireBreath extends Skill {
     castSkill(castBy: Character, targets: Character[]): void {
         const dragonIdentity = castBy.identity
         if (dragonIdentity instanceof DragonBoss) {
-            targets.forEach((target) => {
-                castBy.dealDamageTo({
-                    amount: randomRange(18, 18 + dragonIdentity.stackingFireDamage),
-                    target,
-                    type: DamageType.MAGICAL
-                })
+            castBy.dealDamageTo({
+                amount: randomRange(18, 18 + dragonIdentity.stackingFireDamage),
+                targets,
+                type: DamageType.MAGICAL
+            })
 
+            targets.forEach((target) => {
                 target.addBuff(new MeltedArmorBuff(), castBy)
             })
         }

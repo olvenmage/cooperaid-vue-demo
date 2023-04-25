@@ -52,7 +52,7 @@ export default class ShieldBlockBuff extends Buff implements StatMutatingBuff {
 
     shieldBlock(trigger: OnDamageTrigger): number {
         if (this.params.durability > 0 && trigger.damagedBy && trigger.originalDamage > (trigger.character.stats.armor.value - this.ARMOR_VALUE)) {
-            trigger.character?.dealDamageTo({amount: Math.ceil(trigger.character.stats.armor.value / 2), target: trigger.damagedBy, type: DamageType.PHYSICAL, threatModifier: 2})
+            trigger.character?.dealDamageTo({amount: Math.ceil(trigger.character.stats.armor.value / 2), targets: [trigger.damagedBy], type: DamageType.PHYSICAL, threatModifier: 2})
             
             this.params.durability -= 1
 

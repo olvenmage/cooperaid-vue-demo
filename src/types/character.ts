@@ -116,15 +116,32 @@ export default class Character {
         return this
     }
 
-    dealDamageTo(damage: DealDamageToParams): OnDamageTrigger|null {
+    dealDamageTo(damage: DealDamageToParams): OnDamageTrigger[] {
         if (this.dead) {
-            return null
+            return []
         }
 
-        return damage.target.takeDamage({
-            ...damage,
-            damagedBy: this
-        })
+        let isCrit = false
+
+        console.log(`deal damage, crit : ${this.stats.crit.value}`)
+        if (!damage.noCrit && (Math.random() * 100) <= this.stats.crit.value ) {
+            isCrit = true
+            damage.amount *= 2
+        }
+
+        const onDamages: (OnDamageTrigger|null)[] = [];
+
+        for (const target of damage.targets) {
+            onDamages.push(
+                target.takeDamage({
+                    ...damage,
+                    isCrit,
+                    damagedBy: this
+                })
+            )
+        }
+
+        return onDamages.filter((c) => c != null) as OnDamageTrigger[]
     }
 
     takeDamage(damage: TakeDamageParams): OnDamageTrigger|null {
@@ -153,7 +170,8 @@ export default class Character {
             originalDamage: damage.amount,
             damagedBy: damage.damagedBy,
             damageType: damage.type,
-            threatModifier: damage.threatModifier ?? 1
+            threatModifier: damage.threatModifier ?? 1,
+            isCrit: damage.isCrit ?? false
         }
 
         for (const beforeDamageTrigger of this.identity.beforeDamageTakenTriggers) {

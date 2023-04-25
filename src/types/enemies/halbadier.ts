@@ -51,7 +51,7 @@ class Poke extends Skill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 6, target, type: DamageType.PHYSICAL }))
+        castBy.dealDamageTo({ amount: 6, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -67,6 +67,6 @@ class OverheadSlash extends Skill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 14, target, type: DamageType.PHYSICAL }))
+        castBy.dealDamageTo({ amount: 14, targets, type: DamageType.PHYSICAL })
     }
 }

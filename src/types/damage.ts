@@ -1,4 +1,5 @@
 import type Character from "./character";
+import type DamageSchool from "./damage-school";
 import type DamageType from "./damage-type";
 
 export interface TakeDamageParams {
@@ -6,6 +7,7 @@ export interface TakeDamageParams {
     minAmount?: number,
     type: DamageType,
     damagedBy: Character,
+    isCrit?: boolean
     threatModifier?: number
 }
 
@@ -13,6 +15,8 @@ export interface DealDamageToParams {
     amount: number,
     minAmount?: number,
     type: DamageType,
-    target: Character,
-    threatModifier?: number
+    school?: DamageSchool
+    targets: Character[],
+    threatModifier?: number,
+    noCrit?: boolean
 }

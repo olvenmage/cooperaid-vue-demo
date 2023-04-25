@@ -50,7 +50,7 @@ export default class RegrowthBuff extends TickBuff {
         this.leftoverHealing -= healAmount
 
         if (character.isEnemyTo(this.givenBy)) {
-            this.givenBy.dealDamageTo({ target: character, type: DamageType.MAGICAL, amount: healAmount})
+            this.givenBy.dealDamageTo({ targets: [character], type: DamageType.MAGICAL, amount: healAmount, noCrit: true })
         } else {
             character.restoreHealth(healAmount, this.givenBy, 0.5)
         }

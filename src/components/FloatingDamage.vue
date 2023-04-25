@@ -7,10 +7,16 @@ const props = defineProps<{
   damage: OnDamageTrigger
 }>()
 
+let baseFontSize = 40
+
+if (props.damage.isCrit) {
+  baseFontSize += 10
+}
+
 const style = ref({
   left: randomRange(20, 200) + "px",
   top: randomRange(10, 60) + "px",
-  fontSize: "40px",
+  fontSize: `${baseFontSize}px`,
   color: 'white'
 })
 
@@ -20,15 +26,15 @@ onMounted(() => {
     style.value.color = props.damage.damagedBy.identity.color;
   }
   setTimeout(() => {
-    style.value.fontSize = '43px'
+    style.value.fontSize = `${baseFontSize + 3}px`
   }, 200);
 
   setTimeout(() => {
-    style.value.fontSize = '46px'
+    style.value.fontSize = `${baseFontSize} + 6}px`
   }, 500);
 
   setTimeout(() => {
-    style.value.fontSize = '49px'
+    style.value.fontSize = `${baseFontSize} + 9}px`
   }, 800);
 })
 
@@ -36,7 +42,7 @@ onMounted(() => {
 
 <template>
   <div :style="style" class="damage-float">
-    -{{ damage.actualDamage }}
+    -{{ damage.actualDamage }}<template v-if="damage.isCrit">!</template>
   </div>
 </template>
 

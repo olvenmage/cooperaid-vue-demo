@@ -48,7 +48,7 @@ class Shoot extends Skill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 9, target, type: DamageType.PHYSICAL }))
+        castBy.dealDamageTo({ amount: 9, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -65,6 +65,6 @@ class Assasinate extends Skill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 18, target, type: DamageType.PHYSICAL }))
+        castBy.dealDamageTo({ amount: 18, targets, type: DamageType.PHYSICAL })
     }
 }

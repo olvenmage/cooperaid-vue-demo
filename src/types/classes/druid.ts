@@ -22,7 +22,7 @@ import HealingIncreaseSkillGem from '../skill-upgrades/generic/healing-increase-
 
 export default class Druid extends PlayerIdentity {
     public name = "Druid"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 35, armor: 1, magicalArmor: 1})
+    public baseStats = CharacterStats.fromObject({ maxHealth: 35, armor: 1, magicalArmor: 1, crit: 5 })
     public imagePath = "/classes/druid.png"
     public playerClass = PlayerClass.DRUID
     public basicSkills: Skill[] = [new CommandNature(), new PrimalStrike()]
@@ -78,14 +78,11 @@ export class CommandNature extends Skill implements EmpowerableSKill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
-            targets.forEach((target) => {
-                castBy.dealDamageTo({ amount: 12, type: this.skillData.damageType!, target, threatModifier: 1.5})
-            })
-    
+            castBy.dealDamageTo({ amount: 12, type: this.skillData.damageType!, targets, threatModifier: 1.5})
         } else {
             targets.forEach((target) => {
                 if (target.isEnemyTo(castBy)) {
-                    castBy.dealDamageTo({ amount: 5, type: this.skillData.damageType!, target})
+                    castBy.dealDamageTo({ amount: 5, type: this.skillData.damageType!, targets: [target]})
 
                 } else {
                     target.addBuff(new NaturesProtectionBuff({
@@ -149,16 +146,13 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
-            targets.forEach((target) => {
-                castBy.dealDamageTo({ amount: this.skillData.damage, type: this.skillData.damageType!, target, threatModifier: 1.5})
-            })
-    
+            castBy.dealDamageTo({ amount: 12, type: this.skillData.damageType!, targets, threatModifier: 1.5})
         } else {
             targets.forEach((target) => {
                 if (target.isEnemyTo(castBy)) {
-                    castBy.dealDamageTo({ amount: this.skillData.damage, type: this.skillData.damageType!, target})
+                    castBy.dealDamageTo({ amount: this.skillData.damage, type: this.skillData.damageType!, targets: [target]})
                 } else {
-                    castBy.dealDamageTo({ amount: 1, minAmount: 1, type: DamageType.PHYSICAL, target })
+                    castBy.dealDamageTo({ amount: 1, minAmount: 1, type: DamageType.PHYSICAL, targets: [target] })
                     target.addBuff(new PrimalStrikedBuff(this.skillData.buffDuration), castBy)
                     Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 3}))
                     Game.eventBus.publish(globalThreatEvent({ healer: castBy, amount: 1}))
@@ -377,9 +371,9 @@ export class Entangle extends Skill implements EmpowerableSKill {
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         if (this.skillData.isTransformed) {
-            targets.forEach((target) => {
-                castBy.dealDamageTo({ amount: 14, target, type: DamageType.PHYSICAL, threatModifier: 1.4 })
+            castBy.dealDamageTo({ amount: 14, targets, type: DamageType.PHYSICAL, threatModifier: 1.4 })
 
+            targets.forEach((target) => {
                 if (target.castingSkill) {
                     target.castingSkill.interupt()
                 }

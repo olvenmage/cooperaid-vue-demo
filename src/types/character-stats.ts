@@ -6,7 +6,8 @@ export interface StatsOptionsConstructor {
     armor?: number,
     magicalArmor?: number
     speed?: number
-    energyBoost?: number
+    energyBoost?: number,
+    crit ?: number
 }
 
 class CharacterStat {
@@ -39,15 +40,17 @@ export default class CharacterStats {
     public magicalArmor = new CharacterStat()
     public energyBoost = new CharacterStat()
     public speed = new CharacterStat()
+    public crit = new CharacterStat()
     public stunned = false
     public flying = false
 
-    constructor(maxHealth: number, armor = 0, magicalArmor = 0, energyBoost = 0, speed = 0) {
+    constructor(maxHealth: number, armor = 0, magicalArmor = 0, energyBoost = 0, speed = 0, crit = 0) {
         this.maxHealth.set(maxHealth)
         this.armor.set(armor)
         this.magicalArmor.set(magicalArmor)
         this.energyBoost.set(energyBoost)
         this.speed.set(speed)
+        this.crit.set(crit)
     }
 
     static fromObject(object: StatsOptionsConstructor) {
@@ -56,7 +59,8 @@ export default class CharacterStats {
             object.armor || 0,
             object.magicalArmor || 0,
             object.energyBoost || 0,
-            object.speed || 0
+            object.speed || 0,
+            object.crit || 0
         )
     }
 
@@ -66,7 +70,8 @@ export default class CharacterStats {
             this.armor.value,
             this.magicalArmor.value,
             this.energyBoost.value,
-            this.speed.value
+            this.speed.value,
+            this.crit.value
         )
     }
 
@@ -76,6 +81,7 @@ export default class CharacterStats {
         this.maxHealth.recalculate(stats.maxHealth.value)
         this.energyBoost.recalculate(stats.energyBoost.value)
         this.speed.recalculate(stats.speed.value)
+        this.crit.recalculate(stats.crit.value)
         this.stunned = false
         this.flying = false
     }

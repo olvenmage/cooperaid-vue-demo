@@ -12,7 +12,7 @@ import EmpowerBar from '../special-bar/empower-bar';
 
 export default class Mage extends PlayerIdentity {
     public name = "Mage"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 30, armor: 1, magicalArmor: 1})
+    public baseStats = CharacterStats.fromObject({ maxHealth: 30, armor: 1, magicalArmor: 1, crit: 5 })
     public imagePath = "/classes/mage.png"
     public playerClass = PlayerClass.MAGE
     public basicSkills: Skill[] = [new FrostBolt()]
@@ -28,6 +28,8 @@ export default class Mage extends PlayerIdentity {
     }
 
     public skills = []
+
+    possibleSkills: Skill[] = [];
 }
 
 export class FrostBolt extends Skill implements EmpowerableSKill {
@@ -42,9 +44,9 @@ export class FrostBolt extends Skill implements EmpowerableSKill {
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: 700, type: DamageType.MAGICAL, target})
+        castBy.dealDamageTo({ amount: 700, type: DamageType.MAGICAL, targets })
 
+        targets.forEach((target) => {
             if (this.skillData.isTransformed) {
                 target.addBuff(new FrozenBuff(), castBy)
             }

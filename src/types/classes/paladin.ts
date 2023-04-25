@@ -20,7 +20,7 @@ import BrandingSmiteSkillGem from '../skill-upgrades/paladin/branding-smite';
 
 export default class Paladin extends PlayerIdentity {
     public name = "Paladin"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 2, magicalArmor: 1 })
+    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 2, magicalArmor: 1, crit: 5 })
     public imagePath = "/classes/paladin.png"
     public playerClass = PlayerClass.PALADIN
     public basicSkills: Skill[] = [new HolyShock(), new HolyStrike()]
@@ -114,9 +114,9 @@ export class HolyStrike extends Skill {
     description: string | null = "Basic. Deal 7 damage to an enemy and restore 3 health to the lowest health ally."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL, threatModifier: 1.1 })
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL, threatModifier: 1.1 })
 
+        targets.forEach((target) => {
             const battle = Game.currentBattle
 
             if (battle) {
@@ -161,10 +161,11 @@ export class OverwhelmingLight extends Skill {
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             if (this.socketedUpgrade instanceof OverwhelmingMartyrdom) {
-                castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, target: castBy, threatModifier: 0})
+                castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, targets: [castBy], threatModifier: 0, noCrit: true })
             } else {
-                castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, target, threatModifier: 0})
+                castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, targets: [target], threatModifier: 0, noCrit: true })
             }
+
             target.restoreHealth(this.skillData.damage! * 2, castBy, 0.6)
         })
 
@@ -205,9 +206,11 @@ export class Smite extends Skill {
         if (castBy.classBar) {
             castBy.classBar.increase(12)
         }
-   
+
+        castBy.dealDamageTo({ amount: this.skillData.damage!, targets, type: DamageType.MAGICAL})
+
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: this.skillData.damage!, target, type: DamageType.MAGICAL})
+          
             target.addBuff(new SmittenBuff({
                 duration: this.skillData.buffDuration,
                 branding: this.socketedUpgrade instanceof BrandingSmiteSkillGem

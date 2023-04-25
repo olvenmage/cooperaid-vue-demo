@@ -14,7 +14,7 @@ import AngryYellingSkillGem from '../skill-upgrades/barbarian/angry-yelling';
 
 export default class Barbarian extends PlayerIdentity {
     public name = "Barbarian"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 2})
+    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 2, crit: 5 })
     public imagePath = "/classes/barbarian.png"
     public playerClass = PlayerClass.BARBARIAN
     public basicSkills: Skill[] = [new RecklessStrike(), new Shout()]
@@ -86,7 +86,7 @@ export class RecklessStrike extends Skill {
     description: string | null = "Basic. Take 4 damage to deal 10 damage to an enemy."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: this.skillData.damage ?? 0, type: DamageType.PHYSICAL, threatModifier: 0.8, target }))
+        castBy.dealDamageTo({ amount: this.skillData.damage ?? 0, type: DamageType.PHYSICAL, threatModifier: 0.8, targets })
     }
 
     beforeCast(castBy: Character): void {
@@ -151,13 +151,13 @@ export class Rampage extends Skill {
         const damageToDeal = Math.ceil((this.skillData.damage ?? 10) * (2 - missingHealthPercentage))
         const threatModifier = 2.5 * missingHealthPercentage
 
-        targets.forEach((target) => {
-            const damageDealt = castBy.dealDamageTo({ amount: damageToDeal, target, type: DamageType.PHYSICAL, threatModifier })
+        const damageResults = castBy.dealDamageTo({ amount: damageToDeal, targets, type: DamageType.PHYSICAL, threatModifier })
 
-            if (damageDealt && this.socketedUpgrade instanceof BloodthirstyRampage) {
+        if (this.socketedUpgrade instanceof BloodthirstyRampage) {
+            for (const damageDealt of damageResults) {
                 castBy.restoreHealth(Math.floor(damageDealt.actualDamage * 0.3), castBy, 0.4)
             }
-        })
+        }
     }
 }
 
@@ -178,9 +178,7 @@ export class Shout extends Skill {
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         const damage = Math.ceil(this.skillData.damage / targets.length)
 
-        targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: damage, target, type: DamageType.PHYSICAL, threatModifier: 3, minAmount: damage })
-        })
+        castBy.dealDamageTo({ amount: damage, targets, type: DamageType.PHYSICAL, threatModifier: 3, minAmount: damage })
 
         if (this.socketedUpgrade instanceof AngryYellingSkillGem && castBy.classBar) {
             castBy.classBar.increase(targets.length)
@@ -203,7 +201,7 @@ export class Whirlwind extends Skill {
     description: string | null = "Deal 12 damage to all enemies"
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL, threatModifier: 0.9 }))
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL, threatModifier: 0.9 })
     }
 }
 
@@ -252,7 +250,7 @@ export class AxeThrow extends Skill {
                 triggerCooldown: false
             }
         } else {
-            targets.forEach((target) => castBy.dealDamageTo({ amount: 8, target, type: DamageType.PHYSICAL, threatModifier: 1 }))
+            castBy.dealDamageTo({ amount: 8, targets, type: DamageType.PHYSICAL, threatModifier: 1 })
         }
     }
 

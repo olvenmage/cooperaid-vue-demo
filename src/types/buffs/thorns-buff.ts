@@ -42,9 +42,10 @@ export default class ThornsBuff extends Buff {
 
         params.character.dealDamageTo({
             amount: 5,
-            target: params.damagedBy,
+            targets: [params.damagedBy],
             type: DamageType.PHYSICAL,
-            threatModifier: 1
+            threatModifier: 1,
+            noCrit: true
         })
     }
 }
