@@ -9,7 +9,9 @@ function toLobby() {
 <template>
   <div class="root-div">
     <div class="title-screen-buttons">
-      <button class="btn btn-primary btn-lg btn-block" @click="toLobby">PLAY</button>
+      <div class="button-widths">
+        <button class="btn btn-primary btn-lg btn-block" @click="toLobby">PLAY</button>
+      </div>
     </div>
   </div>
 </template>
@@ -21,11 +23,18 @@ function toLobby() {
 
 .title-screen-buttons {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 15vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 60%;
+  width: 100%;
   height: 10vh;
 }
+
+.button-widths {
+  width: 15vw;
+}
+
 
 .root-div {
   width: 100vw;

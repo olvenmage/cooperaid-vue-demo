@@ -57,7 +57,7 @@ class Assasinate extends Skill {
         name: "Assasinate",
         energyCost: 6,
         cooldown: 12 * 1000,
-        castTime: 4 * 1000,
+        castTime: 6 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         aiTargetting: AiTargetting.RANDOM,
         imagePath: null,

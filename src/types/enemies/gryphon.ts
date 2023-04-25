@@ -28,7 +28,7 @@ class BeakAttack extends Skill {
         name: "Beak Attack",
         energyCost: 4,
         cooldown: 2 * 1000,
-        castTime: 3 * 1000,
+        castTime: 3.5 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         imagePath: null,
         range: SkillRange.MELEE,
@@ -55,7 +55,7 @@ class SkyDive extends Skill {
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         imagePath: null,
-        damage: 14,
+        damage: 18,
         range: SkillRange.RANGED,
     })
 
@@ -68,7 +68,7 @@ class SkyDive extends Skill {
     }
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL, minAmount: this.skillData.damage }))
+        targets.forEach((target) => castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.PHYSICAL }))
     }
 }
 
@@ -79,7 +79,7 @@ class Squawk extends Skill {
         name: "Squawk",
         energyCost: 2,
         cooldown: 10 * 1000,
-        castTime: 1 * 1000,
+        castTime: 2 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
         imagePath: null,
         range: SkillRange.RANGED,
@@ -98,7 +98,7 @@ class TakeFlight extends Skill {
         name: "Take Flight",
         energyCost: 5,
         cooldown: 25 * 1000,
-        castTime: 4.5 * 1000,
+        castTime: 5 * 1000,
         targetType: TargetType.TARGET_SELF,
         imagePath: null,
         range: SkillRange.RANGED,

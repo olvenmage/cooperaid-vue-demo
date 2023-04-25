@@ -38,7 +38,7 @@ class GangUp extends Skill {
         if (!battle) {
             damage = 4
         } else {
-            damage = battle.combatants.filter((c) => !c.isEnemyTo(castBy)).length * 3
+            damage = battle.combatants.filter((c) => !c.dead && !c.isEnemyTo(castBy)).length * 3
         }
 
         targets.forEach((target) => castBy.dealDamageTo({ amount: damage, target, type: DamageType.PHYSICAL }))
