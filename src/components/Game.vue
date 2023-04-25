@@ -19,6 +19,7 @@ import GameoverScreen from './GameoverScreen.vue';
 import Taunt from '@/types/skills/taunt';
 import Lobby from '@/components/setup/Lobby.vue';
 import ChooseRewardScreen from './ChooseRewardScreen.vue';
+import TitleScreen from './setup/TitleScreen.vue';
 
 let state = ref(Game.state)
 
@@ -27,7 +28,7 @@ Game.onStateChanged(() => state.value = Game.state)
 
 <template>
   <section style="width: 100%; height: 100%;">
-
+    <TitleScreen v-if="state == GameState.TITLESCREEN"></TitleScreen>
     <GameoverScreen v-if="state == GameState.GAME_OVER"></GameoverScreen>
     <Battlefield v-else-if="state == GameState.IN_COMBAT"></Battlefield>
     <Shop v-else-if="state == GameState.IN_SHOP"></Shop>

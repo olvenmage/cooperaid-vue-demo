@@ -15,6 +15,7 @@ interface StartGameParams {
 }
 
 export enum GameState {
+    TITLESCREEN,
     IN_SHOP,
     GAME_OVER,
     IN_LOBBY,
@@ -31,7 +32,7 @@ export default abstract class Game {
     private static route: Encounter[]
 
 
-    public static state: GameState = GameState.IN_LOBBY
+    public static state: GameState = GameState.TITLESCREEN
 
     private static onStateChangedListeners: (() => void)[] = []
     private static currentRouteIndex = 0
@@ -48,7 +49,7 @@ export default abstract class Game {
         this.nextEncounter()
     }
 
-    private static setState(newState: GameState) {
+    public static setState(newState: GameState) {
         this.state = newState;
         this.onStateChangedListeners.forEach((cb) => cb())
     }

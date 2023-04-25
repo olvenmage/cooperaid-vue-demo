@@ -83,7 +83,7 @@ function selectCharacter(selectedCharacter: Character) {
 
 <template>
   <section class="battlefield">
-    <img class="background" src="/src/assets/background.png">
+    <img class="background" src="/src/assets/combat-background.png">
     <div class="enemy-box">
       <BattlefieldCharacter
         v-for="enemy in enemies"
@@ -119,8 +119,8 @@ function selectCharacter(selectedCharacter: Character) {
 
 .battlefield {
   position: relative;
-  width: 100%;
-  height: 100%
+  width: 100vw;
+  height: 100vh
 }
 
 .battlefield .background {
@@ -129,8 +129,8 @@ function selectCharacter(selectedCharacter: Character) {
   position: absolute;
   z-index: -1;
   max-width: 100%;
-  height: auto;
-  width: 100%; /* ie8 */
+  height: 100vh;
+  width: 100vw; /* ie8 */
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
@@ -140,8 +140,8 @@ function selectCharacter(selectedCharacter: Character) {
   position: absolute;
   display: flex;
   align-items: center;
-  justify-content: start;
-  left: 600px;
+  justify-content: center;
+  width: 100vw;
   bottom: 230px;
 }
 .char-wrapper {
@@ -154,8 +154,8 @@ function selectCharacter(selectedCharacter: Character) {
   position: absolute;
   display: flex;
   align-items: center;
-  justify-content: start;
-  left: 600px;
+  justify-content: center;
+  width: 100vw;
   top: 30px;
 }
 </style>
