@@ -16,7 +16,7 @@ export default abstract class Identity {
     public maxEnergy: number = 10
     public abstract imagePath: string;
     public classBar: ClassBar|null = null
-    public color = "black";
+    public color = "darkgray";
 
     public abstract skills: Skill[]
 

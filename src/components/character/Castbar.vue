@@ -9,14 +9,14 @@ const props = defineProps<{
 
 let castingSkill = ref<Skill|null>(null)
 let target = ref<Character|null>(null)
-let targetColor = ref("black")
+let targetColor = ref("darkgray")
 let barWidth = ref("100%");
 
 watchEffect(() => {
   if (props.character.castingSkill != null) {
     target.value = props.character.castingSkill.currentTargets[0] ?? null
 
-    targetColor.value = target.value?.identity?.color ?? "black"
+    targetColor.value = target.value?.identity?.color ?? "darkgray"
 
     barWidth.value = ((1 - (props.character.castingSkill.castingTimer / props.character.castingSkill.skillData.castTime)) * 100) + "%"
   } else {
@@ -29,8 +29,8 @@ watchEffect(() => {
 
 <template>
     <div class="cast-bar">
-        <div class="bar" :style="{ width: barWidth}"></div>
-        <span class="skill-name" :style="{ color: targetColor }">{{ props.character.castingSkill?.skillData?.name }}</span>
+        <div class="bar" :style="{ width: barWidth, background: targetColor }"></div>
+        <span class="skill-name">{{ props.character.castingSkill?.skillData?.name }}</span>
     </div>
 </template>
 
@@ -65,6 +65,7 @@ watchEffect(() => {
   text-align: center;
   font-size: 18px;
   font-weight: 600;
+  color: white;
   bottom: 2px;
 }
 </style>

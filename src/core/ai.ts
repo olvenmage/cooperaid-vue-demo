@@ -105,11 +105,17 @@ export default class CharacterAIBrain {
         }
 
         if (aiPreferredTarget == AiTargetting.HIGHEST_THREAT) {
+            let randomTarget = pickRandom(validTargets) as Character
+
             bestSkill.cast(character, () => {
                 let target = character.ai?.getHighestThreatTarget()
 
                 if (!target) {
-                    target = pickRandom(validTargets) as Character
+                    if (!randomTarget || randomTarget.dead) {
+                        randomTarget = pickRandom(validTargets) as Character
+                    }
+
+                    target = randomTarget
                 }
 
                 return [target]
