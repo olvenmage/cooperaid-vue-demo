@@ -79,7 +79,7 @@ export class CommandNature extends Skill implements EmpowerableSKill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
-            castBy.dealDamageTo({ amount: 12, type: this.skillData.damageType!, targets, threatModifier: 1.5})
+            castBy.dealDamageTo({ amount: this.skillData.damage, type: this.skillData.damageType!, targets, threatModifier: 1.5})
         } else {
             targets.forEach((target) => {
                 target.addBuff(new CommandNatureArmorBuff({
@@ -109,12 +109,13 @@ export class CommandNature extends Skill implements EmpowerableSKill {
     empower(castBy: Character): void {
         this.skillData.transform({
             name: "Swipe",
-            energyCost: 3,
+            energyCost: 2,
             targetType: TargetType.TARGET_ENEMY,
             imagePath: "/druid/bear/swipe.png",
             castTime: 1000,
             damageType: DamageType.PHYSICAL,
             range: SkillRange.MELEE,
+            damage: 10
         })
 
         this.empowered = true
@@ -147,7 +148,7 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
-            castBy.dealDamageTo({ amount: 12, type: this.skillData.damageType!, targets, threatModifier: 1.5})
+            castBy.dealDamageTo({ amount: this.skillData.damage, type: this.skillData.damageType!, targets, threatModifier: 1.5})
         } else {
             targets.forEach((target) => {
                 if (target.isEnemyTo(castBy)) {
@@ -174,13 +175,13 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
     empower(castBy: Character): void {
         this.skillData.transform({
             name: "Swipe",
-            energyCost: 3,
+            energyCost: 2,
             targetType: TargetType.TARGET_ENEMY,
             imagePath: "/druid/bear/swipe.png",
             castTime: 1000,
             damageType: DamageType.PHYSICAL,
             range: SkillRange.MELEE,
-            damage: 12
+            damage: 10
         })
 
         this.empowered = true

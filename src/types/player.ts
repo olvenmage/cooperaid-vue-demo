@@ -152,6 +152,7 @@ class Player {
 
         character.identity.onCreated(character)
         character.classBar?.decrease(100)
+        character.checkDeath()
 
         return character
     }

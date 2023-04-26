@@ -3,11 +3,21 @@ import type Healthbar from '@/types/health-bar';
 import { ref, watchEffect } from 'vue';
 const props = defineProps<{
     healthBar: Healthbar,
-    savingGrace: boolean
+    savingGrace: boolean,
+    pulses?: boolean
 }>()
 
 
+const colorMap = {
+  healthy: "#66923d",
+  damaged: "#CDC23D",
+  low: "#FF9500",
+  critical: "#FF1300",
+}
+
 let barWidth = ref("100%");
+
+let healthBarColor = ref(colorMap.healthy)
 
 watchEffect(() => {
  // damage = 100;
@@ -18,6 +28,16 @@ watchEffect(() => {
         perc = 0;
     }
 
+    if (perc > 80) {
+      healthBarColor.value = colorMap.healthy
+    } else if (perc > 60) {
+      healthBarColor.value = colorMap.damaged
+    } else if (perc > 30) {
+      healthBarColor.value = colorMap.low
+    } else {
+      healthBarColor.value = colorMap.critical
+    }
+
     barWidth.value = perc + "%";
 })
    
@@ -26,7 +46,7 @@ watchEffect(() => {
 
 <template>
     <div class="health-bar">
-        <div class="bar" :style="{ width: barWidth}"></div>
+        <div class="bar" :class="{critical: pulses && barWidth != '0%' && healthBarColor == colorMap.critical}" :style="{ width: barWidth, background: healthBarColor}"></div>
         <div
           class="health-text"
           :style="{ color: savingGrace ? 'darkgoldenrod' : 'black'}"
@@ -59,7 +79,6 @@ watchEffect(() => {
 }
 
 .bar {
-  background: #66923d;
   width: 100%;
   height: 10px;
   position: relative;
@@ -76,5 +95,28 @@ watchEffect(() => {
   width: 0px;
   
   transition: width .5s linear;
+}
+
+
+.bar.critical {
+  animation: pulse-red .5s infinite;
+}
+
+
+@keyframes pulse-red {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7);
+  }
+  
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(255, 82, 82, 0);
+  }
+  
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 82, 82, 0);
+  }
 }
 </style>

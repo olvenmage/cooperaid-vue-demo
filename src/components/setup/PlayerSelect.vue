@@ -39,7 +39,7 @@ function addCPU() {
         <h1 class="player-name game-font">{{ player?.name }}</h1>
     </div>
     <slot :player="player"></slot>
-    <Healthbar v-if="showHealth && tempCharacter" :health-bar="tempCharacter.healthBar" :saving-grace="false" ></Healthbar>
+    <Healthbar v-if="showHealth && tempCharacter" :pulses="true" :health-bar="tempCharacter.healthBar" :saving-grace="false" ></Healthbar>
     <CharacterWindow style="margin-top: 10px; height: 100%;" v-if="tempCharacter" :hide-name="true" :casting-skill="null" :casting=false :character="tempCharacter" />
     <div v-if="!player" class="add-button-wrapper">
         <button class="add-character-button btn btn-lg btn-primary btn-block game-font" @click="addCPU">
