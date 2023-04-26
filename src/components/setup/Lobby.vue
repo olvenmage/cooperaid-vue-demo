@@ -21,6 +21,7 @@ import GameSettings from '@/core/settings';
 import Druid from '@/types/classes/druid';
 import mainRoute from '@/core/main-route'
 import pickRandom from '@/utils/pickRandom';
+import GameTitle from '../GameTitle.vue';
 
 
 const players = Game.players.value
@@ -37,8 +38,8 @@ const classes = [
 const playerAssignment: Record<number, Player|null> = reactive({
   0: null,
   1: null,
-  // 2: null,
-  // 3: null
+  2: null,
+  3: null
 })
 
 const availableClasses = computed<PlayerIdentity[]>(() => {
@@ -189,13 +190,23 @@ onMounted(() => {
   onUnmounted(() => clearInterval(updateLobbyStateInterval))
 })
 
+const joinUrl = window.location.hostname + ':8000'
+
 </script>
 <template>
-  <div class="container">
-    <div class="row" style="height: 80vh">
-      <template v-for="player of playerAssignment">
-        <div class="col-md-3" style="height: 100%">
-          <PlayerSelect :player="player" :key="`player-select-${player?.id}`">
+  <img src="src/assets/menu-background.png" class="menu-background">
+  <div class="">
+    <div class="title-wrapper">
+      <GameTitle style="width: 80vw; max-width: 1000px; height: 12vh"></GameTitle>
+    </div>
+      <div class="title-wrapper">
+        <h2 class="game-font join-text">
+        JOIN @ <span class="join-url">{{ joinUrl }}</span>
+        </h2>
+    </div>
+    <div class="player-container" style="height: 70vh">
+      <template v-for="player of playerAssignment" :key="`player-select-${player?.id}`">
+          <PlayerSelect :player="player">
             <template #default="{ player }">
               <select v-if="player && !player.controledExternally" v-model="player.playerClass" class="form-control">
                 <option  :value="player.playerClass" v-if="player.playerClass" :style="{color: player.playerClass?.color}">
@@ -208,10 +219,6 @@ onMounted(() => {
               <input class="form-control" v-else-if="player" type="text" :value="player.playerClass?.name" disabled>
             </template>
           </PlayerSelect>
-          
-        </div>
-       
-       
       </template>
    
     </div>
@@ -223,9 +230,36 @@ onMounted(() => {
 
 <style scoped> 
 .player-select {
-  float: left;
   width: 100%;
   height: 100%;
-  background: #f7f7f9;
+  background: rgba(255, 255, 247, 0.2)
+}
+
+.menu-background {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+}
+
+.player-container {
+  display: flex;
+  flex-basis: 0;
+  gap: 5%;
+  margin-bottom: 5px;
+  margin: 15px;
+}
+
+.title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.join-text {
+  color: white;
+  font-weight: 1000;
+}
+.join-url {
+  text-decoration: underline;
 }
 </style>

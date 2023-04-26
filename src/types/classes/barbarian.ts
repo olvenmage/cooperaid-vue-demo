@@ -10,6 +10,7 @@ import NettedBuff from '../buffs/netted';
 import RageBar from '../special-bar/rage-bar';
 import BloodthirstyRampage from '../skill-upgrades/barbarian/bloodthirsty-rampage';
 import AngryYellingSkillGem from '../skill-upgrades/barbarian/angry-yelling';
+import BloodLustBuff from '../buffs/blood-lust';
 
 
 export default class Barbarian extends PlayerIdentity {
@@ -31,6 +32,8 @@ export default class Barbarian extends PlayerIdentity {
         new AxeThrow(),
         new HeavyNet(),
         new Whirlwind(),
+        new BloodLust(),
+        new BloodStrike()
     ]
 
     override onCreated(character: Character) {
@@ -121,13 +124,15 @@ export class RagingBlow extends Skill {
         range: SkillRange.MELEE,
     })
 
-    description: string | null = "Deal 12 damage to an enemy and generate 12 rage."
+    description: string | null = "Deal 12 damage to an enemy, gain rage equal to the actual damage done."
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
-        targets.forEach((target) => castBy.dealDamageTo({ amount: 12, target, type: DamageType.PHYSICAL }))
+        const results = castBy.dealDamageTo({ amount: 12, targets, type: DamageType.PHYSICAL })
 
         if (castBy.classBar != null) {
-            castBy.classBar.increase(12)
+            for (const result of results) {
+                castBy.classBar.increase(result.actualDamage)
+            }
         }
     }
 }
@@ -178,7 +183,7 @@ export class Shout extends Skill {
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         const damage = Math.ceil(this.skillData.damage / targets.length)
 
-        castBy.dealDamageTo({ amount: damage, targets, type: DamageType.PHYSICAL, threatModifier: 3, minAmount: damage })
+        castBy.dealDamageTo({ amount: damage, targets, type: DamageType.PHYSICAL, threatModifier: 2, minAmount: damage })
 
         if (this.socketedUpgrade instanceof AngryYellingSkillGem && castBy.classBar) {
             castBy.classBar.increase(targets.length)
@@ -264,4 +269,63 @@ export class AxeThrow extends Skill {
             range: SkillRange.MELEE,
         }
     }
+}
+
+
+export class BloodLust extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Blood Lust",
+        energyCost: 2,
+        cooldown: 10 * 1000,
+        targetType: TargetType.TARGET_SELF,
+        castTime: 500,
+        imagePath: "/barbarian/blood-lust.png",
+        range: SkillRange.MELEE,
+        buffDuration: 8 * 1000
+    })
+
+    description: string | null = "Take 25% of your current health in damage and enter Blood Lust. Your next attack's damaged is increased by 30% of your missing health"
+
+    canCast(castBy: Character): boolean {
+        if (castBy.healthBar.current <= 1) {
+            return false
+        }
+
+        return super.canCast(castBy)
+    }
+
+    castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
+        const healthConsumed = Math.round(0.25 * castBy.healthBar.current)
+
+        castBy.dealDamageTo({ amount: healthConsumed, targets: [castBy], type: DamageType.BLEED })
+
+        castBy.addBuff(new BloodLustBuff({
+            duration: this.skillData.buffDuration,
+            healthConsumed: Math.round((castBy.healthBar.max - castBy.healthBar.current) * 0.3)
+        }), castBy)
+
+    }
+}
+
+export class BloodStrike extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Blood Strike",
+        energyCost: 3,
+        cooldown: 8 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        castTime: 1100,
+        damage: 7,
+        imagePath: "/barbarian/blood-strike.png",
+        range: SkillRange.MELEE,
+    })
+
+    description: string | null = "Deal 7 damage to an enemy and restore the actual damage done in health to you."
+
+    castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
+        const results = castBy.dealDamageTo({ amount: this.skillData.damage, targets: targets, type: DamageType.PHYSICAL })
+
+        for (const result of results) {
+            castBy.restoreHealth(result.actualDamage, castBy, 0.3)
+        } 
+    }   
 }

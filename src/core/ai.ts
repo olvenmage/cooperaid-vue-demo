@@ -6,7 +6,7 @@ import type Battle from "./battle";
 
 export default class CharacterAIBrain {
     static act(character: Character, battle: Battle) {
-        if (character.ai == null) {
+        if (character.threat == null) {
             return
         }
 
@@ -108,7 +108,7 @@ export default class CharacterAIBrain {
             let randomTarget = pickRandom(validTargets) as Character
 
             bestSkill.cast(character, () => {
-                let target = character.ai?.getHighestThreatTarget()
+                let target = character.threat?.getCurrentTarget()
 
                 if (!target) {
                     if (!randomTarget || randomTarget.dead) {

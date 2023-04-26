@@ -73,6 +73,10 @@ export default class CharacterBuffs {
     forEach(callback: (buff: Buff) => void) {
         this.buffs.forEach(callback)
     }
+
+    filter(callback: (buff: Buff) => void): Buff[] {
+        return this.buffs.filter(callback)
+    }
     
     onBuffsChanged(callback: () => void) {
         this.onBuffsChangedCallbacks.push(callback)

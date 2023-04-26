@@ -1,6 +1,6 @@
 import pickRandom from '@/utils/pickRandom';
 import Character from './character';
-import CharacterAI from './character-ai';
+import CharacterAI from './threat-table';
 import CharacterSkills from './character-skills';
 import Faction from './faction';
 import type Identity from './identity';

@@ -15,6 +15,8 @@ import ExposingDartSkillGem from '../skill-upgrades/rogue/exposing-dart-skill-ge
 import pickRandom from '@/utils/pickRandom';
 import KnifeStormSkillGem from '../skill-upgrades/rogue/knife-storm-skill-gem';
 import shuffleArray from '@/utils/shuffleArray';
+import EvasionBuff from '../buffs/evasion';
+import QuickMovesSkillGem from '../skill-upgrades/rogue/quick-moves-skill-gem';
 
 export default class Rogue extends PlayerIdentity {
     public name = "Rogue"
@@ -47,6 +49,8 @@ export default class Rogue extends PlayerIdentity {
         new Kick(),
         new SleepDart(),
         new HeartSeeker(),
+        new Evasion(),
+        new KillShot()
     ]
 }
 
@@ -122,7 +126,7 @@ export class Dismantle extends Skill {
                 duration: this.skillData.buffDuration,
                 nullifies: this.socketedUpgrade instanceof NullifyingDismantleSkillGem
             }), castBy)
-            target.ai?.raiseThreat(castBy, 8)
+            target.threat?.raiseThreat(castBy, 8)
         })
     }
 }
@@ -216,7 +220,7 @@ export class Backstab extends Skill {
             let damage = this.skillData.damage
             let threatModifier = 1
 
-            const backstabBonus = (target.ai && target.ai.getHighestThreatTarget()?.id !== castBy.id) || target.stats.stunned
+            const backstabBonus = (target.threat && target.threat.getCurrentTarget()?.id !== castBy.id) || target.stats.stunned
 
             if (!target.ai) {
                 if (castBy.classBar instanceof FocusBar) {
@@ -297,7 +301,7 @@ export class SleepDart extends Skill {
                 paralyzes: this.socketedUpgrade instanceof ParalyzingDartSkillGem,
                 exposes: this.socketedUpgrade instanceof ExposingDartSkillGem
             }), castBy)
-            target.ai?.raiseThreat(castBy, 6)
+            target.threat?.raiseThreat(castBy, 6)
         })
     }
 }
@@ -335,3 +339,51 @@ export class HeartSeeker extends Skill {
     }
 }
 
+export class KillShot extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Killshot",
+        energyCost: 4,
+        cooldown: 10 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        aiTargetting: AiTargetting.RANDOM,
+        castTime: 1200,
+        imagePath: "/rogue/killshot.png",
+        damage: 12,
+        range: SkillRange.RANGED,
+    })
+
+    description: string | null = "Deal 12 damage to an enemy, damage is increased by 3 per debuff on the target."
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => {
+            const debuffAmount = target.buffs.filter((b) => !b.givenBy?.isEnemyTo(castBy)).length
+
+            castBy.dealDamageTo({ targets: [target], amount: this.skillData.damage + (3 * debuffAmount ), type: DamageType.PHYSICAL})
+        })
+    }
+}
+
+export class Evasion extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Evasion",
+        energyCost: 6,
+        cooldown: 25 * 1000,
+        targetType: TargetType.TARGET_SELF,
+        aiTargetting: AiTargetting.RANDOM,
+        castTime: 1000,
+        imagePath: "/rogue/evasion.png",
+        buffDuration: 8 * 1000,
+        range: SkillRange.RANGED,
+    })
+
+    description: string | null = "Gain 75% dodge chance against physical attacks for a long duration."
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => {
+            target.addBuff(new EvasionBuff({
+                duration: this.skillData.buffDuration,
+                speedsUpOnHit: this.socketedUpgrade instanceof QuickMovesSkillGem
+            }), castBy)
+        })
+    }
+}

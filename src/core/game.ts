@@ -18,6 +18,7 @@ export enum GameState {
     TITLESCREEN,
     IN_SHOP,
     GAME_OVER,
+    VICTORY,
     IN_LOBBY,
     WAITING,
     CHOOSING_REWARD,
@@ -58,7 +59,7 @@ export default abstract class Game {
         this.currentRouteIndex++;
 
         if (!this.route[this.currentRouteIndex]) {
-            this.gameover()
+            this.victory()
             return;
         }
 
@@ -115,6 +116,10 @@ export default abstract class Game {
 
     static gameover(): void {
         this.setState(GameState.GAME_OVER)
+    }
+
+    static victory(): void {
+        this.setState(GameState.VICTORY)
     }
 
     static startCombat(enemies: Enemy[]): Promise<CombatFinishedParameters> {

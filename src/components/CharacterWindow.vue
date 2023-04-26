@@ -9,7 +9,8 @@ import CharacterSprite from './CharacterSprite.vue';
 import type OnDamageTrigger from '@/types/triggers/on-damage-trigger';
 import FloatingDamage from './FloatingDamage.vue';
 import GameSettings from '@/core/settings';
-import CharacterAI from '@/types/character-ai';
+import CharacterAI from '@/types/threat-table';
+import ThreatTable from '@/types/threat-table';
 
 const props = defineProps<{
   character: Character,
@@ -18,7 +19,7 @@ const props = defineProps<{
 }>()
 
 const damageFloats = ref<OnDamageTrigger[]>([]);
-const aiEnabled = ref(props.character.ai != null)
+const aiEnabled = ref(props.character.threat != null)
 
 onMounted(() => {
   props.character.identity.onDamageTakenTriggers.push(addDamageFloat)
@@ -34,9 +35,9 @@ onUnmounted(() => {
 
 function toggleAI() {
   if (aiEnabled.value) {
-    props.character.ai = new CharacterAI(props.character.identity)
+    props.character.threat = new ThreatTable()
   } else {
-    props.character.ai = null
+    props.character.threat = null
   }
 }
 
@@ -64,16 +65,25 @@ function addDamageFloat(trigger: OnDamageTrigger) {
         <div class="damage-floats">
             <FloatingDamage v-for="damageFloat in damageFloats" :key="damageFloat.id" :damage="damageFloat"></FloatingDamage>
         </div>
-        <CharacterSprite style="margin-top: 10px;" width="175px" height="175px" :character="character">
+        <CharacterSprite style="margin-top: 10px; height: 80%;" width="80%" height="80%" :character="character">
           <div class="stat-wrapper">
-          <img class="armor" width="16" height="16" src="/src/assets/icons/magical-armor-symbol.png" alt="">
-          <span style="font-size: 20px; margin-right: 8px">{{ character.stats.magicalArmor.value }}</span>
-          <img class="armor" width="16" height="16" src="/src/assets/icons/armor-symbol.png" alt="">
-          <span style="font-size: 20px">{{ character.stats.armor.value }}</span>
-          <img class="armor" width="16" height="16" src="/src/assets/icons/energy-boost-symbol.png" alt="">
-          <span style="font-size: 20px">{{ character.stats.energyBoost.value }}</span>
-          <img class="armor" width="16" height="16" src="/src/assets/icons/speed-icon.png" alt="">
-          <span style="font-size: 20px">{{ character.stats.speed.value }}</span>
+            <div class="stat-item">
+              <img class="armor" width="16" height="16" src="/src/assets/icons/magical-armor-symbol.png" alt="">
+              <span style="font-size: 22px; margin-right: 8px">{{ character.stats.magicalArmor.value }}</span>
+            </div>
+            <div class="stat-item">
+              <img class="armor" width="16" height="16" src="/src/assets/icons/armor-symbol.png" alt="">
+              <span style="font-size: 22px">{{ character.stats.armor.value }}</span>
+            </div>
+            <div class="stat-item">
+              <img class="armor" width="16" height="16" src="/src/assets/icons/energy-boost-symbol.png" alt="">
+              <span style="font-size: 22px">{{ character.stats.energyBoost.value }}</span>
+            </div>
+          
+            <div class="stat-item">
+              <img class="armor" width="16" height="16" src="/src/assets/icons/speed-icon.png" alt="">
+              <span style="font-size: 22px">{{ character.stats.speed.value }}</span>
+            </div>
         </div>
       </CharacterSprite>
         <div v-if="!hideName" style="position: absolute; left: 2px; bottom: 0px">
@@ -88,6 +98,19 @@ function addDamageFloat(trigger: OnDamageTrigger) {
 <style scoped>
 
 .stat-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.stat-item {
+  flex-grow: 1;
+  max-width: 100%;
+  height: auto;
+  line-height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center; /* align vertical */
 }
 
 .char-name {
@@ -110,8 +133,6 @@ function addDamageFloat(trigger: OnDamageTrigger) {
   display: flex;
   justify-content: center;
   color: black;
-  background-color: rgba(200, 200, 200, 0.5);
-  border: 4px solid rgba(150, 150, 150, 0.5)
 }
 
 .saving-graced.char-window {

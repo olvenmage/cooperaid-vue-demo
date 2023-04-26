@@ -6,9 +6,11 @@ import type ClassBar from './class-bar'
 import type OnDamageTrigger from './triggers/on-damage-trigger'
 import type CharacterStats from './character-stats'
 import type IdentityState from './state/identity-state'
+import type { DealDamageToParams } from './damage'
 
 export type DamageTakenTrigger = (trigger: OnDamageTrigger) => void
 export type BeforeDamageTakenTrigger = (trigger: OnDamageTrigger) => number
+export type BeforeDealDamageTrigger = (trigger: DealDamageToParams, damagedBy: Character) => DealDamageToParams
 
 export default abstract class Identity {
     public abstract name: string
@@ -22,6 +24,7 @@ export default abstract class Identity {
 
     onDamageTakenTriggers: DamageTakenTrigger[] = []
     beforeDamageTakenTriggers: BeforeDamageTakenTrigger[] = []
+    beforeDealDamageTriggers: BeforeDealDamageTrigger[] = []
 
     onCreated(character: Character) {
 

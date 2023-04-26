@@ -140,10 +140,16 @@ function selectCharacter(selectedCharacter: Character) {
   position: absolute;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 100vw;
   bottom: 230px;
 }
+
+
+.player-box::after, .player-box::before, .enemy-box::after, .enemy-box::before {
+  content: "";
+}
+
 .char-wrapper {
   width: 220px;
   height: 220px;
@@ -154,7 +160,7 @@ function selectCharacter(selectedCharacter: Character) {
   position: absolute;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 100vw;
   top: 30px;
 }

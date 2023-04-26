@@ -40,7 +40,9 @@ export default class SmittenBuff extends Buff {
     }
 
     restoreHealthToAlly(trigger: OnDamageTrigger): void {
-        if (trigger.actualDamage > 0 && trigger.damagedBy && trigger.character.isEnemyTo(trigger.damagedBy)) {
+        const validDamageToEnemy =trigger.actualDamage > 0 && trigger.damagedBy && trigger.character.isEnemyTo(trigger.damagedBy)
+
+        if (validDamageToEnemy && (trigger.damageType == DamageType.PHYSICAL || trigger.damageType == DamageType.MAGICAL)) {
             if (this.params.branding) {
                 this.givenBy?.dealDamageTo({ amount: 2, targets: [trigger.character], type: DamageType.MAGICAL, noCrit: true })
             } else {

@@ -16,6 +16,8 @@ import OverwhelmingMartyrdom from '../skill-upgrades/paladin/overwhelming-martyr
 import RejuvenatingLight from '../skill-upgrades/paladin/rejuvenating-light';
 import FinishingStrikeSkilGem from '../skill-upgrades/paladin/finishing-strike';
 import BrandingSmiteSkillGem from '../skill-upgrades/paladin/branding-smite';
+import BlessedWeaponBuff from '../buffs/blessed-weapon';
+import WeaponOfRightenousnessSkillGem from '../skill-upgrades/paladin/weapon-of-righteousness';
 
 
 export default class Paladin extends PlayerIdentity {
@@ -55,6 +57,7 @@ export default class Paladin extends PlayerIdentity {
         new LayOnHands(),
         new BlessingOfProtection(),
         new Smite(),
+        new BlessedWeapon(),
     ]
 }
 
@@ -76,7 +79,7 @@ export class HolyShock extends Skill {
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             if (castBy.isEnemyTo(target)) {
-                castBy.dealDamageTo({ amount: this.skillData.damage, target, type: DamageType.MAGICAL})
+                castBy.dealDamageTo({ amount: this.skillData.damage, targets: [target], type: DamageType.MAGICAL})
             } else {
                 target.restoreHealth(this.skillData.healing, castBy, 1.0)
             }
@@ -297,5 +300,41 @@ export class LayOnHands extends Skill {
         }
 
         return 0
+    }
+}
+
+export class BlessedWeapon extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Blessed Weapon",
+        energyCost: 0,
+        cooldown: 12 * 1000,
+        targetType: TargetType.TARGET_FRIENDLY,
+        castTime: 100,
+        imagePath: "/paladin/blessed-weapon.png",
+        buffDuration: 10 * 1000,
+        range: SkillRange.RANGED,
+    })
+
+    description: string | null = "Buff an ally to add 3 damage to all their physical attacks."
+
+    canCast(castBy: Character): boolean {
+        if (castBy.energyBar.current == 0) {
+            return false
+        }
+
+        return super.canCast(castBy)
+    }
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => {
+            target.addBuff(new BlessedWeaponBuff({
+                duration: this.skillData.buffDuration,
+                damageAmount: this.socketedUpgrade instanceof WeaponOfRightenousnessSkillGem ? 6 : 3
+            }), castBy)
+        })
+    }
+
+    override getCastPriority(castBy: Character, target: Character) {
+        return 15;
     }
 }

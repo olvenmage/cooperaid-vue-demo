@@ -2,7 +2,7 @@ import EnergyBar from './energy-bar';
 import type Faction from './faction';
 import type Identity from './identity';
 import Healthbar from './health-bar';
-import CharacterAI from './character-ai';
+import ThreatTable from './threat-table';
 import type ClassBar from './class-bar'
 import PlayerIdentity from './player-identity';
 import type Buff from './buff';
@@ -16,7 +16,7 @@ import type Skill from './skill';
 import type OnDamageTrigger from './triggers/on-damage-trigger';
 import type CharacterStats from './character-stats';
 import CharacterSkills from './character-skills';
-import type { DealDamageToParams, TakeDamageParams, TakeDamageResult } from './damage';
+import type { DealDamageToParams, TakeDamageParams } from './damage';
 import { reactive } from 'vue';
 import GameSettings from '@/core/settings';
 import type CharacterState from './state/character-state';
@@ -33,7 +33,7 @@ export default class Character {
     public healthBar: Healthbar
     public energyBar: EnergyBar
     public classBar: ClassBar|null = null
-    public ai: CharacterAI|null = null
+    public threat: ThreatTable|null = null
     public currentMagicalArmor: number = 0
 
     public buffs = new CharacterBuffs(this)
@@ -90,7 +90,7 @@ export default class Character {
     }
 
     enableAI() {
-        this.ai = new CharacterAI(this.identity)
+        this.threat = new ThreatTable()
     }
 
 
@@ -121,9 +121,10 @@ export default class Character {
             return []
         }
 
+        this.identity.beforeDealDamageTriggers.forEach((cb) => damage = cb(damage, this))
+
         let isCrit = false
 
-        console.log(`deal damage, crit : ${this.stats.crit.value}`)
         if (!damage.noCrit && (Math.random() * 100) <= this.stats.crit.value ) {
             isCrit = true
             damage.amount *= 2
@@ -187,8 +188,8 @@ export default class Character {
     }
 
     raiseThreat(threatBy: Character|null, threat: number) {
-        if (this.ai != null && threatBy != null) {
-            this.ai.raiseThreat(threatBy, threat)
+        if (this.threat != null && threatBy != null) {
+            this.threat.raiseThreat(threatBy, threat)
         }
     }
 
@@ -271,7 +272,7 @@ export default class Character {
             stats: this.stats.getState(),
             buffs: this.buffs.getState(),
             dead: this.dead,
-            highestThreatId: this.ai?.getHighestThreatTarget()?.id ?? null
+            highestThreatId: this.threat?.getCurrentTarget()?.id ?? null
         }
     }
 

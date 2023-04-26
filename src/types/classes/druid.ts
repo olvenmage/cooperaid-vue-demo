@@ -8,7 +8,7 @@ import SkillData from '../skill-data';
 import FerocityBar from '../special-bar/ferocity-bar'
 import ThornsBuff from '../buffs/thorns-buff';
 import ThickSkinBuff from '../buffs/thick-skin';
-import NaturesProtectionBuff from '../buffs/nature-her-protection';
+import NaturesProtectionBuff from '../buffs/command-nature-armor';
 import Game from '@/core/game';
 import { globalThreatEvent } from '@/core/events';
 import Taunt from '../skills/taunt';
@@ -19,6 +19,7 @@ import BestialWrathBuff from '../buffs/bestial-wrath';
 import PrimalStrikedBuff from '../buffs/primal-striked';
 import HealthyCommandNatureSkillGem from '../skill-upgrades/druid/healthy-command-skill-gem';
 import HealingIncreaseSkillGem from '../skill-upgrades/generic/healing-increase-skill-gem';
+import CommandNatureArmorBuff from '../buffs/command-nature-armor';
 
 export default class Druid extends PlayerIdentity {
     public name = "Druid"
@@ -40,7 +41,7 @@ export default class Druid extends PlayerIdentity {
     }
 
     public skills = [
-        new Regrowth().setGem(new HealingIncreaseSkillGem()),
+        new Regrowth(),
     ]
 
     possibleSkills = [
@@ -67,12 +68,12 @@ export class CommandNature extends Skill implements EmpowerableSKill {
         targetType: TargetType.TARGET_ANY,
         castTime: 1000,
         imagePath: "/druid/command-nature.png",
-        buffDuration: 5 * 1000,
+        buffDuration: 6 * 1000,
         damageType: DamageType.MAGICAL,
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Basic. Deal 5 magic damage to an enemy, or give armor to an ally for a medium duration (stacks 3 times)"
+    description: string | null = "Basic. Apply a stacking armor buff or debuff, depending if the target is friend or foe."
 
     empowered = false
 
@@ -81,14 +82,14 @@ export class CommandNature extends Skill implements EmpowerableSKill {
             castBy.dealDamageTo({ amount: 12, type: this.skillData.damageType!, targets, threatModifier: 1.5})
         } else {
             targets.forEach((target) => {
-                if (target.isEnemyTo(castBy)) {
-                    castBy.dealDamageTo({ amount: 5, type: this.skillData.damageType!, targets: [target]})
+                target.addBuff(new CommandNatureArmorBuff({
+                    duration: this.skillData.buffDuration,
+                    restoresHealthOnExpire: this.socketedUpgrade instanceof HealthyCommandNatureSkillGem
+                }), castBy)
 
+                if (target.isEnemyTo(castBy)) {
+                    Game.eventBus.publish(globalThreatEvent({ healer: castBy, amount: 4}))
                 } else {
-                    target.addBuff(new NaturesProtectionBuff({
-                        duration: this.skillData.buffDuration,
-                        restoresHealthOnExpire: this.socketedUpgrade instanceof HealthyCommandNatureSkillGem
-                    }), castBy)
                     Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 2}))
                     Game.eventBus.publish(globalThreatEvent({ healer: castBy, amount: 2}))
                 }
@@ -140,7 +141,7 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
         damage: 8
     })
 
-    description: string | null = "Basic. Deal 8 physical damage to an enemy, or deal 1 piercing damage to an ally and give them a stacking speed buff"
+    description: string | null = "Basic. Deal 8 physical damage to an enemy, or deal 1 piercing damage to an ally and give them a stacking cast speed buff"
 
     empowered = false
 

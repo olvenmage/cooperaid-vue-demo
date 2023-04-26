@@ -1,5 +1,5 @@
 import type Character from "../character";
-import Skill, { AiTargetting, SkillTag, TargetType } from "../skill";
+import Skill, { AiTargetting, SkillRange, SkillTag, TargetType } from "../skill";
 import SkillData from "../skill-data";
 
 export default class Taunt extends Skill {
@@ -11,10 +11,17 @@ export default class Taunt extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         castTime: 500,
         imagePath: "/neutral/taunt.png",
-        tags: [SkillTag.SUPPORT, SkillTag.RANGED]
+        tags: [SkillTag.SUPPORT],
+        range: SkillRange.RANGED
     })
  
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => target.raiseThreat(castBy, castBy.healthBar.max / 1.5))
+        targets.forEach((target) => {
+            if (target.threat) {
+                target.threat.tauntedBy(castBy)
+            } else {
+                
+            }
+        })
     }
 }

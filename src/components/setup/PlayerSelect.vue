@@ -35,19 +35,22 @@ function addCPU() {
 </script>
 <template>
    <div class="player-select">
-    <div  :style="{backgroundColor: player?.playerClass?.color || 'false'}">
+    <div :style="{backgroundColor: player?.playerClass?.color || 'false'}">
         <h1 class="player-name game-font">{{ player?.name }}</h1>
     </div>
     <slot :player="player"></slot>
-    <CharacterWindow style="margin-top: 10px;" v-if="tempCharacter" :hide-name="true" :casting-skill="null" :casting=false :character="tempCharacter" />
     <Healthbar v-if="showHealth && tempCharacter" :health-bar="tempCharacter.healthBar" :saving-grace="false" ></Healthbar>
-    <button v-if="!player" class="btn btn-lg btn-primary btn-block game-font" @click="addCPU">
-        ADD CHAR
+    <CharacterWindow style="margin-top: 10px; height: 100%;" v-if="tempCharacter" :hide-name="true" :casting-skill="null" :casting=false :character="tempCharacter" />
+    <div v-if="!player" class="add-button-wrapper">
+        <button class="add-character-button btn btn-lg btn-primary btn-block game-font" @click="addCPU">
+        +
     </button>
+    </div>
+   
    </div>
 </template>
 
-<style>
+<style scoped>
 .player-select {
     padding: 10px;
     text-align: center;
@@ -62,6 +65,19 @@ function addCPU() {
     -webkit-text-stroke-width: 2px;
     -webkit-text-stroke-color: black;
     font-size: 40px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
 
+.add-character-button {
+    font-size: 30px;
+}
+
+.add-button-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
 }
 </style>

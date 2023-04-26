@@ -10,7 +10,7 @@ interface NaturesProtectionBuffParams {
     restoresHealthOnExpire?: boolean
 }
 
-export default class NaturesProtectionBuff extends Buff implements StatMutatingBuff, StackingBuff {
+export default class CommandNatureArmorBuff extends Buff implements StatMutatingBuff, StackingBuff {
     duration: number = 5 * 1000
     callback = this.giveFerocityToDruid.bind(this)
     stackAmount = 1
@@ -63,7 +63,11 @@ export default class NaturesProtectionBuff extends Buff implements StatMutatingB
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.armor.set(stats.armor.value + this.stackAmount)
+        if (this.givenBy && this.attachedCharacter?.isEnemyTo(this.givenBy)) {
+            stats.armor.set(stats.armor.value - this.stackAmount)
+        } else {
+            stats.armor.set(stats.armor.value + this.stackAmount)
+        }
         return stats
     }
 }

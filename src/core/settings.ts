@@ -5,4 +5,6 @@ export default abstract class GameSettings {
     static aiInteractDelay = 1.0
     static generateEnergyWhileCasting = true
     static aiEnabled = true
+
+    static threatStealBuffer = 0.10
 }

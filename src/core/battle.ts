@@ -135,7 +135,7 @@ export default class Battle {
               return;
             }
     
-            if (character.ai != null) {
+            if (character.threat != null) {
                 CharacterAIBrain.act(character, this)
             }
         })

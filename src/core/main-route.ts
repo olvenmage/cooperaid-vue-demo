@@ -42,7 +42,6 @@ const mainRoute: Encounter[] = [
     new CombatEncounter(
       [
         new Enemy(new Halbadier()),
-        new Enemy(new Halbadier()),
         new Enemy(new Gryphon()),
         new Enemy(new Archer())
       ]

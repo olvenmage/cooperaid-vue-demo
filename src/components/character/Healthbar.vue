@@ -27,10 +27,12 @@ watchEffect(() => {
 <template>
     <div class="health-bar">
         <div class="bar" :style="{ width: barWidth}"></div>
-        <span
-          style="position: absolute; bottom: 0px; right: 80px; text-align: center"
+        <div
+          class="health-text"
           :style="{ color: savingGrace ? 'darkgoldenrod' : 'black'}"
-        >{{ healthBar.current }}/{{ healthBar.max }}</span>
+          >
+          {{ healthBar.current }}/{{ healthBar.max }}
+    </div>
     </div>
 </template>
 
@@ -48,6 +50,14 @@ watchEffect(() => {
   border-radius: 5px;
   position: relative;
 }
+
+.health-text {
+  position: absolute;
+  bottom: 0px;
+  text-align: center;
+  width: 100%;
+}
+
 .bar {
   background: #66923d;
   width: 100%;

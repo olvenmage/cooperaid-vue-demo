@@ -11,6 +11,10 @@ import ArmorPower from '../power/armor-power';
 import RetaliationBar from '../special-bar/retaliation-bar';
 import DurableShieldBlockSkillGem from '../skill-upgrades/juggernaut/durable-shield-block-skill-gem';
 import MegaFortificationSkillGem from '../skill-upgrades/juggernaut/mega-fortification';
+import BodyGuardBuff from '../buffs/body-guard';
+import Game from '@/core/game';
+import { globalThreatEvent } from '@/core/events';
+import Taunt from '../skills/taunt';
 
 export default class Juggernaut extends PlayerIdentity {
     public name = "Juggernaut"
@@ -32,8 +36,6 @@ export default class Juggernaut extends PlayerIdentity {
         this.onDamageTakenTriggers.push(this.generateResistanceOnDamage)
     }
 
-   
-
     public skills = [
         new ShieldBlock(),
     ]
@@ -42,7 +44,8 @@ export default class Juggernaut extends PlayerIdentity {
         new ShieldShatter(),
         new Fortify(),
         new ShieldBlock(),
-        new Overpower()
+        new Overpower(),
+        new BodyGuard(),
     ]
 
     generateResistanceOnDamage({ character, actualDamage, originalDamage }: OnDamageTrigger) {
@@ -155,6 +158,40 @@ export class ShieldBlock extends Skill {
                 durability: this.socketedUpgrade instanceof DurableShieldBlockSkillGem ? 2 : 1
             }), castBy)
         })
+    }
+}
+
+export class BodyGuard extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Body Guard",
+        energyCost: 3,
+        cooldown: 10 * 1000,
+        targetType: TargetType.TARGET_FRIENDLY,
+        castTime: 1100,
+        imagePath: "/juggernaut/body-guard.png",
+        buffDuration: 8 * 1000,
+        range: SkillRange.MELEE,
+    })
+
+    description: string | null = "Body Guard target ally, redirecting half of the damage they take to you."
+
+    isTargetValid(castBy: Character | undefined, target: Character | undefined): boolean {
+        if (castBy?.id == target?.id) {
+            return false
+        }
+
+        return super.isTargetValid(castBy, target)
+    }
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => {
+            target.addBuff(new BodyGuardBuff(this.skillData.buffDuration), castBy)
+        })
+
+        Game.eventBus.publish(globalThreatEvent({
+            healer: castBy,
+            amount: 10
+        }))
     }
 }
 
