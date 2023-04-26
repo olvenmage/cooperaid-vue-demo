@@ -44,7 +44,7 @@ export default class EnergyBar {
 
     private regen() {
         if (GameSettings.generateEnergyWhileCasting || this.character?.castingSkill == null) {
-            this.energyCounter += this.energyRegenAmount * (1 + (this.stats.energyBoost.value / 100 ))
+            this.energyCounter += this.energyRegenAmount * (1 + (this.stats.derived.energyRegenHaste.value / 100 ))
 
             if (this.energyCounter >= this.energyPointThreshold) {
                 this.energyCounter -= this.energyPointThreshold

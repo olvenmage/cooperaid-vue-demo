@@ -5,13 +5,18 @@ import Skill, { SkillRange, TargetType } from '../skill';
 import EnergyBar from '../energy-bar';
 import Healthbar from '../health-bar';
 import DamageType from '../damage-type';
-import CharacterStats from '../character-stats';
+import CharacterStats, { CoreStats } from '../character-stats';
 import SkillData from '../skill-data';
 import Game from '@/core/game';
 
 export default class Bandit extends Identity {
     public name = "Bandit"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 1 })
+    public baseStats = new CoreStats({
+        constitution: 8,
+        strength: 10,
+        dexterity: 11,
+        intelligence: 4
+    })
     public imagePath = "/enemies/bandit.png"
 
     public skills = [

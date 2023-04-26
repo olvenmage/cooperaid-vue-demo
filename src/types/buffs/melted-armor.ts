@@ -9,7 +9,7 @@ export default class MeltedArmorBuff extends Buff implements StatMutatingBuff {
     public imagePath: string | null = "/buffs/reduced-armor.png"
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.armor.set(stats.armor.value - 2)
+        stats.derived.armor.set(stats.derived.armor.value - 2)
         return stats
     }
 }

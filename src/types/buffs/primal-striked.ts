@@ -27,7 +27,7 @@ export default class PrimalStrikedBuff extends Buff implements StatMutatingBuff,
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.speed.set(stats.speed.value + (this.stackAmount * 15))
+        stats.derived.castSpeed.set(stats.derived.castSpeed.value + (this.stackAmount * 15))
         return stats
     }
 }

@@ -5,13 +5,19 @@ import Skill, { SkillRange, TargetType } from '../skill';
 import DamageType from '../damage-type';
 import randomRange from '@/utils/randomRange';
 import MeltedArmorBuff from '../buffs/melted-armor';
-import CharacterStats from '../character-stats';
+import CharacterStats, { CoreStats } from '../character-stats';
 import SkillData from '../skill-data';
 import AggressiveBuff from '../buffs/aggressive';
 
 export default class DragonBoss extends Identity {
     public name = "Dragon"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 400, armor: 3, magicalArmor: 2 })
+    public baseStats = new CoreStats({
+        baseHealth: 300,
+        constitution: 24,
+        strength: 16,
+        dexterity: 12,
+        intelligence: 18
+    })
     public imagePath = "/enemies/dragon/dragonboss.png"
 
     public stackingFireDamage = 0

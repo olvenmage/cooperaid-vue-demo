@@ -4,7 +4,7 @@ import PlayerIdentity, { PlayerClass } from '../player-identity'
 import ClassBar from '../class-bar';
 import DamageType from '../damage-type';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
-import CharacterStats from '../character-stats';
+import CharacterStats, { CoreStats } from '../character-stats';
 import SkillData from '../skill-data';
 import NettedBuff from '../buffs/netted';
 import RageBar from '../special-bar/rage-bar';
@@ -15,7 +15,12 @@ import BloodLustBuff from '../buffs/blood-lust';
 
 export default class Barbarian extends PlayerIdentity {
     public name = "Barbarian"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 2, crit: 5 })
+    public baseStats = new CoreStats({
+        constitution: 12,
+        strength: 16,
+        dexterity: 10,
+        intelligence: 6
+    })
     public imagePath = "/classes/barbarian.png"
     public playerClass = PlayerClass.BARBARIAN
     public basicSkills: Skill[] = [new RecklessStrike(), new Shout()]

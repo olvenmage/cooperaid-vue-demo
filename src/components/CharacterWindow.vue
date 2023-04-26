@@ -69,20 +69,20 @@ function addDamageFloat(trigger: OnDamageTrigger) {
           <div class="stat-wrapper">
             <div class="stat-item">
               <img class="armor" width="16" height="16" src="/src/assets/icons/magical-armor-symbol.png" alt="">
-              <span style="font-size: 22px; margin-right: 8px">{{ character.stats.magicalArmor.value }}</span>
+              <span style="font-size: 22px; margin-right: 8px">{{ character.stats.derived.magicalArmor.value }}</span>
             </div>
             <div class="stat-item">
               <img class="armor" width="16" height="16" src="/src/assets/icons/armor-symbol.png" alt="">
-              <span style="font-size: 22px">{{ character.stats.armor.value }}</span>
+              <span style="font-size: 22px">{{ character.stats.derived.armor.value }}</span>
             </div>
             <div class="stat-item">
               <img class="armor" width="16" height="16" src="/src/assets/icons/energy-boost-symbol.png" alt="">
-              <span style="font-size: 22px">{{ character.stats.energyBoost.value }}</span>
+              <span style="font-size: 22px">{{ character.stats.derived.energyRegenHaste.value }}</span>
             </div>
           
             <div class="stat-item">
               <img class="armor" width="16" height="16" src="/src/assets/icons/speed-icon.png" alt="">
-              <span style="font-size: 22px">{{ character.stats.speed.value }}</span>
+              <span style="font-size: 22px">{{ character.stats.derived.castSpeed.value }}</span>
             </div>
         </div>
       </CharacterSprite>

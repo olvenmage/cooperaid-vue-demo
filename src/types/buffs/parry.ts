@@ -11,8 +11,8 @@ export class ParryHasteBuff extends Buff implements StatMutatingBuff {
     public imagePath: string | null = "/buffs/parry-haste.png"
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.energyBoost.set(stats.energyBoost.value + (25))
-        stats.speed.set(stats.speed.value + (25))
+        stats.derived.energyRegenHaste.set(stats.derived.energyRegenHaste.value + (25))
+        stats.derived.castSpeed.set(stats.derived.castSpeed.value + (25))
 
         return stats
     }

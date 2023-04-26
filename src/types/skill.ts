@@ -217,7 +217,7 @@ export default abstract class Skill {
         this.currentTargets = getTargets()
 
         setTimeout(() => {
-            this.castingTimer += this.skillData.castingIncrementer * (1 + (castBy.stats.speed.value / 100)) * GameSettings.speedFactor
+            this.castingTimer += this.skillData.castingIncrementer * (1 + (castBy.stats.derived.castSpeed.value / 100)) * GameSettings.speedFactor
             this.incrementCastTime(castBy, getTargets)
         }, this.skillData.castingIncrementer)
     }

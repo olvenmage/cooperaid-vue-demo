@@ -8,8 +8,8 @@ export default class PiercedEarsBuff extends Buff implements StatMutatingBuff {
     public imagePath: string | null = "/buffs/pierced-ears.png"
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.armor.set(stats.armor.value - 1)
-        stats.speed.set(stats.speed.value - 50)
+        stats.derived.armor.set(stats.derived.armor.value - 1)
+        stats.derived.castSpeed.set(stats.derived.castSpeed.value - 50)
         return stats
     }
 }

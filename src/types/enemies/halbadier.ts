@@ -5,7 +5,7 @@ import Skill, { SkillRange, TargetType } from '../skill';
 import EnergyBar from '../energy-bar';
 import Healthbar from '../health-bar';
 import DamageType from '../damage-type';
-import CharacterStats from '../character-stats';
+import CharacterStats, { CoreStats } from '../character-stats';
 import SkillData from '../skill-data';
 import PiercedEarsBuff from '../buffs/pierced-ears'
 import FlyingBuff from '../buffs/flying'
@@ -13,7 +13,12 @@ import ParryBuff from '../buffs/parry';
 
 export default class Halbadier extends Identity {
     public name = "Halbadier"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 65, armor: 2, magicalArmor: 0 })
+    public baseStats = new CoreStats({
+        constitution: 20,
+        strength: 16,
+        dexterity: 8,
+        intelligence: 5
+    })
     public imagePath = "/enemies/halbadier.png"
 
     public skills = [

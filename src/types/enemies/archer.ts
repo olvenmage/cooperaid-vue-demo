@@ -3,13 +3,18 @@ import type Character from '../character';
 import Identity from '../identity';
 import Skill, { AiTargetting, SkillRange, TargetType } from '../skill';
 import DamageType from '../damage-type';
-import CharacterStats from '../character-stats';
+import CharacterStats, { CoreStats } from '../character-stats';
 import SkillData from '../skill-data';
 import RapidFireBuff from '../buffs/rapid-fire';
 
 export default class Archer extends Identity {
     public name = "Archer"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 50, armor: 1, magicalArmor: 0, energyBoost: 25 })
+    public baseStats = new CoreStats({
+        constitution: 10,
+        strength: 16,
+        dexterity: 16,
+        intelligence: 4
+    })
     public imagePath = "/enemies/archer.png"
 
     public skills = [

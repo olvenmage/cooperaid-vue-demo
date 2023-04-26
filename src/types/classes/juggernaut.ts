@@ -4,7 +4,7 @@ import PlayerIdentity, { PlayerClass } from '../player-identity'
 import DamageType from '../damage-type';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import ShieldBlockBuff from '../buffs/shield-block';
-import CharacterStats from '../character-stats';
+import CharacterStats, { CoreStats } from '../character-stats';
 import SkillData from '../skill-data';
 import ShieldShatteredBuff from '../buffs/shield-shattered';
 import ArmorPower from '../power/armor-power';
@@ -18,7 +18,12 @@ import Taunt from '../skills/taunt';
 
 export default class Juggernaut extends PlayerIdentity {
     public name = "Juggernaut"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 52, armor: 3, crit: 5 })
+    public baseStats = new CoreStats({
+        constitution: 18,
+        strength: 12,
+        dexterity: 7,
+        intelligence: 7
+    })
     public imagePath = "/classes/juggernaut.png"
     public playerClass = PlayerClass.JUGGERNAUT
     public basicSkills: Skill[] = [new Bash(), new BodySlam()]
@@ -81,7 +86,7 @@ export class Bash extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         castBy.dealDamageTo({
-            amount: this.BASE_DAMAGE + castBy.stats.armor.value,
+            amount: this.BASE_DAMAGE + castBy.stats.derived.armor.value,
             targets,
             type: DamageType.PHYSICAL,
             threatModifier: 1.2,
@@ -104,10 +109,10 @@ export class BodySlam extends Skill {
     description: string | null = "Basic. Body slam the target, you deal twice your armor in damage to them, but they also deal damage to you based on their armor."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: castBy.stats.armor.value * 2, targets, type: DamageType.PHYSICAL, threatModifier: 1.2})
+        castBy.dealDamageTo({ amount: castBy.stats.derived.armor.value * 2, targets, type: DamageType.PHYSICAL, threatModifier: 1.2})
 
         targets.forEach((target) => {
-            target.dealDamageTo({ amount: target.stats.armor.value, targets: [castBy], type: DamageType.PHYSICAL, threatModifier: 1.2})
+            target.dealDamageTo({ amount: target.stats.derived.armor.value, targets: [castBy], type: DamageType.PHYSICAL, threatModifier: 1.2})
         })
     }
 }
@@ -130,7 +135,7 @@ export class Overpower extends Skill {
         targets.forEach((target) => {
             castBy.dealDamageTo({ amount: this.skillData.damage, targets: [target], type: DamageType.PHYSICAL, threatModifier: 1.2})
 
-            if (castBy.stats.armor.value > target.stats.armor.value && target.castingSkill) {
+            if (castBy.stats.derived.armor.value > target.stats.derived.armor.value && target.castingSkill) {
                 target.castingSkill.interupt()
             }
         })
@@ -210,7 +215,7 @@ export class ShieldShatter extends Skill {
     description: string | null = "Consume all your armor and deal double the amount in piercing damage to all enemies. You lose your armor for a duration"
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: castBy.stats.armor.value * 2, targets, type: DamageType.PHYSICAL, minAmount: castBy.stats.armor.value, threatModifier: 1.4 })
+        castBy.dealDamageTo({ amount: castBy.stats.derived.armor.value * 2, targets, type: DamageType.PHYSICAL, minAmount: castBy.stats.derived.armor.value, threatModifier: 1.4 })
 
         if (castBy.buffs.hasBuff(ShieldBlockBuff)) {
             castBy.buffs.removeBuffByType(ShieldBlockBuff)

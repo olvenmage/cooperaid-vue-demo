@@ -26,10 +26,10 @@ export default class DismantleBuff extends Buff implements StatMutatingBuff {
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.armor.set(stats.armor.value - 3)
+        stats.derived.armor.set(stats.derived.armor.value - 3)
 
         if (this.params.nullifies) {
-            stats.magicalArmor.set(stats.magicalArmor.value - 3)
+            stats.derived.magicalArmor.set(stats.derived.magicalArmor.value - 3)
         }
         return stats
     }

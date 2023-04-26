@@ -14,7 +14,7 @@ import { globalThreatEvent, characterDiedEvent } from '@/core/events';
 import type Player from './player';
 import type Skill from './skill';
 import type OnDamageTrigger from './triggers/on-damage-trigger';
-import type CharacterStats from './character-stats';
+import CharacterStats from './character-stats';
 import CharacterSkills from './character-skills';
 import type { DealDamageToParams, TakeDamageParams } from './damage';
 import { reactive } from 'vue';
@@ -58,9 +58,9 @@ export default class Character {
             characterSkills = new CharacterSkills(identity.skills, null)
         }
         this.characterSkills = characterSkills
-        this.healthBar = new Healthbar(identity.baseStats.maxHealth.value)
-        this.stats = reactive(identity.baseStats.clone()) as CharacterStats
-        this.baseStats = reactive(identity.baseStats.clone()) as CharacterStats
+        this.stats = reactive(new CharacterStats(this.identity.baseStats.clone())) as CharacterStats
+        this.baseStats = reactive(new CharacterStats(this.identity.baseStats.clone())) as CharacterStats
+        this.healthBar = new Healthbar(this.stats.derived.maxHealth.value)
         this.characterPowers = new CharacterPowers()
         this.energyBar = new EnergyBar(this.stats)
         this.isFriendly = isFriendly
@@ -86,7 +86,7 @@ export default class Character {
             this.classBar?.mutateStats(this.stats)
         }
 
-        this.healthBar.max = this.stats.maxHealth.value
+        this.healthBar.max = this.stats.derived.maxHealth.value
     }
 
     enableAI() {
@@ -121,11 +121,15 @@ export default class Character {
             return []
         }
 
+        if (damage.type == DamageType.PHYSICAL) {
+            damage.amount += this.stats.derived.attackPower.value
+        }
+
         this.identity.beforeDealDamageTriggers.forEach((cb) => damage = cb(damage, this))
 
         let isCrit = false
 
-        if (!damage.noCrit && (Math.random() * 100) <= this.stats.crit.value ) {
+        if (!damage.noCrit && (Math.random() * 100) <= this.stats.derived.critChance.value ) {
             isCrit = true
             damage.amount *= 2
         }
@@ -153,9 +157,9 @@ export default class Character {
         let actualDamage: number
 
         if (damage.type == DamageType.PHYSICAL) {
-            actualDamage = Math.max(damage.amount - this.stats.armor.value, damage.minAmount ?? 0)
+            actualDamage = Math.max(damage.amount - this.stats.derived.armor.value, damage.minAmount ?? 0)
         } else if (damage.type == DamageType.MAGICAL) {
-            actualDamage = Math.max(damage.amount - this.stats.magicalArmor.value, damage.minAmount ?? 0)
+            actualDamage = Math.max(damage.amount - this.stats.derived.magicalArmor.value, damage.minAmount ?? 0)
         } else {
             actualDamage = damage.amount
         }

@@ -64,9 +64,9 @@ export default class CommandNatureArmorBuff extends Buff implements StatMutating
 
     mutateStats(stats: CharacterStats): CharacterStats {
         if (this.givenBy && this.attachedCharacter?.isEnemyTo(this.givenBy)) {
-            stats.armor.set(stats.armor.value - this.stackAmount)
+            stats.derived.armor.set(stats.derived.armor.value - this.stackAmount)
         } else {
-            stats.armor.set(stats.armor.value + this.stackAmount)
+            stats.derived.armor.set(stats.derived.armor.value + this.stackAmount)
         }
         return stats
     }

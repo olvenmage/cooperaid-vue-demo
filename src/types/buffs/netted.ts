@@ -14,7 +14,7 @@ export default class NettedBuff extends Buff implements StatMutatingBuff {
 
     mutateStats(stats: CharacterStats): CharacterStats {
         stats.flying = false;
-        stats.speed.set(stats.speed.value - 50)
+        stats.derived.castSpeed.set(stats.derived.castSpeed.value - 50)
         // todo cant do melee attacks
 
         return stats

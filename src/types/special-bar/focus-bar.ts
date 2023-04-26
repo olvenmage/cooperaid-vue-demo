@@ -15,8 +15,8 @@ export default class FocusBar extends ClassBar {
     }
 
     override mutateStats(stats: CharacterStats): CharacterStats {
-        stats.speed.set(stats.speed.value + 100)
-        stats.energyBoost.set(stats.energyBoost.value + 50)
+        stats.derived.castSpeed.set(stats.derived.castSpeed.value + 100)
+        stats.derived.energyRegenHaste.set(stats.derived.energyRegenHaste.value + 50)
 
         return stats
     }

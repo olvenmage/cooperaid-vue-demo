@@ -19,7 +19,7 @@ export default class RageBar extends ClassBar {
     }
 
     override mutateStats(stats: CharacterStats): CharacterStats {
-        stats.energyBoost.set(stats.energyBoost.value + 100)
+        stats.derived.energyRegenHaste.set(stats.derived.energyRegenHaste.value + 100)
 
         return stats
     }

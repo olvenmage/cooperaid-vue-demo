@@ -41,7 +41,7 @@ export default class BlessingOfProtectionBuff extends Buff implements StatMutati
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.armor.set(stats.armor.value + 2)
+        stats.derived.armor.set(stats.derived.armor.value + 2)
         return stats
     }
 }

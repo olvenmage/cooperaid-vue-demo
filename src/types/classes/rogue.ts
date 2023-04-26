@@ -3,7 +3,7 @@ import Skill, { AiTargetting, SkillRange, TargetType } from '../skill';
 import PlayerIdentity, { PlayerClass } from '../player-identity'
 import ClassBar from '../class-bar';
 import DamageType from '../damage-type';
-import CharacterStats from '../character-stats';
+import CharacterStats, { CoreStats } from '../character-stats';
 import DismantleBuff from '../buffs/dismantle';
 import SleepBuff from '../buffs/asleep';
 import PoisonBuff from '../buffs/poison';
@@ -20,7 +20,12 @@ import QuickMovesSkillGem from '../skill-upgrades/rogue/quick-moves-skill-gem';
 
 export default class Rogue extends PlayerIdentity {
     public name = "Rogue"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 35, armor: 2, crit: 10 })
+    public baseStats = new CoreStats({
+        constitution: 8,
+        strength: 12,
+        dexterity: 18,
+        intelligence: 6
+    })
     public maxHealth = 35
     public imagePath = "/classes/rogue.png"
     public playerClass = PlayerClass.ROGUE
@@ -184,10 +189,10 @@ export class Switchblade extends Skill {
                 castBy.classBar.increase(2)
             }
 
-            const damage = this.skillData.damage + target.stats.armor.value
+            const damage = this.skillData.damage + target.stats.derived.armor.value
 
             if (castBy.classBar instanceof FocusBar) {
-                castBy.classBar.increase(target.stats.armor.value)
+                castBy.classBar.increase(target.stats.derived.armor.value)
             }
 
             castBy.dealDamageTo({ targets: [target], type: DamageType.PHYSICAL, amount: damage, minAmount: damage })

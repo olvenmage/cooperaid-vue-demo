@@ -14,8 +14,8 @@ export default class EntangleBuff extends Buff implements StatMutatingBuff {
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.speed.set(stats.speed.value - 100)
-        stats.energyBoost.set(stats.energyBoost.value - 100)
+        stats.derived.castSpeed.set(stats.derived.castSpeed.value - 100)
+        stats.derived.energyRegenHaste.set(stats.derived.energyRegenHaste.value - 100)
 
         return stats
     }

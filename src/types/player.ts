@@ -100,7 +100,7 @@ class Player {
                 ...newVal.skills
             ]
             this.basicSkill = pickRandom(newVal.basicSkills) as Skill|null
-            this.healthBar = new Healthbar(newVal.baseStats.maxHealth.value)
+            this.healthBar = new Healthbar(newVal.baseStats.getMaxHealth())
         } else {
             this.skills = [];
         }

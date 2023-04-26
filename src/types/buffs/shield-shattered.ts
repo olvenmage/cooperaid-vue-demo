@@ -14,7 +14,7 @@ export default class ShieldShatteredBuff extends Buff implements StatMutatingBuf
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.armor.set(0)
+        stats.derived.armor.set(0)
         return stats
     }
 }

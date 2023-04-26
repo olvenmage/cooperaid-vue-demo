@@ -59,7 +59,7 @@ export default class SleepBuff extends TickBuff implements StatMutatingBuff {
         stats.stunned = true
 
         if (this.params.paralyzes) {
-            stats.speed.set(stats.speed.value - 50)
+            stats.derived.castSpeed.set(stats.derived.castSpeed.value - 50)
         }
     
         return stats

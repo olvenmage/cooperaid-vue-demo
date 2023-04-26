@@ -51,7 +51,7 @@ export default class EvasionBuff extends Buff implements StatMutatingBuff {
 
     mutateStats(stats: CharacterStats): CharacterStats {
         if (this.params.speedsUpOnHit) {
-            stats.speed.set(stats.speed.value + (10 * this.dodgeCount))
+            stats.derived.castSpeed.set(stats.derived.castSpeed.value + (10 * this.dodgeCount))
         }
         return stats
     }

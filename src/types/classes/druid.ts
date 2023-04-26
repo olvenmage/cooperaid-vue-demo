@@ -2,7 +2,7 @@ import type Character from '../character'
 import Skill, { AiTargetting, SkillRange, TargetType, type CastSkillResponse } from '../skill';
 import PlayerIdentity, { PlayerClass } from '../player-identity'
 import DamageType from '../damage-type';
-import CharacterStats from '../character-stats';
+import CharacterStats, { CoreStats } from '../character-stats';
 import type EmpowerableSKill from '../skill-types/empowerable-skill';
 import SkillData from '../skill-data';
 import FerocityBar from '../special-bar/ferocity-bar'
@@ -23,7 +23,12 @@ import CommandNatureArmorBuff from '../buffs/command-nature-armor';
 
 export default class Druid extends PlayerIdentity {
     public name = "Druid"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 35, armor: 1, magicalArmor: 1, crit: 5 })
+    public baseStats = new CoreStats({
+        constitution: 11,
+        strength: 11,
+        dexterity: 11,
+        intelligence: 11
+    })
     public imagePath = "/classes/druid.png"
     public playerClass = PlayerClass.DRUID
     public basicSkills: Skill[] = [new CommandNature(), new PrimalStrike()]

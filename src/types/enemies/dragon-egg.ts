@@ -5,13 +5,18 @@ import Skill, { SkillRange, TargetType } from '../skill';
 import DamageType from '../damage-type';
 import randomRange from '@/utils/randomRange';
 import MeltedArmorBuff from '../buffs/melted-armor';
-import CharacterStats from '../character-stats';
+import CharacterStats, { CoreStats } from '../character-stats';
 import ClassBar from '../class-bar';
 import SkillData from '../skill-data';
 
 export default class DragonEgg extends Identity {
     public name = "Dragon Egg"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: -1, magicalArmor: -1, energyBoost: -10 })
+    public baseStats = new CoreStats({
+        constitution: 8,
+        strength: 0,
+        dexterity: 0,
+        intelligence: 0
+    })
     public imagePath = "/enemies/dragon/dragon-egg.png"
 
     public skills = [
@@ -24,7 +29,12 @@ export default class DragonEgg extends Identity {
         if (character.classBar != null) {
             character.classBar.onFilled = () => {
                 this.name = "Dragon Whelp"
-                this.baseStats = CharacterStats.fromObject({ maxHealth: 75, armor: 1 })
+                this.baseStats = new CoreStats({
+                    constitution: 12,
+                    strength: 12,
+                    dexterity: 12,
+                    intelligence: 12
+                })
                 character.recalculateStats()
                 character.healthBar.current = character.healthBar.max
                 this.imagePath = "/enemies/dragon/dragon-whelp.png"

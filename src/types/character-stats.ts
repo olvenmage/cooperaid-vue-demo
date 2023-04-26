@@ -1,5 +1,6 @@
 import { ref, watch } from "vue"
 import type StatsState from "./state/stats-state"
+import GameSettings from "@/core/settings"
 
 export interface StatsOptionsConstructor {
     maxHealth: number,
@@ -34,65 +35,124 @@ class CharacterStat {
     }
 }
 
-export default class CharacterStats {
-    public maxHealth = new CharacterStat()
-    public armor = new CharacterStat()
-    public magicalArmor = new CharacterStat()
-    public energyBoost = new CharacterStat()
-    public speed = new CharacterStat()
-    public crit = new CharacterStat()
-    public stunned = false
-    public flying = false
+interface CoreStatsObject {
+    baseHealth?: number
+    dexterity: number
+    strength: number
+    intelligence: number
+    constitution: number
+}
 
-    constructor(maxHealth: number, armor = 0, magicalArmor = 0, energyBoost = 0, speed = 0, crit = 0) {
-        this.maxHealth.set(maxHealth)
-        this.armor.set(armor)
-        this.magicalArmor.set(magicalArmor)
-        this.energyBoost.set(energyBoost)
-        this.speed.set(speed)
-        this.crit.set(crit)
+export class CoreStats {
+    public baseHealth = new CharacterStat()
+    public dexterity = new CharacterStat()
+    public strength = new CharacterStat()
+    public intelligence = new CharacterStat()
+    public constitution = new CharacterStat()
+
+    constructor(params: CoreStatsObject) {
+        this.dexterity.set(params.dexterity)
+        this.strength.set(params.strength)
+        this.intelligence.set(params.intelligence)
+        this.constitution.set(params.constitution)
+        this.baseHealth.set(params.baseHealth ?? GameSettings.baseHealth)
     }
 
-    static fromObject(object: StatsOptionsConstructor) {
-        return new CharacterStats(
-            object.maxHealth || 0,
-            object.armor || 0,
-            object.magicalArmor || 0,
-            object.energyBoost || 0,
-            object.speed || 0,
-            object.crit || 0
-        )
+    setDerivedStats(derivedStats: DerivedStats)  {
+        derivedStats.energyRegenHaste.set(this.dexterity.value)
+        derivedStats.critChance.set(GameSettings.baseCritChance + Math.floor(this.dexterity.value / 3))
+        derivedStats.dodgeChance.set(Math.floor(this.dexterity.value / 3))
+
+        derivedStats.castSpeed.set(this.strength.value)
+        derivedStats.attackPower.set(Math.floor(this.strength.value / 4))
+
+        derivedStats.magicPotency.set(this.intelligence.value)
+        derivedStats.maxEnergy.set(10 + Math.floor(this.intelligence.value / 6))
+        derivedStats.magicalArmor.set(Math.floor(this.intelligence.value / 6))
+
+        derivedStats.hardiness.set(this.constitution.value)
+        derivedStats.maxHealth.set(this.getMaxHealth())
+        derivedStats.armor.set(Math.floor(this.constitution.value / 6))
+    }
+
+    clone() {
+        return new CoreStats({
+            dexterity: this.dexterity.value,
+            strength: this.strength.value,
+            intelligence: this.intelligence.value,
+            constitution: this.constitution.value,
+            baseHealth: this.baseHealth.value
+        })
+    }
+
+    recalculateBasedOn(stats: CoreStats) {
+        this.baseHealth.recalculate(stats.baseHealth.value)
+        this.dexterity.recalculate(stats.dexterity.value)
+        this.strength.recalculate(stats.strength.value)
+        this.intelligence.recalculate(stats.intelligence.value)
+        this.constitution.recalculate(stats.constitution.value)
+    }
+
+    getMaxHealth() {
+        return this.baseHealth.value + this.constitution.value * 3
+    }
+}
+
+class DerivedStats {
+    energyRegenHaste = new CharacterStat()
+    critChance = new CharacterStat()
+    dodgeChance = new CharacterStat()
+
+    castSpeed = new CharacterStat()
+    attackPower = new CharacterStat()
+
+    magicPotency = new CharacterStat()
+    maxEnergy = new CharacterStat()
+    magicalArmor = new CharacterStat()
+
+    armor = new CharacterStat()
+    maxHealth = new CharacterStat()
+    hardiness = new CharacterStat()
+
+    initiative = new CharacterStat()
+}
+
+export default class CharacterStats {
+    core: CoreStats
+    derived: DerivedStats
+    stunned = false
+    flying = false
+
+    constructor(coreStats: CoreStats) {
+        this.core = coreStats
+        this.derived =  new DerivedStats()
+        this.updateDerivedStats()
+    }
+
+    updateDerivedStats() {
+        this.core.setDerivedStats(this.derived)
     }
 
     clone() {
         return new CharacterStats(
-            this.maxHealth.value,
-            this.armor.value,
-            this.magicalArmor.value,
-            this.energyBoost.value,
-            this.speed.value,
-            this.crit.value
+            this.core.clone()
         )
     }
 
     recalculateBasedOn(stats: CharacterStats) {
-        this.armor.recalculate(stats.armor.value)
-        this.magicalArmor.recalculate(stats.magicalArmor.value)
-        this.maxHealth.recalculate(stats.maxHealth.value)
-        this.energyBoost.recalculate(stats.energyBoost.value)
-        this.speed.recalculate(stats.speed.value)
-        this.crit.recalculate(stats.crit.value)
+        this.core.recalculateBasedOn(stats.core)
+        this.updateDerivedStats()
         this.stunned = false
         this.flying = false
     }
 
     getState(): StatsState {
         return {
-            maxHealth: this.maxHealth.value,
-            armor: this.armor.value,
-            magicalArmor: this.magicalArmor.value,
-            energyBoost: this.energyBoost.value,
-            speed: this.speed.value,
+            maxHealth: this.derived.maxHealth.value,
+            armor: this.derived.armor.value,
+            magicalArmor: this.derived.magicalArmor.value,
+            energyBoost: this.derived.energyRegenHaste.value,
+            speed: this.derived.castSpeed.value,
             stunned: this.stunned,
             flying: this.flying
         }

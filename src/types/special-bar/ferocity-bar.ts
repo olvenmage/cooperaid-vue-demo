@@ -15,9 +15,9 @@ export default class FerocityBar extends ClassBar {
     }
 
     override mutateStats(stats: CharacterStats): CharacterStats {
-        stats.energyBoost.set(stats.energyBoost.value + 20)
-        stats.armor.set(stats.armor.value + 3)
-        stats.magicalArmor.set(stats.magicalArmor.value + 3)
+        stats.derived.energyRegenHaste.set(stats.derived.energyRegenHaste.value + 20)
+        stats.derived.armor.set(stats.derived.armor.value + 3)
+        stats.derived.magicalArmor.set(stats.derived.magicalArmor.value + 3)
 
         return stats
     }

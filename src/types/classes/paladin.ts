@@ -8,7 +8,7 @@ import { characterDiedEvent, globalThreatEvent } from '@/core/events';
 import SavingGrace from '../buffs/saving-grace';
 import BlessingOfProtectionBuff from '../buffs/blessing-of-protection'
 import SmittenBuff from '../buffs/smitten';
-import CharacterStats from '../character-stats';
+import CharacterStats, { CoreStats } from '../character-stats';
 import SkillData from '../skill-data';
 import HolyPowerBar from '../special-bar/holy-power-bar';
 import type { AppSocketSubscription } from '@/app-socket/lib/core/types';
@@ -22,11 +22,16 @@ import WeaponOfRightenousnessSkillGem from '../skill-upgrades/paladin/weapon-of-
 
 export default class Paladin extends PlayerIdentity {
     public name = "Paladin"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 40, armor: 2, magicalArmor: 1, crit: 5 })
+    public baseStats = new CoreStats({
+        constitution: 13,
+        strength: 12,
+        dexterity: 6,
+        intelligence: 13
+    })
     public imagePath = "/classes/paladin.png"
     public playerClass = PlayerClass.PALADIN
     public basicSkills: Skill[] = [new HolyShock(), new HolyStrike()]
-    public color = "#B59E54";
+    public color = "#ffdf00";
     public description = "The Paladin vows to protect the weak and bring justice to the unjust They are equiped with plate armor so they can confront the toughest of foes, and the blessing of their God allows them to heal wounds and wield powerful holy magic to vanquish evil."
 
 

@@ -24,8 +24,8 @@ export default class RapidFireBuff extends TickBuff implements StatMutatingBuff 
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.speed.set(stats.speed.value + (5 * this.buildAmount))
-        stats.energyBoost.set(stats.energyBoost.value + (5 * this.buildAmount))
+        stats.derived.castSpeed.set(stats.derived.castSpeed.value + (5 * this.buildAmount))
+        stats.derived.energyRegenHaste.set(stats.derived.energyRegenHaste.value + (5 * this.buildAmount))
 
         return stats
     }

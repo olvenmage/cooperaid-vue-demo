@@ -43,8 +43,8 @@ export default class BestialWrathBuff extends TickBuff implements StatMutatingBu
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.speed.set(stats.speed.value + (8 * this.buildAmount))
-        stats.energyBoost.set(stats.energyBoost.value + (8 * this.buildAmount))
+        stats.derived.castSpeed.set(stats.derived.castSpeed.value + (8 * this.buildAmount))
+        stats.derived.energyRegenHaste.set(stats.derived.energyRegenHaste.value + (8 * this.buildAmount))
 
         return stats
     }

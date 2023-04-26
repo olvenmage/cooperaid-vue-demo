@@ -7,4 +7,6 @@ export default abstract class GameSettings {
     static aiEnabled = true
 
     static threatStealBuffer = 0.10
+    static baseHealth = 20
+    static baseCritChance = 3
 }

@@ -3,7 +3,7 @@ import Skill, { AiTargetting, SkillRange, TargetType } from '../skill';
 import PlayerIdentity, { PlayerClass } from '../player-identity'
 import ClassBar from '../class-bar';
 import DamageType from '../damage-type';
-import CharacterStats from '../character-stats';
+import CharacterStats, { CoreStats } from '../character-stats';
 import DismantleBuff from '../buffs/dismantle';
 import type EmpowerableSKill from '../skill-types/empowerable-skill';
 import FrozenBuff from '../buffs/frozen'
@@ -12,7 +12,12 @@ import EmpowerBar from '../special-bar/empower-bar';
 
 export default class Mage extends PlayerIdentity {
     public name = "Mage"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 30, armor: 1, magicalArmor: 1, crit: 5 })
+    public baseStats = new CoreStats({
+        constitution: 6,
+        strength: 10,
+        dexterity: 10,
+        intelligence: 18
+    })
     public imagePath = "/classes/mage.png"
     public playerClass = PlayerClass.MAGE
     public basicSkills: Skill[] = [new FrostBolt()]

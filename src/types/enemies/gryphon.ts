@@ -5,14 +5,20 @@ import Skill, { SkillRange, TargetType } from '../skill';
 import EnergyBar from '../energy-bar';
 import Healthbar from '../health-bar';
 import DamageType from '../damage-type';
-import CharacterStats from '../character-stats';
+import CharacterStats, { CoreStats } from '../character-stats';
 import SkillData from '../skill-data';
 import PiercedEarsBuff from '../buffs/pierced-ears'
 import FlyingBuff from '../buffs/flying'
 
 export default class Gryphon extends Identity {
     public name = "Gryphon"
-    public baseStats = CharacterStats.fromObject({ maxHealth: 140, armor: 2, magicalArmor: 2, energyBoost: 40 })
+    public baseStats = new CoreStats({
+        baseHealth: 50,
+        constitution: 20,
+        strength: 18,
+        dexterity: 24,
+        intelligence: 12
+    })
     public imagePath = "/enemies/gryphon.png"
 
     public skills = [
