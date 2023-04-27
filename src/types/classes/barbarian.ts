@@ -192,7 +192,7 @@ export class Shout extends Skill {
         castTime: 1000,
         imagePath: "/barbarian/shout.png",
         range: SkillRange.RANGED,
-        damage: 8
+        damage: 6
     })
 
     description: string | null = "Deal 8 piercing damage divided amongst all enemies, generates a lot of threat"
@@ -203,7 +203,7 @@ export class Shout extends Skill {
         castBy.dealDamageTo({ amount: damage, targets, type: this.skillData.damageType!, threatModifier: 2, minAmount: damage })
 
         if (this.socketedUpgrade instanceof AngryYellingSkillGem && castBy.classBar) {
-            castBy.classBar.increase(targets.length)
+            castBy.classBar.increase(targets.length * 2)
         }
     }
 }

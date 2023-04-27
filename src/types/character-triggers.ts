@@ -6,6 +6,7 @@ import type OnDamageTrigger from "./triggers/on-damage-trigger";
 import type OnDodgeTrigger from "./triggers/on-dodge.trigger";
 
 export enum CHARACTER_TRIGGERS {
+    BEFORE_SKILL_START_CAST,
     BEFORE_SKILL_CAST,
     BEFORE_SPELL,
     BEFORE_DAMAGE_TAKEN,
@@ -21,6 +22,7 @@ export type CharacterTriggerPayload<E extends Record<any, any>> = {
 } & E
 
 type CharacterTriggerCallbacks = {
+    [CHARACTER_TRIGGERS.BEFORE_SKILL_START_CAST]: SkillData,
     [CHARACTER_TRIGGERS.BEFORE_SKILL_CAST]: SkillData,
     [CHARACTER_TRIGGERS.BEFORE_SPELL]: {test: 'hello'},
     [CHARACTER_TRIGGERS.BEFORE_DAMAGE_TAKEN]: OnDamageTrigger,
@@ -32,6 +34,7 @@ type CharacterTriggerCallbacks = {
 export default class CharacterTriggers {
     private registeredCallbacks: Record<CHARACTER_TRIGGERS, CharacterTriggerCallback<CharacterTriggerPayload<any>>[]> = {
         [CHARACTER_TRIGGERS.BEFORE_SKILL_CAST]: [],
+        [CHARACTER_TRIGGERS.BEFORE_SKILL_START_CAST]: [],
         [CHARACTER_TRIGGERS.BEFORE_SPELL]: [],
         [CHARACTER_TRIGGERS.BEFORE_DAMAGE_TAKEN]: [],
         [CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN]: [],

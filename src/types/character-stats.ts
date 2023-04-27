@@ -64,7 +64,7 @@ export class CoreStats {
         derivedStats.dodgeChance.set(Math.floor(this.dexterity.value / GameSettings.derivedStatsOptions.dexPerDodge))
 
         derivedStats.castSpeed.set(this.strength.value * GameSettings.derivedStatsOptions.castSpeedIncreasePerStr)
-        derivedStats.attackPower.set(Math.floor(this.strength.value / GameSettings.derivedStatsOptions.attackPowerPerStrength))
+        derivedStats.attackDamage.set(Math.floor(this.strength.value / GameSettings.derivedStatsOptions.attackDamagePerStrength))
 
         derivedStats.cooldownReduction.set(this.intelligence.value * GameSettings.derivedStatsOptions.cooldownReductionPerInt)
         derivedStats.maxEnergy.set(10 + Math.floor(this.intelligence.value / GameSettings.derivedStatsOptions.intPerMaxEnergyIncrease))
@@ -104,7 +104,7 @@ class DerivedStats {
     dodgeChance = new CharacterStat()
 
     castSpeed = new CharacterStat()
-    attackPower = new CharacterStat()
+    attackDamage = new CharacterStat()
 
     cooldownReduction = new CharacterStat()
     maxEnergy = new CharacterStat()

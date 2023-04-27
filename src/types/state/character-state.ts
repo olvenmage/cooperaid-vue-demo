@@ -46,7 +46,7 @@ export interface CharacterSkill {
     targetType: CharacterSkillTargetType
     socketedGem: UpgradeGemState|null
     cooldownRemaining: number // in ms speed relative,
-    cooldown: number // in ms speed relative
+    cooldown: string // in ms speed relative
     buffDuration: number // in ms speed relative
     castTime: number // in ms speed relative
 }

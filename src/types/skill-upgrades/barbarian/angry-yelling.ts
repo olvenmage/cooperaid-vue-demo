@@ -5,7 +5,7 @@ import { OverwhelmingLight } from "@/types/classes/paladin";
 import { Rampage, Shout } from "@/types/classes/barbarian";
 
 export default class AngryYellingSkillGem extends SkillUpgradeGem {
-    public description: string = "Shout generates 1 rage per enemy affected"
+    public description: string = "Shout generates 2 rage per enemy affected"
     public name = "Angry Yelling"
 
     public imagePath = "/barbarian/uncommon.png"

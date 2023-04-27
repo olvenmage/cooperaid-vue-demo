@@ -15,6 +15,8 @@ import BodyGuardBuff from '../buffs/body-guard';
 import Game from '@/core/game';
 import { globalThreatEvent } from '@/core/events';
 import { CHARACTER_TRIGGERS } from '../character-triggers';
+import ShatterBuff from '../buffs/shatter';
+import ShockWaveBuff from '../buffs/shock-wave';
 
 export default class Juggernaut extends PlayerIdentity {
     public name = "Juggernaut"
@@ -57,6 +59,8 @@ export default class Juggernaut extends PlayerIdentity {
         new ShieldBlock(),
         new Overpower(),
         new BodyGuard(),
+        new Shatter(),
+        new ShockWave()
     ]
 
     generateResistanceOnDamage({ character, actualDamage, originalDamage }: OnDamageTrigger) {
@@ -178,6 +182,31 @@ export class ShieldBlock extends Skill {
     }
 }
 
+export class Shatter extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Shatter",
+        energyCost: 3,
+        cooldown: 12 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        castTime: 400,
+        imagePath: "/juggernaut/shatter.png",
+        buffDuration: 8 * 1000,
+        range: SkillRange.MELEE,
+    })
+
+    description: string | null = "Shatter an enemy's weapon, reducing their attack damage by 4."
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => {
+            target.addBuff(new ShatterBuff({
+                duration: this.skillData.buffDuration,
+            }), castBy)
+
+            target.threat?.raiseThreat(castBy, 15)
+        })
+    }
+}
+
 export class BodyGuard extends Skill {
     skillData: SkillData = new SkillData({
         name: "Body Guard",
@@ -234,6 +263,33 @@ export class ShieldShatter extends Skill {
         }
 
         castBy.addBuff(new ShieldShatteredBuff(this.skillData.buffDuration), castBy)
+    }
+}
+
+export class ShockWave extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Shockwave",
+        energyCost: 6,
+        cooldown: 16 * 1000,
+        targetType: TargetType.TARGET_ALL_ENEMIES,
+        damageType: DamageType.PHYSICAL,
+        castTime: 1200,
+        imagePath: "/juggernaut/shock-wave.png",
+        range: SkillRange.MELEE,
+        buffDuration: 0.5 * 1000,
+        damage: 6
+    })
+
+    description: string | null = "Deal 6 damage to all enemies and stun them for a duration based on your strength."
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL, threatModifier: 1 })
+
+        targets.forEach((target) => {
+            target.addBuff(new ShockWaveBuff({
+                duration: this.skillData.buffDuration + (500 * (castBy.stats.core.strength.value / 6))
+            }), castBy)
+        })
     }
 }
 

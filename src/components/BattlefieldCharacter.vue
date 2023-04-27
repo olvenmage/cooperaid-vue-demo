@@ -62,7 +62,7 @@ function startCast(skill: Skill) {
       </div>
         {{ skill.skillData.name }}
     <span style="float: right" v-if="skill.onCooldown">
-    ({{ (skill.cooldown - skill.onCooldownTimer) / 1000 }})
+    ({{ skill.cooldownDisplay }})
   </span>
   </div>
   </div>

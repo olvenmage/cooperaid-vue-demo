@@ -324,7 +324,7 @@ export class BlessedWeapon extends Skill {
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Buff an ally to add 3 damage to all their physical attacks."
+    description: string | null = "Buff an ally to give +3 attack damage"
 
     canCast(castBy: Character): boolean {
         if (castBy.energyBar.current == 0) {

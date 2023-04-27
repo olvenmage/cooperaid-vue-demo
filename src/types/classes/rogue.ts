@@ -20,14 +20,15 @@ import QuickMovesSkillGem from '../skill-upgrades/rogue/quick-moves-skill-gem';
 import Taunt from '../skills/taunt';
 import ShadowStepBuff from '../buffs/shadow-step';
 import ShadowSurge from '../skill-upgrades/rogue/shadow-surge';
+import CoughBombBuff from '../buffs/cough-bomb';
 
 export default class Rogue extends PlayerIdentity {
     public name = "Rogue"
     public baseStats = new CoreStats({
         constitution: 7,
         strength: 12,
-        dexterity: 45, // normally 18
-        intelligence: 36 // normally 7
+        dexterity: 18,
+        intelligence: 7
     })
     public maxHealth = 35
     public imagePath = "/classes/rogue.png"
@@ -49,10 +50,6 @@ export default class Rogue extends PlayerIdentity {
 
     public skills = [
         new Kick(),
-        new Evasion(),
-        new Taunt(),
-        new FanOfKnives().setGem(new KnifeStormSkillGem),
-        new ShadowStep().setGem(new ShadowSurge)
     ]
 
     public possibleSkills = [
@@ -63,7 +60,8 @@ export default class Rogue extends PlayerIdentity {
         new HeartSeeker(),
         new Evasion(),
         new KillShot(),
-        new ShadowStep()
+        new ShadowStep(),
+        new CoughBomb()
     ]
 }
 
@@ -94,7 +92,7 @@ export class FanOfKnives extends Skill {
 
         for (let i = 0; i < AMOUNT_OF_ATTACKS; i++) {
             const daggerDamage = Math.round(damage / (AMOUNT_OF_ATTACKS - i))
-            const target = pickRandom(targets) as Character
+            const target = pickRandom(targets.filter((c) => !c?.dead)) as Character
 
             damage -= daggerDamage
 
@@ -249,7 +247,7 @@ export class Backstab extends Skill {
                     castBy.classBar.increase(5)
                 }
 
-                threatModifier += 0.25
+                threatModifier += 0.5
             }
 
             castBy.dealDamageTo({ targets: [target], type: DamageType.PHYSICAL, amount: damage, threatModifier })
@@ -424,7 +422,7 @@ export class ShadowStep extends Skill {
         }), castBy)
 
         targets.forEach((target) => {
-            if (target.castingSkill?.currentTargets.some((target) => target.id == castBy.id)) {
+            if (target.castingSkill?.currentTargets.length == 1 && target.castingSkill?.currentTargets.some((target) => target.id == castBy.id)) {
                 target.castingSkill.interupt()
                 target.threat?.raiseThreat(castBy, 3)
                 if (castBy.classBar instanceof FocusBar) {
@@ -434,6 +432,36 @@ export class ShadowStep extends Skill {
                 if (this.socketedUpgrade instanceof ShadowSurge) {
                     castBy.energyBar.increase(1)
                 }
+            }
+        })
+    }
+}
+
+export class CoughBomb extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Cough Bomb",
+        energyCost: 3,
+        cooldown: 8 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        aiTargetting: AiTargetting.RANDOM,
+        castTime: 1000,
+        imagePath: "/rogue/shadow-step.png",
+        buffDuration: 4 * 1000,
+        range: SkillRange.RANGED,
+        damage: 10
+    })
+
+    description: string | null = "Deal 10 poison damage to an enemy and put a random skill they have off cooldown on cooldown."
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        castBy.dealDamageTo({ targets, type: DamageType.POISON, amount: this.skillData.damage, threatModifier: 1.2 })
+
+        targets.forEach((target) => {
+            const skillToDeactivate = target.skills.find((sk) => !sk.onCooldown && sk.cooldown > 0)
+            castBy?.classBar?.increase(3)
+            if (skillToDeactivate) {
+                skillToDeactivate?.startCooldown(target)
+                castBy.classBar?.increase(6)
             }
         })
     }

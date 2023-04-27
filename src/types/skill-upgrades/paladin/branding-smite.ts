@@ -4,7 +4,7 @@ import SkillUpgradeGem from "../../skill-upgrade";
 import { Smite } from "@/types/classes/paladin";
 
 export default class BrandingSmiteSkillGem extends SkillUpgradeGem {
-    public description: string = "Smite now deals damage when the target is hit intead of healing the attacker"
+    public description: string = "Smite now deals 4 damage instead of healing for 2 when the enemy is hit"
     public name = "Branding Smite"
 
     public imagePath = "/paladin/uncommon.png"

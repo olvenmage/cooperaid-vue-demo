@@ -3,22 +3,23 @@ import type Character from '../character';
 import type CharacterStats from '../character-stats';
 import { CHARACTER_TRIGGERS, type CharacterTriggerPayload } from '../character-triggers';
 import type SkillData from '../skill-data';
+import FocusBar from '../special-bar/focus-bar';
 
-interface ShadowStepParams {
+interface CoughBuffParams {
     duration: number,
 }
 
-export default class ShadowStepBuff extends Buff {
+export default class CoughBombBuff extends Buff {
     duration: number = 5 * 1000
     priority = BuffPriority.LAST_1
     public unique: boolean = true
 
-    public imagePath: string | null = "/skills/rogue/shadow-step.png"
+    public imagePath: string | null = "/skills/rogue/cough-bomb.png"
 
-    callback = this.instantCastNextAttackSkill.bind(this)
-    params: ShadowStepParams
+    callback = this.increaseCastSpeedNextSkill.bind(this)
+    params: CoughBuffParams
 
-    constructor(params: ShadowStepParams) {
+    constructor(params: CoughBuffParams) {
         super()
         this.duration = params.duration
         this.params = params
@@ -36,9 +37,13 @@ export default class ShadowStepBuff extends Buff {
         super.endEffect(character)
     }
 
-    instantCastNextAttackSkill(trigger: CharacterTriggerPayload<SkillData>) {
-        if (trigger.damage > 0) {
-            trigger.castTime = 0
+    increaseCastSpeedNextSkill(trigger: CharacterTriggerPayload<SkillData>) {
+        if (trigger.castTime > 0) {
+            trigger.castTime *= 1.5
+
+            if (this.givenBy?.classBar instanceof FocusBar) {
+                this.givenBy.classBar.increase(6)
+            }
             this.endEffect(trigger.character)
         }
     }

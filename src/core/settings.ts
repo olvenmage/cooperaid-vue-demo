@@ -18,7 +18,7 @@ export default abstract class GameSettings {
 
         // STR
         castSpeedIncreasePerStr: 1,
-        attackPowerPerStrength: 4,
+        attackDamagePerStrength: 4,
 
         // CONST
         hardinessPerConst: 1,

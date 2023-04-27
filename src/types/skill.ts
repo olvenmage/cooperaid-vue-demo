@@ -3,7 +3,7 @@ import type Character from './character';
 import type { CharacterSkill, CharacterSkillTargetType } from './state/character-state';
 import DamageType from './damage-type';
 import type OnDamageTrigger from './triggers/on-damage-trigger';
-import type SkillData from './skill-data';
+import SkillData from './skill-data';
 import type { SkillDataParams } from './skill-data';
 import type SkillUpgrade from './skill-upgrade';
 import type Battle from '@/core/battle';
@@ -60,13 +60,17 @@ export default abstract class Skill {
 
     currentTargets: Character[] = []
 
-    private currentCastCooldown: number|undefined = undefined
+    private castingSkillData: SkillData|undefined = undefined
     public id = "skill" + Math.random().toString(16).slice(2)
 
     interuptsOnDamageTakenCallback = this.onDamageTaken.bind(this)
 
     get cooldown(): number {
-        return (this.currentCastCooldown ?? this.skillData.cooldown) / GameSettings.speedFactor
+        return this.castingSkillData?.cooldown ?? 0 / GameSettings.speedFactor
+    }
+
+    get cooldownDisplay(): string {
+        return ((this.cooldown - this.onCooldownTimer) / 1000).toFixed(2)
     }
 
     canCast(castBy: Character): boolean {
@@ -74,11 +78,11 @@ export default abstract class Skill {
             return false;
         }
 
-        if (castBy.energyBar.current < this.skillData.energyCost) {
+        if (castBy.energyBar.current < (this.castingSkillData?.energyCost ?? 0)) {
             return false;
         }
 
-        if (!this.skillData.canCastOnCooldown && this.onCooldown) {
+        if (!this.castingSkillData?.canCastOnCooldown && this.onCooldown) {
             return false;
         }
 
@@ -95,7 +99,7 @@ export default abstract class Skill {
     }
 
     areTargetsValid(castBy: Character, targets: Character[]): boolean {
-        if (this.skillData.targetType == TargetType.TARGET_NONE) {
+        if (this.castingSkillData?.targetType == TargetType.TARGET_NONE) {
             return true
         }
 
@@ -110,19 +114,19 @@ export default abstract class Skill {
             return false
         }
 
-        if (this.skillData.targetType == TargetType.TARGET_SELF) {
+        if (this.castingSkillData?.targetType == TargetType.TARGET_SELF) {
             return castBy.id == target.id
         }
 
         const isEnemy = castBy.isEnemyTo(target)
 
-        if (this.skillData.targetType == TargetType.TARGET_FRIENDLY && isEnemy) {
+        if (this.castingSkillData?.targetType == TargetType.TARGET_FRIENDLY && isEnemy) {
             return false
-        } else if (this.skillData.targetType == TargetType.TARGET_ENEMY && !isEnemy) {
+        } else if (this.castingSkillData?.targetType == TargetType.TARGET_ENEMY && !isEnemy) {
             return false
         }
 
-        if (this.skillData.range === SkillRange.MELEE && target.stats.flying) {
+        if (this.castingSkillData?.range === SkillRange.MELEE && target.stats.flying) {
             return false
         }
 
@@ -189,7 +193,7 @@ export default abstract class Skill {
 
         this.casting = true
 
-        if (this.castingTimer >= this.skillData.castTime) {
+        if (this.castingTimer >= (this.castingSkillData?.castTime ?? 0)) {
             this.casted = true
             this.castingTimer = 0
             this.casting = false
@@ -224,9 +228,9 @@ export default abstract class Skill {
         this.currentTargets = getTargets()
 
         setTimeout(() => {
-            this.castingTimer += this.skillData.castingIncrementer * (1 + (castBy.stats.derived.castSpeed.value / 100)) * GameSettings.speedFactor
+            this.castingTimer += (this.castingSkillData?.castingIncrementer ?? 0) * (1 + (castBy.stats.derived.castSpeed.value / 100)) * GameSettings.speedFactor
             this.incrementCastTime(castBy, getTargets)
-        }, this.skillData.castingIncrementer)
+        }, this.castingSkillData?.castingIncrementer ?? 200)
     }
 
     cast(castBy: Character, getTargets: () => Character[]) {
@@ -239,22 +243,18 @@ export default abstract class Skill {
         }
 
         this.casted = false
+        this.castingSkillData = this.skillData.clone()
         this.currentTargets = getTargets()
         this.beforeCast(castBy)
-        castBy.energyBar.current -= this.skillData.energyCost
+        castBy.energyBar.current -= this.castingSkillData.energyCost
 
-        if (this.skillData.interuptsOnDamageTaken) {
+        if (this.castingSkillData.interuptsOnDamageTaken) {
             castBy.triggers.on(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.interuptsOnDamageTakenCallback)
         }
 
         castBy.castingSkill = this
 
-        if (this.skillData.damageType == DamageType.PHYSICAL) {
-            this.skillData.damage += castBy.stats.derived.attackPower.value
-        }
-
-        this.currentCastCooldown = this.skillData.cooldown * (1 - castBy.stats.derived.cooldownReduction.value / 100)
-        castBy.triggers.publish(CHARACTER_TRIGGERS.BEFORE_SKILL_CAST, this.skillData)
+        castBy.triggers.publish(CHARACTER_TRIGGERS.BEFORE_SKILL_START_CAST, this.castingSkillData)
         
         setTimeout(() => {
             this.incrementCastTime(castBy, getTargets)
@@ -266,6 +266,14 @@ export default abstract class Skill {
     }
 
     doCast(castBy: Character, targets: Character[]) {
+        if (this.castingSkillData?.damageType == DamageType.PHYSICAL) {
+            this.castingSkillData.damage += castBy.stats.derived.attackDamage.value
+        }
+
+        if (this.castingSkillData) {
+            castBy.triggers.publish(CHARACTER_TRIGGERS.BEFORE_SKILL_CAST, this.castingSkillData)
+        }
+
         const res = this.castSkill(castBy, targets);
 
         if (res?.triggerCooldown ?? true) {
@@ -283,7 +291,7 @@ export default abstract class Skill {
         const onCooldownSkillData = this.onCooldownSkillData()
         
         if (onCooldownSkillData) {
-            this.skillData.transform(Object.assign({}, onCooldownSkillData, { canCastOnCooldown: true }) as SkillDataParams)
+            this.castingSkillData?.transform(Object.assign({}, onCooldownSkillData, { canCastOnCooldown: true }) as SkillDataParams)
         }
     }
 
@@ -312,17 +320,17 @@ export default abstract class Skill {
     getState(castBy: Character|null, battle: Battle|null): CharacterSkill {
         return {
             id: this.id,
-            name: this.skillData.name,
+            name: this.castingSkillData?.name ?? "",
             canCast: castBy ? this.canCast(castBy) : true,
-            energyCost: this.skillData.energyCost,
+            energyCost: this.castingSkillData?.energyCost ?? 0,
             validTargets: battle && castBy ? battle.combatants.filter((cb) => this.isTargetValid(castBy, cb)).map((c) => c.id) : [],
             description: this.description,
-            imagePath: this.skillData.imagePath,
-            targetType: this.skillData.targetType as unknown as CharacterSkillTargetType,
-            cooldown: this.cooldown,
+            imagePath: this.castingSkillData?.imagePath ?? null,
+            targetType: this.castingSkillData?.targetType as unknown as CharacterSkillTargetType,
+            cooldown: this.cooldownDisplay,
             cooldownRemaining: this.onCooldownTimer,
-            buffDuration: this.skillData.buffDuration / GameSettings.speedFactor,
-            castTime: this.skillData.castTime / GameSettings.speedFactor,
+            buffDuration: this.castingSkillData?.buffDuration ?? 0 / GameSettings.speedFactor,
+            castTime: this.castingSkillData?.castTime ?? 0 / GameSettings.speedFactor,
             socketedGem: this.socketedUpgrade?.getState(castBy?.identity ?? null, []) ?? null
         }
     }
