@@ -30,4 +30,12 @@ export default abstract class GameSettings {
         intPerMagicArmor: 6,
         intPerMaxEnergyIncrease: 6
     }
+
+    static exp = {
+        // affecting the amount of XP (lower values = more XP required per level) (X)
+        expAmountFactor: 0.2,
+
+        // how quickly the required xp per level should increase (higher values = larger gaps between levels) (Y)
+        expIncreaseFactor: 2.5
+    }
 }
