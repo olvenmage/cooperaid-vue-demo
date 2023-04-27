@@ -14,7 +14,7 @@ import MegaFortificationSkillGem from '../skill-upgrades/juggernaut/mega-fortifi
 import BodyGuardBuff from '../buffs/body-guard';
 import Game from '@/core/game';
 import { globalThreatEvent } from '@/core/events';
-import Taunt from '../skills/taunt';
+import { CHARACTER_TRIGGERS } from '../character-triggers';
 
 export default class Juggernaut extends PlayerIdentity {
     public name = "Juggernaut"
@@ -30,15 +30,21 @@ export default class Juggernaut extends PlayerIdentity {
     public color = "#7F513E";
     public description: string = "The Juggernaut is a fearsome warrior covered in thick armor. They use their armor to protect allies and reduce incoming damage but do not underestimate them as their armor is also their greatest weapon."
 
+    private generateResistanceOnDamageCallback = this.generateResistanceOnDamage.bind(this)
+
     override onCreated(character: Character) {
-        this.onDamageTakenTriggers = []
         character.classBar = new RetaliationBar()
 
         character.classBar.onFilled = () => {
             character.classBar?.activate(character)
         }
 
-        this.onDamageTakenTriggers.push(this.generateResistanceOnDamage)
+        character.triggers.on(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.generateResistanceOnDamageCallback)
+    }
+
+    onDeleted(character: Character): void {
+        character.triggers.off(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.generateResistanceOnDamageCallback)
+        super.onDeleted(character)
     }
 
     public skills = [
@@ -74,6 +80,7 @@ export class Bash extends Skill {
         energyCost: 2,
         cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         castTime: 1000,
         aiTargetting: AiTargetting.RANDOM,
         imagePath: "/juggernaut/bash.png",
@@ -101,6 +108,7 @@ export class BodySlam extends Skill {
         energyCost: 2,
         cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         castTime: 1000,
         imagePath: "/juggernaut/body-slam.png",
         range: SkillRange.MELEE,
@@ -123,6 +131,7 @@ export class Overpower extends Skill {
         energyCost: 6,
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         castTime: 1500,
         imagePath: "/juggernaut/overpower.png",
         range: SkillRange.MELEE,
@@ -148,18 +157,21 @@ export class ShieldBlock extends Skill {
         energyCost: 4,
         cooldown: 6 * 1000,
         targetType: TargetType.TARGET_SELF,
+        damageType: DamageType.PHYSICAL,
+        damage: 5,
         castTime: 400,
         imagePath: "/juggernaut/shield-block.png",
         buffDuration: 5 * 1000,
         range: SkillRange.MELEE,
     })
 
-    description: string | null = "Gain 8 Armor and your magic armor is equal to your armor, until you are attacked"
+    description: string | null = "Gain 8 Armor and your magic armor is equal to your armor until the next time you get attacked, deals 5 damage back."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             target.addBuff(new ShieldBlockBuff({
-                duration: this.skillData.buffDuration, 
+                duration: this.skillData.buffDuration,
+                damage: this.skillData.damage,
                 durability: this.socketedUpgrade instanceof DurableShieldBlockSkillGem ? 2 : 1
             }), castBy)
         })

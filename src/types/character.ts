@@ -18,10 +18,10 @@ import CharacterStats from './character-stats';
 import CharacterSkills from './character-skills';
 import type { DealDamageToParams, TakeDamageParams } from './damage';
 import { reactive } from 'vue';
-import GameSettings from '@/core/settings';
 import type CharacterState from './state/character-state';
 import type Battle from '@/core/battle';
 import CharacterPowers from './character-powers';
+import CharacterTriggers, { CHARACTER_TRIGGERS } from './character-triggers';
 
 
 export default class Character {
@@ -38,6 +38,7 @@ export default class Character {
 
     public buffs = new CharacterBuffs(this)
     private characterSkills: CharacterSkills
+    public triggers = new CharacterTriggers(this)
 
     public baseStats: CharacterStats
     public stats: CharacterStats
@@ -60,6 +61,8 @@ export default class Character {
         this.characterSkills = characterSkills
         this.stats = reactive(new CharacterStats(this.identity.baseStats.clone())) as CharacterStats
         this.baseStats = reactive(new CharacterStats(this.identity.baseStats.clone())) as CharacterStats
+
+        console.log(`create char  ${this.stats.derived.maxHealth.value}`)
         this.healthBar = new Healthbar(this.stats.derived.maxHealth.value)
         this.characterPowers = new CharacterPowers()
         this.energyBar = new EnergyBar(this.stats)
@@ -121,11 +124,7 @@ export default class Character {
             return []
         }
 
-        if (damage.type == DamageType.PHYSICAL) {
-            damage.amount += this.stats.derived.attackPower.value
-        }
-
-        this.identity.beforeDealDamageTriggers.forEach((cb) => damage = cb(damage, this))
+        this.triggers.publish(CHARACTER_TRIGGERS.BEFORE_DAMAGE_DEALT, damage)
 
         let isCrit = false
 
@@ -154,6 +153,16 @@ export default class Character {
             return null
         }
 
+        if (damage.type == DamageType.PHYSICAL && this.stats.derived.dodgeChance.value > (Math.random() * 100)) {
+            damage.isDodged = true
+            damage.amount = 0
+            damage.minAmount = 0
+        }
+
+        if (damage.isDodged) {
+            this.triggers.publish(CHARACTER_TRIGGERS.ON_DODGE, { attackedBy: damage.damagedBy })
+        }
+
         let actualDamage: number
 
         if (damage.type == DamageType.PHYSICAL) {
@@ -163,6 +172,8 @@ export default class Character {
         } else {
             actualDamage = damage.amount
         }
+
+        actualDamage = Math.round(actualDamage)
 
         if (damage.damagedBy?.id != this.id) {
             this.raiseThreat(damage.damagedBy, actualDamage * (damage.threatModifier || 1))
@@ -176,6 +187,7 @@ export default class Character {
             damagedBy: damage.damagedBy,
             damageType: damage.type,
             threatModifier: damage.threatModifier ?? 1,
+            isDodged: damage.isDodged ?? false,
             isCrit: damage.isCrit ?? false
         }
 
@@ -185,8 +197,8 @@ export default class Character {
 
         this.healthBar.decrease(damageTrigger.actualDamage)
         
-        this.checkDeath();       
-        this.identity.onDamageTakenTriggers.forEach((cb) => cb(damageTrigger))
+        this.checkDeath();    
+        this.triggers.publish(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, damageTrigger)   
 
         return damageTrigger
     }

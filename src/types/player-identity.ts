@@ -2,6 +2,7 @@ import Identity from './identity'
 import type ClassBar from './class-bar'
 import type Skill from './skill';
 import type { PlayerIdentityState } from './state/identity-state';
+import type Character from './character';
 
 enum PlayerClass {
     BARBARIAN = 0,
@@ -19,8 +20,6 @@ abstract class PlayerIdentity extends Identity {
 
     abstract description: string
 
-    protected onDeletedCallbacks: (() => void)[] = []
-
     getPlayerIdentityState(): PlayerIdentityState {
         return Object.assign({}, this.getState(), {
             description: this.description,
@@ -30,9 +29,7 @@ abstract class PlayerIdentity extends Identity {
         ) as PlayerIdentityState
     }
 
-    onDeleted() {
-        this.onDeletedCallbacks.forEach((cb) => cb())
-    }
+
 }
 
 export default PlayerIdentity;

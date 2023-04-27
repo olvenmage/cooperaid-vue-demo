@@ -5,7 +5,7 @@ import SkillData from "../skill-data";
 export default class Taunt extends Skill {
     skillData: SkillData = new SkillData({
         name: "Taunt",
-        energyCost: 3,
+        energyCost: 2,
         cooldown: 6 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         aiTargetting: AiTargetting.RANDOM,

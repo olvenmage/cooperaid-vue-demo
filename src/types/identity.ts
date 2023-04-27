@@ -22,6 +22,8 @@ export default abstract class Identity {
 
     public abstract skills: Skill[]
 
+    protected onDeletedCallbacks: (() => void)[] = []
+
     onDamageTakenTriggers: DamageTakenTrigger[] = []
     beforeDamageTakenTriggers: BeforeDamageTakenTrigger[] = []
     beforeDealDamageTriggers: BeforeDealDamageTrigger[] = []
@@ -36,5 +38,9 @@ export default abstract class Identity {
             color: this.color,
             imagePath: this.imagePath
         }
+    }
+
+    onDeleted(character: Character) {
+        this.onDeletedCallbacks.forEach((cb) => cb())
     }
 }

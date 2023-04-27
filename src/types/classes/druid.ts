@@ -20,6 +20,7 @@ import PrimalStrikedBuff from '../buffs/primal-striked';
 import HealthyCommandNatureSkillGem from '../skill-upgrades/druid/healthy-command-skill-gem';
 import HealingIncreaseSkillGem from '../skill-upgrades/generic/healing-increase-skill-gem';
 import CommandNatureArmorBuff from '../buffs/command-nature-armor';
+import { CHARACTER_TRIGGERS } from '../character-triggers';
 
 export default class Druid extends PlayerIdentity {
     public name = "Druid"
@@ -35,6 +36,8 @@ export default class Druid extends PlayerIdentity {
     public color = "#105E26";
     public description: string = "The Druid harnesses the vast powers of nature to preserve balance and protect life. They are filled with the primal rage of nature and they have the ability to unleash it when pushed far enough."
 
+    private generateFerocityOnDamageCallback = this.generateFerocityOnDamage.bind(this)
+
     override onCreated(character: Character) {
         character.classBar = new FerocityBar()
 
@@ -42,7 +45,13 @@ export default class Druid extends PlayerIdentity {
             character.classBar?.activate(character)
         }
 
-        this.onDamageTakenTriggers.push(this.generateFerocityOnDamage)
+        character.triggers.on(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.generateFerocityOnDamageCallback)
+    }
+
+    onDeleted(character: Character): void {
+        character.triggers.off(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.generateFerocityOnDamageCallback)
+
+        super.onDeleted(character)
     }
 
     public skills = [

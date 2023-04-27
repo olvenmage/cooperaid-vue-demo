@@ -7,11 +7,8 @@ import Energybar from "./character/Energybar.vue";
 import Classbar from "./character/Classbar.vue";
 import { defineEmits } from 'vue'
 import Castbar from './character/Castbar.vue';
-import Enemy from '@/types/enemy';
 import SavingGrace from '@/types/buffs/saving-grace';
 import { TargetType } from '../types/skill';
-import type OnDamageTrigger from '@/types/triggers/on-damage-trigger';
-import FloatingDamage from './FloatingDamage.vue';
 import GameSettings from '@/core/settings';
 import CharacterWindow from './CharacterWindow.vue';
 import BuffDisplay from './character/BuffDisplay.vue';
@@ -24,10 +21,9 @@ const props = defineProps<{
 
 const emit = defineEmits(['start-cast', 'cast-at-all-enemies'])
 const hasSavingGrace = computed(() => props.character?.buffs?.hasBuff(SavingGrace))
-const isEnemy = props.character instanceof Enemy
+const isEnemy = !props.character.isFriendly
 
 let color = props.character.identity.color
-const speedFactor = GameSettings.speedFactor
 
 function startCast(skill: Skill) {
   if (skill.skillData.targetType == TargetType.TARGET_NONE) {
@@ -66,7 +62,7 @@ function startCast(skill: Skill) {
       </div>
         {{ skill.skillData.name }}
     <span style="float: right" v-if="skill.onCooldown">
-    ({{ (skill.skillData.cooldown / speedFactor - skill.onCooldownTimer) / 1000 }})
+    ({{ (skill.cooldown - skill.onCooldownTimer) / 1000 }})
   </span>
   </div>
   </div>

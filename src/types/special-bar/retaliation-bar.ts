@@ -1,6 +1,7 @@
 import type Buff from '../buff'
 import type Character from '../character'
 import type CharacterStats from '../character-stats'
+import { CHARACTER_TRIGGERS } from '../character-triggers'
 import ClassBar from '../class-bar'
 import DamageType from '../damage-type'
 import { isEmpowerableSkil } from '../skill-types/empowerable-skill'
@@ -20,7 +21,7 @@ export default class RetaliationBar extends ClassBar {
     }
 
     override onActivatedStart(character: Character): void {
-        character.identity.onDamageTakenTriggers.push(this.returnDamageCallback)
+        character.triggers.on(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.returnDamageCallback)
 
         character.buffs.forEach((buff: Buff) => {
             if (buff.givenBy != null && buff.givenBy.isEnemyTo(character)) {
@@ -30,11 +31,8 @@ export default class RetaliationBar extends ClassBar {
     }
 
     override onActivatedEnd(character: Character): void {
-        const returnDmgIndex = character.identity.onDamageTakenTriggers.findIndex((trigger) => trigger == this.returnDamageCallback)
-        
-        if (returnDmgIndex != -1) {
-            character.identity.onDamageTakenTriggers.splice(returnDmgIndex, 1)
-        }
+        character.triggers.off(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.returnDamageCallback)
+
     }
 
     returnDamage(params: OnDamageTrigger) {

@@ -7,6 +7,7 @@ import type StatMutatingBuff from '../stat-mutating-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import FocusBar from '../special-bar/focus-bar';
 import TickBuff from '../tick-buff';
+import { CHARACTER_TRIGGERS, type CharacterTriggerPayload } from '../character-triggers';
 
 interface SleepBuffParams {
     duration: number,
@@ -40,17 +41,13 @@ export default class SleepBuff extends TickBuff implements StatMutatingBuff {
     }
 
     override startEffect(character: Character): void {
-        character.identity.onDamageTakenTriggers.push(this.callback)
+        character.triggers.on(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.callback)
 
         super.startEffect(character)
     }
 
     override endEffect(character: Character) {
-        const index = character.identity.onDamageTakenTriggers.findIndex((trigger) => trigger == this.callback)
-
-        if (index != -1) {
-            character.identity.onDamageTakenTriggers.splice(index, 1)
-        }
+        character.triggers.off(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.callback)
 
         super.endEffect(character)
     }
@@ -65,21 +62,19 @@ export default class SleepBuff extends TickBuff implements StatMutatingBuff {
         return stats
     }
 
-    breakSleep(trigger: OnDamageTrigger): number {
+    breakSleep(trigger: CharacterTriggerPayload<OnDamageTrigger>): void {
         if (!this.triggered && trigger.actualDamage > 0) {
             this.triggered = true
 
             if (trigger.damagedBy) {
-                trigger.character.ai?.raiseThreat(trigger.damagedBy, 10)
+                trigger.character.threat?.raiseThreat(trigger.damagedBy, 10)
             }
 
             this.endEffect(trigger.character)
 
             if (this.params.exposes) {
-                return Math.round(trigger.actualDamage * 1.5)
+                trigger.actualDamage = Math.round(trigger.actualDamage * 1.5)
             }
         }
-
-        return trigger.actualDamage
     }
 }

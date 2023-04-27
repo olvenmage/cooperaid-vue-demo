@@ -2,29 +2,23 @@ import Buff, { BuffPriority } from '../buff';
 import type Character from '../character';
 import type CharacterStats from '../character-stats';
 import { CHARACTER_TRIGGERS, type CharacterTriggerPayload } from '../character-triggers';
-import type { DealDamageToParams } from '../damage';
-import DamageType from '../damage-type';
-import { SkillRange } from '../skill';
 import type SkillData from '../skill-data';
-import type StatMutatingBuff from '../stat-mutating-buff';
-import type BeforePhysicalAttackTrigger from '../triggers/before-skill-cast-trigger';
-import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
-interface BloodLustParams {
+interface ShadowStepParams {
     duration: number,
-    healthConsumed: number
 }
 
-export default class BloodLustBuff extends Buff {
+export default class ShadowStepBuff extends Buff {
     duration: number = 5 * 1000
     priority = BuffPriority.LAST_1
+    public unique: boolean = true
 
-    public imagePath: string | null = "/skills/barbarian/blood-lust.png"
+    public imagePath: string | null = "/skills/rogue/shadow-step.png"
 
-    callback = this.increaseNextAttack.bind(this)
-    params: BloodLustParams
+    callback = this.instantCastNextAttackSkill.bind(this)
+    params: ShadowStepParams
 
-    constructor(params: BloodLustParams) {
+    constructor(params: ShadowStepParams) {
         super()
         this.duration = params.duration
         this.params = params
@@ -42,9 +36,9 @@ export default class BloodLustBuff extends Buff {
         super.endEffect(character)
     }
 
-    increaseNextAttack(trigger: CharacterTriggerPayload<SkillData>) {
-        if (trigger.damageType == DamageType.PHYSICAL) {
-            trigger.damage += this.params.healthConsumed
+    instantCastNextAttackSkill(trigger: CharacterTriggerPayload<SkillData>) {
+        if (trigger.damage  > 0) {
+            trigger.castTime = 0
             this.endEffect(trigger.character)
         }
     }

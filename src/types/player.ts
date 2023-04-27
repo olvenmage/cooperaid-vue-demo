@@ -167,8 +167,13 @@ class Player {
     }
 
     removeCharacter() {
-        this.combatCharacter?.deleteCharacter()
-        this.playerClass?.onDeleted()
+        const oldCharacter = this.combatCharacter
+
+        if (oldCharacter) {
+            oldCharacter.deleteCharacter()
+            this.playerClass?.onDeleted(oldCharacter)
+        }
+        
         this.combatCharacter = null 
     }
 }

@@ -1,15 +1,12 @@
 import presenterSocket from "@/client-socket/presenter-socket"
 import type Character from "@/types/character"
-import Player from "@/types/player"
 import type Enemy from "@/types/enemy"
-import type BattleState from "@/types/state/battle-state"
 import CharacterAIBrain from "./ai"
 import { globalThreatEvent } from "./events"
 import Game from "./game"
 import GameSettings from "./settings"
 import { pubUpdateBattleState } from "../client-socket/OutgoingMessages"
 import { subCastSkill } from "../client-socket/IncomingMessages"
-import { HolyShock } from "@/types/classes/paladin"
 
 const settings = {
     enemyInteractSpeed: 1
@@ -20,7 +17,7 @@ export interface CombatFinishedParameters {
 }
 
 export default class Battle {
-    public enemies: Enemy[]
+    public enemies: Character[]
 
     private runAiInterval = 0
     private checkAliveInterval = 0
@@ -30,7 +27,8 @@ export default class Battle {
     private onCombatFinishedListeners: ((params: CombatFinishedParameters) => void)[] = []
 
     constructor(enemies: Enemy[]) {
-        this.enemies = enemies
+        this.enemies = enemies.map((player) => player.createCharacter())
+
         this.combatants = [
             ...this.enemies,
             ...Game.players.value.map((player) => player.createCharacter())
@@ -120,7 +118,7 @@ export default class Battle {
            
         }
 
-        const anyEnemiesAlive = this.enemies.some((enemy) => !enemy.dead)
+        const anyEnemiesAlive = this.combatants.some((enemy) => !enemy.isFriendly && !enemy.dead)
 
         if (!anyEnemiesAlive) {
             this.stopCombat({

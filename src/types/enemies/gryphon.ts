@@ -13,7 +13,7 @@ import FlyingBuff from '../buffs/flying'
 export default class Gryphon extends Identity {
     public name = "Gryphon"
     public baseStats = new CoreStats({
-        baseHealth: 50,
+        baseHealth: 75,
         constitution: 20,
         strength: 18,
         dexterity: 24,

@@ -11,6 +11,7 @@ import FloatingDamage from './FloatingDamage.vue';
 import GameSettings from '@/core/settings';
 import CharacterAI from '@/types/threat-table';
 import ThreatTable from '@/types/threat-table';
+import { CHARACTER_TRIGGERS } from '@/types/character-triggers';
 
 const props = defineProps<{
   character: Character,
@@ -22,15 +23,11 @@ const damageFloats = ref<OnDamageTrigger[]>([]);
 const aiEnabled = ref(props.character.threat != null)
 
 onMounted(() => {
-  props.character.identity.onDamageTakenTriggers.push(addDamageFloat)
+  props.character.triggers.on(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, addDamageFloat)
 })
 
 onUnmounted(() => {
-  const index =  props.character.identity.onDamageTakenTriggers.findIndex((item) => item == addDamageFloat)
-
-  if (index != -1) {
-    props.character.identity.onDamageTakenTriggers.splice(index, 1)
-  }
+  props.character.triggers.off(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, addDamageFloat)
 })
 
 function toggleAI() {
@@ -42,7 +39,10 @@ function toggleAI() {
 }
 
 function addDamageFloat(trigger: OnDamageTrigger) {
-  if (trigger.actualDamage <= 0) {
+  console.log("FLOATIE!")
+  console.log(`dodged: ${trigger.isDodged}`)
+  console.log("----")
+  if (trigger.actualDamage <= 0 && !trigger.isDodged) {
     return 
   }
 

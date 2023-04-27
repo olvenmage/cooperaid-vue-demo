@@ -25,6 +25,7 @@ import BrandingSmiteSkillGem from './paladin/branding-smite'
 import EnergyCostSkillGem from './generic/energy-cost-reduction-skill-gem'
 import AngryYellingSkillGem from './barbarian/angry-yelling'
 import QuickMovesSkillGem from './rogue/quick-moves-skill-gem'
+import ShadowSurge from './rogue/shadow-surge'
 
 const GEMS = [
 
@@ -47,6 +48,7 @@ const GEMS = [
     new NullifyingDismantleSkillGem(),
     new ParalyzingDartSkillGem(),
     new QuickMovesSkillGem(),
+    new ShadowSurge(),
 
     // Paladin
     new OverwhelmingMartyrdom(),

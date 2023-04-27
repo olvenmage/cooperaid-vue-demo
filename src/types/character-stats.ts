@@ -59,20 +59,20 @@ export class CoreStats {
     }
 
     setDerivedStats(derivedStats: DerivedStats)  {
-        derivedStats.energyRegenHaste.set(this.dexterity.value)
-        derivedStats.critChance.set(GameSettings.baseCritChance + Math.floor(this.dexterity.value / 3))
-        derivedStats.dodgeChance.set(Math.floor(this.dexterity.value / 3))
+        derivedStats.energyRegenHaste.set(this.dexterity.value * GameSettings.derivedStatsOptions.eneryRegenPerDex)
+        derivedStats.critChance.set(GameSettings.baseCritChance + Math.floor(this.dexterity.value / GameSettings.derivedStatsOptions.dexPerCrit))
+        derivedStats.dodgeChance.set(Math.floor(this.dexterity.value / GameSettings.derivedStatsOptions.dexPerDodge))
 
-        derivedStats.castSpeed.set(this.strength.value)
-        derivedStats.attackPower.set(Math.floor(this.strength.value / 4))
+        derivedStats.castSpeed.set(this.strength.value * GameSettings.derivedStatsOptions.castSpeedIncreasePerStr)
+        derivedStats.attackPower.set(Math.floor(this.strength.value / GameSettings.derivedStatsOptions.attackPowerPerStrength))
 
-        derivedStats.magicPotency.set(this.intelligence.value)
-        derivedStats.maxEnergy.set(10 + Math.floor(this.intelligence.value / 6))
-        derivedStats.magicalArmor.set(Math.floor(this.intelligence.value / 6))
+        derivedStats.cooldownReduction.set(this.intelligence.value * GameSettings.derivedStatsOptions.cooldownReductionPerInt)
+        derivedStats.maxEnergy.set(10 + Math.floor(this.intelligence.value / GameSettings.derivedStatsOptions.intPerMaxEnergyIncrease))
+        derivedStats.magicalArmor.set(Math.floor(this.intelligence.value / GameSettings.derivedStatsOptions.intPerMagicArmor))
 
-        derivedStats.hardiness.set(this.constitution.value)
+        derivedStats.hardiness.set(this.constitution.value* GameSettings.derivedStatsOptions.hardinessPerConst)
         derivedStats.maxHealth.set(this.getMaxHealth())
-        derivedStats.armor.set(Math.floor(this.constitution.value / 6))
+        derivedStats.armor.set(Math.floor(this.constitution.value / GameSettings.derivedStatsOptions.constPerArmor))
     }
 
     clone() {
@@ -94,7 +94,7 @@ export class CoreStats {
     }
 
     getMaxHealth() {
-        return this.baseHealth.value + this.constitution.value * 3
+        return this.baseHealth.value + this.constitution.value * GameSettings.derivedStatsOptions.maxHealthPerConst
     }
 }
 
@@ -106,7 +106,7 @@ class DerivedStats {
     castSpeed = new CharacterStat()
     attackPower = new CharacterStat()
 
-    magicPotency = new CharacterStat()
+    cooldownReduction = new CharacterStat()
     maxEnergy = new CharacterStat()
     magicalArmor = new CharacterStat()
 

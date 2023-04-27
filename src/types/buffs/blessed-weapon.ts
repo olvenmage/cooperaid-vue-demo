@@ -1,9 +1,13 @@
 import Buff, { BuffPriority } from '../buff';
 import type Character from '../character';
 import type CharacterStats from '../character-stats';
+import { CHARACTER_TRIGGERS, type CharacterTriggerPayload } from '../character-triggers';
 import type { DealDamageToParams } from '../damage';
 import DamageType from '../damage-type';
+import { SkillRange } from '../skill';
+import type SkillData from '../skill-data';
 import type StatMutatingBuff from '../stat-mutating-buff';
+import type BeforePhysicalAttackTrigger from '../triggers/before-skill-cast-trigger';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
 interface BlessedWeaponBuffParams {
@@ -27,26 +31,20 @@ export default class BlessedWeaponBuff extends Buff {
     }
 
     override startEffect(character: Character): void {
-        character.identity.beforeDealDamageTriggers.push(this.callback)
+        character.triggers.on(CHARACTER_TRIGGERS.BEFORE_SKILL_CAST, this.callback)
 
         super.startEffect(character)
     }
 
     override endEffect(character: Character) {
-        const index = character.identity.beforeDealDamageTriggers.findIndex((trigger) => trigger == this.callback)
-
-        if (index != -1) {
-            character.identity.beforeDealDamageTriggers.splice(index, 1)
-        }
+        character.triggers.off(CHARACTER_TRIGGERS.BEFORE_SKILL_CAST, this.callback)
         
         super.endEffect(character)
     }
 
-    increaseDamage(trigger: DealDamageToParams, damagedBy: Character): DealDamageToParams {
-        if (damagedBy.id == this.givenBy?.id && trigger.type == DamageType.PHYSICAL) {
-            trigger.amount += this.params.damageAmount
+    increaseDamage(trigger: CharacterTriggerPayload<SkillData>) {
+        if (trigger.range == SkillRange.MELEE && trigger.damageType == DamageType.PHYSICAL) {
+            trigger.damage += this.params.damageAmount
         }
-
-        return trigger
     }
 }

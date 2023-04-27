@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { nextTick, computed, onMounted, reactive, watch, onUnmounted } from 'vue';
-import Skill, { TargetType } from '@/types/skill';
+import type Skill from '@/types/skill';
 import Game from '@/core/game';
 import Barbarian from '@/types/classes/barbarian';
 import Rogue from '@/types/classes/rogue';

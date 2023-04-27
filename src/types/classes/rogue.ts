@@ -17,14 +17,17 @@ import KnifeStormSkillGem from '../skill-upgrades/rogue/knife-storm-skill-gem';
 import shuffleArray from '@/utils/shuffleArray';
 import EvasionBuff from '../buffs/evasion';
 import QuickMovesSkillGem from '../skill-upgrades/rogue/quick-moves-skill-gem';
+import Taunt from '../skills/taunt';
+import ShadowStepBuff from '../buffs/shadow-step';
+import ShadowSurge from '../skill-upgrades/rogue/shadow-surge';
 
 export default class Rogue extends PlayerIdentity {
     public name = "Rogue"
     public baseStats = new CoreStats({
-        constitution: 8,
+        constitution: 7,
         strength: 12,
-        dexterity: 18,
-        intelligence: 6
+        dexterity: 45, // normally 18
+        intelligence: 36 // normally 7
     })
     public maxHealth = 35
     public imagePath = "/classes/rogue.png"
@@ -46,6 +49,10 @@ export default class Rogue extends PlayerIdentity {
 
     public skills = [
         new Kick(),
+        new Evasion(),
+        new Taunt(),
+        new FanOfKnives().setGem(new KnifeStormSkillGem),
+        new ShadowStep().setGem(new ShadowSurge)
     ]
 
     public possibleSkills = [
@@ -55,7 +62,8 @@ export default class Rogue extends PlayerIdentity {
         new SleepDart(),
         new HeartSeeker(),
         new Evasion(),
-        new KillShot()
+        new KillShot(),
+        new ShadowStep()
     ]
 }
 
@@ -63,8 +71,9 @@ export class FanOfKnives extends Skill {
     skillData: SkillData = new SkillData({
         name: "Fan of Knives",
         energyCost: 3,
-        cooldown: 1.5 * 1000,
+        cooldown: 1 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         aiTargetting: AiTargetting.RANDOM,
         castTime: 1000,
         imagePath: "/rogue/blade-flurry.png",
@@ -227,7 +236,7 @@ export class Backstab extends Skill {
 
             const backstabBonus = (target.threat && target.threat.getCurrentTarget()?.id !== castBy.id) || target.stats.stunned
 
-            if (!target.ai) {
+            if (!target.threat) {
                 if (castBy.classBar instanceof FocusBar) {
                     castBy.classBar.increase(3)
                 }
@@ -350,6 +359,7 @@ export class KillShot extends Skill {
         energyCost: 4,
         cooldown: 10 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         aiTargetting: AiTargetting.RANDOM,
         castTime: 1200,
         imagePath: "/rogue/killshot.png",
@@ -377,11 +387,11 @@ export class Evasion extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         castTime: 1000,
         imagePath: "/rogue/evasion.png",
-        buffDuration: 8 * 1000,
+        buffDuration: 10 * 1000,
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Gain 75% dodge chance against physical attacks for a long duration."
+    description: string | null = "Gain +60% dodge chance for a long duration."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
@@ -389,6 +399,42 @@ export class Evasion extends Skill {
                 duration: this.skillData.buffDuration,
                 speedsUpOnHit: this.socketedUpgrade instanceof QuickMovesSkillGem
             }), castBy)
+        })
+    }
+}
+
+export class ShadowStep extends Skill {
+    skillData: SkillData = new SkillData({
+        name: "Shadow Step",
+        energyCost: 2,
+        cooldown: 10 * 1000,
+        targetType: TargetType.TARGET_ALL_ENEMIES,
+        aiTargetting: AiTargetting.RANDOM,
+        castTime: 500,
+        imagePath: "/rogue/shadow-step.png",
+        buffDuration: 8 * 1000,
+        range: SkillRange.RANGED,
+    })
+
+    description: string | null = "Interupt any skill being used on you. Your next damaging skill is instant cast."
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        castBy.addBuff(new ShadowStepBuff({
+            duration: this.skillData.buffDuration,
+        }), castBy)
+
+        targets.forEach((target) => {
+            if (target.castingSkill?.currentTargets.some((target) => target.id == castBy.id)) {
+                target.castingSkill.interupt()
+                target.threat?.raiseThreat(castBy, 3)
+                if (castBy.classBar instanceof FocusBar) {
+                    castBy.classBar.increase(3)
+                }
+
+                if (this.socketedUpgrade instanceof ShadowSurge) {
+                    castBy.energyBar.increase(1)
+                }
+            }
         })
     }
 }

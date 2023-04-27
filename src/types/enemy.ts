@@ -1,13 +1,32 @@
 import Character from './character';
-import ThreatTable from './threat-table';
-import Faction from './faction';
 import type Identity from './identity';
+import { reactive } from 'vue'
+import type ClassBar from './class-bar';
 
-class Enemy extends Character {
-    constructor(identity: Identity) {
-        super(identity, false)
+class Enemy {
+    private aiEnabled = true
+    classBar: ClassBar|null
+
+    constructor(private identity: Identity) {
         this.classBar = identity.classBar
-        this.threat = new ThreatTable()
+    }
+
+    enableAI(): this {
+        this.aiEnabled = true
+        return this
+    }
+
+    createCharacter(): Character {
+        const character = reactive(new Character(this.identity, false)) as Character
+
+        if (this.aiEnabled) {
+            character.enableAI()
+        }
+
+        character.identity.onCreated(character)
+        character.checkDeath()
+
+        return character
     }
 }
 

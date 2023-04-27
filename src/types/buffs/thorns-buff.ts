@@ -6,6 +6,7 @@ import DamageType from '../damage-type';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import TickBuff from '../tick-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
+import { CHARACTER_TRIGGERS } from '../character-triggers';
 
 export default class ThornsBuff extends Buff {
     public duration = 10 * 1000
@@ -20,17 +21,13 @@ export default class ThornsBuff extends Buff {
     }
 
     override startEffect(character: Character): void {
-        character.identity.onDamageTakenTriggers.push(this.returnDamageCallback)
+        character.triggers.on(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.returnDamageCallback)
 
         super.startEffect(character)
     }
 
     override endEffect(character: Character): void {
-        const returnDmgIndex = character.identity.onDamageTakenTriggers.findIndex((trigger) => trigger == this.returnDamageCallback)
-        
-        if (returnDmgIndex != -1) {
-            character.identity.onDamageTakenTriggers.splice(returnDmgIndex, 1)
-        }
+        character.triggers.off(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.returnDamageCallback)
 
         super.endEffect(character)
     }

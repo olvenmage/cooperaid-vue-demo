@@ -6,6 +6,7 @@ import type CharacterStats from '../character-stats';
 import DamageType from '../damage-type';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import FerocityBar from '../special-bar/ferocity-bar';
+import { CHARACTER_TRIGGERS, type CharacterTriggerPayload } from '../character-triggers';
 
 export default class BestialWrathBuff extends TickBuff implements StatMutatingBuff {
     // interval in miliseconds (1000 = every second)
@@ -51,26 +52,20 @@ export default class BestialWrathBuff extends TickBuff implements StatMutatingBu
 
 
     override startEffect(character: Character): void {
-        character.identity.beforeDamageTakenTriggers.push(this.callback)
+        character.triggers.on(CHARACTER_TRIGGERS.BEFORE_DAMAGE_TAKEN, this.callback)
 
         super.startEffect(character)
     }
 
     override endEffect(character: Character) {
-        const index = character.identity.beforeDamageTakenTriggers.findIndex((trigger) => trigger == this.callback)
-
-        if (index != -1) {
-            character.identity.beforeDamageTakenTriggers.splice(index, 1)
-        }
+        character.triggers.off(CHARACTER_TRIGGERS.BEFORE_DAMAGE_TAKEN, this.callback)
         
         super.endEffect(character)
     }
 
-    enrage(trigger: OnDamageTrigger): number {
+    enrage(trigger: CharacterTriggerPayload<OnDamageTrigger>): void {
         if (trigger.damageType == DamageType.PHYSICAL && trigger.damagedBy && trigger.damagedBy.id != trigger.character.id) {
             this.buildAmount++;
         }
-
-        return trigger.actualDamage
     }
 }

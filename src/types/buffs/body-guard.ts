@@ -4,6 +4,7 @@ import type Character from '../character';
 import type CharacterStats from '../character-stats';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
+import { CHARACTER_TRIGGERS } from '../character-triggers';
 
 export default class BodyGuardBuff extends Buff {
     duration: number = 8 * 1000
@@ -19,25 +20,21 @@ export default class BodyGuardBuff extends Buff {
 
     override startEffect(character: Character): void {
         if (character.classBar) {
-            character.identity.beforeDamageTakenTriggers.push(this.callback)
+            character.triggers.on(CHARACTER_TRIGGERS.BEFORE_DAMAGE_TAKEN, this.callback)
         }
 
         super.startEffect(character)
     }
 
     override endEffect(character: Character): void {
-        const index = character.identity.beforeDamageTakenTriggers.findIndex((trigger) => trigger == this.callback)
-
-        if (index != -1) {
-            character.identity.beforeDamageTakenTriggers.splice(index, 1)
-        }
+        character.triggers.off(CHARACTER_TRIGGERS.BEFORE_DAMAGE_TAKEN, this.callback)
 
         super.endEffect(character)
     }
 
-    bodyGuardAlly(trigger: OnDamageTrigger): number {
+    bodyGuardAlly(trigger: OnDamageTrigger) {
         if (!this.givenBy) {
-            return trigger.actualDamage
+            return
         } 
 
         const damageReduced = Math.round(trigger.actualDamage / 2)
@@ -49,6 +46,6 @@ export default class BodyGuardBuff extends Buff {
             isCrit: trigger.isCrit,
         })
 
-        return trigger.actualDamage - damageReduced
+        trigger.actualDamage = trigger.actualDamage - damageReduced
     }
 }

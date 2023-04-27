@@ -11,6 +11,8 @@ import RageBar from '../special-bar/rage-bar';
 import BloodthirstyRampage from '../skill-upgrades/barbarian/bloodthirsty-rampage';
 import AngryYellingSkillGem from '../skill-upgrades/barbarian/angry-yelling';
 import BloodLustBuff from '../buffs/blood-lust';
+import { CHARACTER_TRIGGERS } from '../character-triggers';
+import { BlessedWeapon } from './paladin';
 
 
 export default class Barbarian extends PlayerIdentity {
@@ -31,6 +33,8 @@ export default class Barbarian extends PlayerIdentity {
         new Rampage(),
     ]
 
+    private rageGeneratedCallback = this.generateRageOnDamage.bind(this)
+
     possibleSkills: Skill[] = [
         new RagingBlow(),
         new Rampage(),
@@ -42,8 +46,6 @@ export default class Barbarian extends PlayerIdentity {
     ]
 
     override onCreated(character: Character) {
-        this.onDamageTakenTriggers = []
-
         character.classBar = new RageBar()
 
         if (character.classBar != null) {
@@ -52,7 +54,13 @@ export default class Barbarian extends PlayerIdentity {
             }
         }
      
-        this.onDamageTakenTriggers.push(this.generateRageOnDamage)
+        character.triggers.on(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.rageGeneratedCallback)
+    }
+
+    onDeleted(character: Character): void {
+        character.triggers.off(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.rageGeneratedCallback)
+
+        super.onDeleted(character)
     }
 
     generateRageOnDamage({character, actualDamage, damagedBy}: OnDamageTrigger) {
@@ -83,6 +91,7 @@ export class RecklessStrike extends Skill {
         energyCost: 2,
         cooldown: 0,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         castTime: 1000,
         imagePath: "/barbarian/reckless-strike.png",
         damage: 10,
@@ -124,6 +133,7 @@ export class RagingBlow extends Skill {
         energyCost: 4,
         cooldown: 1 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         castTime: 2000,
         imagePath: "/barbarian/raging-blow.png",
         range: SkillRange.MELEE,
@@ -148,6 +158,7 @@ export class Rampage extends Skill {
         energyCost: 5,
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         castTime: 1250,
         imagePath: "/barbarian/rampage.png",
         damage: 10,
@@ -161,7 +172,7 @@ export class Rampage extends Skill {
         const damageToDeal = Math.ceil((this.skillData.damage ?? 10) * (2 - missingHealthPercentage))
         const threatModifier = 2.5 * missingHealthPercentage
 
-        const damageResults = castBy.dealDamageTo({ amount: damageToDeal, targets, type: DamageType.PHYSICAL, threatModifier })
+        const damageResults = castBy.dealDamageTo({ amount: damageToDeal, targets, type: this.skillData.damageType!, threatModifier })
 
         if (this.socketedUpgrade instanceof BloodthirstyRampage) {
             for (const damageDealt of damageResults) {
@@ -177,6 +188,7 @@ export class Shout extends Skill {
         energyCost: 2,
         cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
+        damageType: DamageType.PHYSICAL,
         castTime: 1000,
         imagePath: "/barbarian/shout.png",
         range: SkillRange.RANGED,
@@ -188,7 +200,7 @@ export class Shout extends Skill {
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         const damage = Math.ceil(this.skillData.damage / targets.length)
 
-        castBy.dealDamageTo({ amount: damage, targets, type: DamageType.PHYSICAL, threatModifier: 2, minAmount: damage })
+        castBy.dealDamageTo({ amount: damage, targets, type: this.skillData.damageType!, threatModifier: 2, minAmount: damage })
 
         if (this.socketedUpgrade instanceof AngryYellingSkillGem && castBy.classBar) {
             castBy.classBar.increase(targets.length)
@@ -202,6 +214,7 @@ export class Whirlwind extends Skill {
         energyCost: 8,
         cooldown: 9 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
+        damageType: DamageType.PHYSICAL,
         castTime: 1500,
         imagePath: "/barbarian/whirlwind.png",
         range: SkillRange.MELEE,
@@ -211,7 +224,7 @@ export class Whirlwind extends Skill {
     description: string | null = "Deal 12 damage to all enemies"
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL, threatModifier: 0.9 })
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: this.skillData.damageType!, threatModifier: 0.9 })
     }
 }
 

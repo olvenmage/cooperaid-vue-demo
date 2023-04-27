@@ -51,7 +51,8 @@ const mainRoute: Encounter[] = [
       new Enemy(new DragonEgg()),
       new Enemy(new DragonBoss()),
       new Enemy(new DragonEgg()),
-    ])
+    ]),
+  
 ]
 
 export default mainRoute

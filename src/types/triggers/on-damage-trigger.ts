@@ -9,5 +9,6 @@ export default interface OnDamageTrigger {
     damageType: DamageType,
     threatModifier: number,
     isCrit: boolean
+    isDodged?: boolean
     damagedBy: Character|null
 }

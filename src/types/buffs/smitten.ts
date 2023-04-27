@@ -1,5 +1,6 @@
 import Buff from '../buff';
 import type Character from '../character';
+import { CHARACTER_TRIGGERS } from '../character-triggers';
 import DamageType from '../damage-type';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
@@ -24,23 +25,19 @@ export default class SmittenBuff extends Buff {
     }
 
     override startEffect(character: Character): void {
-        character.identity.onDamageTakenTriggers.push(this.callback)
+        character.triggers.on(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.callback)
 
         super.startEffect(character)
     }
 
     override endEffect(character: Character) {
-        const index = character.identity.onDamageTakenTriggers.findIndex((trigger) => trigger == this.callback)
-
-        if (index != -1) {
-            character.identity.onDamageTakenTriggers.splice(index, 1)
-        }
+        character.triggers.off(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.callback)
         
         super.endEffect(character)
     }
 
     restoreHealthToAlly(trigger: OnDamageTrigger): void {
-        const validDamageToEnemy =trigger.actualDamage > 0 && trigger.damagedBy && trigger.character.isEnemyTo(trigger.damagedBy)
+        const validDamageToEnemy = trigger.actualDamage > 0 && trigger.damagedBy && trigger.character.isEnemyTo(trigger.damagedBy)
 
         if (validDamageToEnemy && (trigger.damageType == DamageType.PHYSICAL || trigger.damageType == DamageType.MAGICAL)) {
             if (this.params.branding) {

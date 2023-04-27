@@ -7,7 +7,8 @@ export interface TakeDamageParams {
     minAmount?: number,
     type: DamageType,
     damagedBy: Character,
-    isCrit?: boolean
+    isCrit?: boolean,
+    isDodged?: boolean,
     threatModifier?: number
 }
 

@@ -18,8 +18,8 @@ export default class EnergyBar {
     character: Character|null = null
 
     constructor(private stats: CharacterStats) {
-        this.max = 10;
-        this.current = 0;
+        this.max = stats.derived.maxEnergy.value;
+        this.current = Math.floor(this.max * GameSettings.startingEnergyPercentage)
     }
 
     increase(amount: number) {
@@ -32,7 +32,7 @@ export default class EnergyBar {
     }
 
     start(character: Character) {
-        this.current = GameSettings.startingEnergy
+        this.current = Math.floor(this.max * GameSettings.startingEnergyPercentage)
         this.character = character
         this.energyCounter = 0
 

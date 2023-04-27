@@ -1,5 +1,6 @@
 import Buff from '../buff';
 import type Character from '../character';
+import { CHARACTER_TRIGGERS } from '../character-triggers';
 import TickBuff from '../tick-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
@@ -13,22 +14,17 @@ export default class SavingGrace extends Buff {
     
     
     override startEffect(character: Character): void {
-        character.identity.beforeDamageTakenTriggers.push(this.callback)
-
+        character.triggers.on(CHARACTER_TRIGGERS.BEFORE_DAMAGE_TAKEN, this.callback)
         super.startEffect(character)
     }
 
     override endEffect(character: Character) {
-        const index = character.identity.beforeDamageTakenTriggers.findIndex((trigger) => trigger == this.callback)
-
-        if (index != -1) {
-            character.identity.beforeDamageTakenTriggers.splice(index, 1)
-        }
+        character.triggers.off(CHARACTER_TRIGGERS.BEFORE_DAMAGE_TAKEN, this.callback)
         
         super.endEffect(character)
     }
 
-    preventDamage(trigger: OnDamageTrigger): number {
-        return 0
+    preventDamage(trigger: OnDamageTrigger) {
+        trigger.actualDamage = 0
     }
 }

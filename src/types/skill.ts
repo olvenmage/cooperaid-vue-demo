@@ -9,6 +9,7 @@ import type SkillUpgrade from './skill-upgrade';
 import type Battle from '@/core/battle';
 import Game from '@/core/game';
 import shuffleArray from '@/utils/shuffleArray';
+import { CHARACTER_TRIGGERS } from './character-triggers';
 
 enum TargetType {
     TARGET_ENEMY,
@@ -58,9 +59,15 @@ export default abstract class Skill {
     description: string|null = null
 
     currentTargets: Character[] = []
+
+    private currentCastCooldown: number|undefined = undefined
     public id = "skill" + Math.random().toString(16).slice(2)
 
     interuptsOnDamageTakenCallback = this.onDamageTaken.bind(this)
+
+    get cooldown(): number {
+        return (this.currentCastCooldown ?? this.skillData.cooldown) / GameSettings.speedFactor
+    }
 
     canCast(castBy: Character): boolean {
         if (castBy.castingSkill != null) {
@@ -137,7 +144,7 @@ export default abstract class Skill {
     incrementCooldown() {
         if (!this.onCooldown) return;
 
-        if (this.onCooldownTimer >= this.skillData.cooldown / GameSettings.speedFactor) {
+        if (this.onCooldownTimer >= this.cooldown) {
             this.finishCooldown()
             return
         }
@@ -173,7 +180,7 @@ export default abstract class Skill {
 
         if (this.interupted) {
             this.interupted = false;
-            this.onCooldownTimer = Math.round(this.skillData.cooldown / 2)
+            this.onCooldownTimer = Math.round(this.cooldown / 2)
             this.castingTimer = 0
             this.removeDamageTakenCallback(castBy)
             this.startCooldown(castBy)
@@ -237,10 +244,18 @@ export default abstract class Skill {
         castBy.energyBar.current -= this.skillData.energyCost
 
         if (this.skillData.interuptsOnDamageTaken) {
-            castBy.identity.onDamageTakenTriggers.push(this.interuptsOnDamageTakenCallback)
+            castBy.triggers.on(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.interuptsOnDamageTakenCallback)
         }
 
         castBy.castingSkill = this
+
+        if (this.skillData.damageType == DamageType.PHYSICAL) {
+            this.skillData.damage += castBy.stats.derived.attackPower.value
+        }
+
+        this.currentCastCooldown = this.skillData.cooldown * (1 - castBy.stats.derived.cooldownReduction.value / 100)
+        castBy.triggers.publish(CHARACTER_TRIGGERS.BEFORE_SKILL_CAST, this.skillData)
+        
         setTimeout(() => {
             this.incrementCastTime(castBy, getTargets)
         }, 50)
@@ -277,11 +292,7 @@ export default abstract class Skill {
     }
 
     removeDamageTakenCallback(character: Character) {
-        const index = character.identity.onDamageTakenTriggers.findIndex((cb) => cb == this.interuptsOnDamageTakenCallback)
-        
-        if (index != -1) {
-            character.identity.onDamageTakenTriggers.splice(index, 1)
-        }
+        character.triggers.off(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.interuptsOnDamageTakenCallback)
     }
 
     onDamageTaken(trigger: OnDamageTrigger) {
@@ -308,7 +319,7 @@ export default abstract class Skill {
             description: this.description,
             imagePath: this.skillData.imagePath,
             targetType: this.skillData.targetType as unknown as CharacterSkillTargetType,
-            cooldown: this.skillData.cooldown / GameSettings.speedFactor,
+            cooldown: this.cooldown,
             cooldownRemaining: this.onCooldownTimer,
             buffDuration: this.skillData.buffDuration / GameSettings.speedFactor,
             castTime: this.skillData.castTime / GameSettings.speedFactor,

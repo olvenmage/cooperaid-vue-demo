@@ -42,7 +42,8 @@ onMounted(() => {
 
 <template>
   <div :style="style" class="damage-float">
-    -{{ damage.actualDamage }}<template v-if="damage.isCrit">!</template>
+    <template class="missed" v-if="damage.isDodged">miss!</template>
+    <template v-else>-{{ damage.actualDamage }}<template v-if="damage.isCrit">!</template></template>
   </div>
 </template>
 
@@ -54,5 +55,9 @@ onMounted(() => {
   z-index: 10;
   position: absolute;
   transition: font-size 0.3s; /* transition is set to 'font-size 12s' */
+}
+
+.missed {
+  font-style: italic
 }
 </style>
