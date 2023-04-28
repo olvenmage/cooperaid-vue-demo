@@ -12,6 +12,7 @@ import SkillData from '../skill-data';
 export default class DragonEgg extends Identity {
     public name = "Dragon Egg"
     public baseStats = new CoreStats({
+        baseHealth: 28,
         constitution: 8,
         strength: 0,
         dexterity: 0,

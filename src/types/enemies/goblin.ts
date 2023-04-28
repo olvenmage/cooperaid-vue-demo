@@ -11,10 +11,10 @@ import SkillData from '../skill-data';
 export default class Goblin extends Identity {
     public name = "Goblin"
     public baseStats = new CoreStats({
-        constitution: 2,
-        strength: 4,
-        dexterity: 6,
-        intelligence: 2
+        constitution: 6,
+        strength: 8,
+        dexterity: 12,
+        intelligence: 4
     })
     public imagePath = "/enemies/goblin.png"
 
@@ -47,7 +47,7 @@ class GoblinBite extends Skill {
         name: "Bite",
         energyCost: 3,
         cooldown: 0 * 1000,
-        castTime: 4 * 1000,
+        castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
         imagePath: null,

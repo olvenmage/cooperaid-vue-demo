@@ -10,6 +10,7 @@ import { BlessingOfProtection } from '../classes/paladin';
 export default class Healer extends Identity {
     public name = "Healer"
     public baseStats = new CoreStats({
+        baseHealth: 40,
         constitution: 10,
         strength: 8,
         dexterity: 4,
@@ -49,7 +50,7 @@ class PrayerOfHealing extends Skill {
         name: "PrayerOfHealing",
         energyCost: 6,
         cooldown: 12 * 1000,
-        castTime: 5 * 1000,
+        castTime: 4.5 * 1000,
         targetType: TargetType.TARGET_ALL_FRIENDLIES,
         damageType: DamageType.PHYSICAL,
         imagePath: null,

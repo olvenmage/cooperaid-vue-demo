@@ -11,25 +11,36 @@ import Archer from "@/types/enemies/archer";
 import Bandit from "@/types/enemies/bandit"
 import Rogue from "@/types/classes/rogue";
 import Paladin from "@/types/classes/paladin";
+import pickRandom from "@/utils/pickRandom";
+import type Identity from "@/types/identity";
+import Healer from "@/types/enemies/healer";
+
+const banditEncounter = new CombatEncounter([
+  new Enemy(new Bandit()),
+  new Enemy(new Bandit()),
+  new Enemy(new Bandit()),
+  new Enemy(new Bandit()),
+], 9)
+
+const randomEmpire = () => {
+  return pickRandom([new Halbadier(), new Archer(), new Healer()]) as Identity
+}
 
 const mainRoute: Encounter[] = [
     new CombatEncounter([
       new Enemy(new Goblin()),
       new Enemy(new Goblin()),
       new Enemy(new Goblin()),
+      new Enemy(new Goblin()),
     ], 5),
     new RewardEncounter(),
-    new CombatEncounter([
-      new Enemy(new Bandit()),
-      new Enemy(new Bandit()),
-      new Enemy(new Bandit()),
-      new Enemy(new Bandit()),
-    ], 9),
+    banditEncounter,
     new RewardEncounter(),
     new CombatEncounter(
       [
-        new Enemy(new Halbadier()),
-        new Enemy(new Archer())
+        new Enemy(randomEmpire()),
+        new Enemy(randomEmpire()),
+        new Enemy(randomEmpire())
       ], 14
     ),
     new RewardEncounter(),
@@ -42,6 +53,7 @@ const mainRoute: Encounter[] = [
     new CombatEncounter(
       [
         new Enemy(new Halbadier()),
+        new Enemy(randomEmpire()),
         new Enemy(new Gryphon()),
         new Enemy(new Archer())
       ], 20

@@ -19,7 +19,7 @@ const styles = {
       <img class="sprite" :class="{ 'sprite-dead': character.dead }"  :src="`/src/assets/sprites${character.identity.imagePath}`" style="margin: auto">
       <img class="cross-image" src="/src/assets/sprites/effects/dead-effect.png" v-if="character.dead">
       <img class="stunned-image" src="/src/assets/sprites/effects/stunned-effect.png" v-if="character.stats.stunned">
-      <img class="flight-image" src="/src/assets/sprites/effects/flying-effect.png" v-if="character.stats.flying">
+      <img class="flight-image" src="/src/assets/sprites/effects/flying.png" v-if="character.stats.flying">
     </div>
   <slot></slot>
   </div>
