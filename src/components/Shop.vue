@@ -11,7 +11,7 @@ const players = Game.players.value
   <section class="shop">
     <img class="background" src="/src/assets/shop-background.png">
     <div class="player-box">
-<CharacterWindow
+  <CharacterWindow
       v-for="player in players"
       :key="player.id"
       :character="player"

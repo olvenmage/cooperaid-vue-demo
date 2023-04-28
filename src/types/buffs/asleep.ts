@@ -18,6 +18,7 @@ interface SleepBuffParams {
 export default class SleepBuff extends TickBuff implements StatMutatingBuff {
     public tickInterval: number = 1000;
     duration: number = 7 * 1000
+    public isCC = true
 
     triggered = false
 

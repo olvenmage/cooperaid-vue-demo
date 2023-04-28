@@ -6,6 +6,7 @@ export default class NettedBuff extends Buff implements StatMutatingBuff {
     duration: number = 8 * 1000
     priority = BuffPriority.LAST_3
     public imagePath: string | null = "/skills/barbarian/heavy-net.png"
+    public isCC = true
 
     constructor(newDuration: number) {
         super()

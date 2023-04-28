@@ -7,6 +7,9 @@ import type LobbyState from "@/types/state/lobby-state";
 import type RewardState from "@/types/state/reward-state";
 import type UpgradeGemState from "@/types/state/upgrade-gem-state";
 import type { CharacterSkill } from "./types/character-state";
+import type ExpGainedState from "@/types/state/exp-gained-state";
+import type PlayerStatsState from "@/types/state/player-stats-state";
+import type WaitState from "@/types/state/wait-state";
 
 const pubUpdatePlayerState = createPublishDefinition<{
     playerId: string,
@@ -35,12 +38,23 @@ const pubUpdatePickUpgradeGemState = createPublishDefinition<{
 
 const pubSetWaitingState = createPublishDefinition<{
     playerId: string,
+    state: WaitState
 }>('SetWaitingState')
 
 const pubUpdateGemSocketingState = createPublishDefinition<{
     playerId: string,
     state: GemSocketingState
 }>('UpdateGemSocketingState')
+
+const pubUpdateExpGainedState = createPublishDefinition<{
+    playerId: string,
+    state: ExpGainedState
+}>('UpdateExpGainedState')
+
+const pubUpdatePlayerStatsState = createPublishDefinition<{
+    playerId: string,
+    state: PlayerStatsState
+}>('UpdatePlayerStatsState')
 
 const pubUpdatePickSkillState = createPublishDefinition<{
     playerId: string,
@@ -57,5 +71,7 @@ export {
     pubUpdatePickUpgradeGemState,
     pubSetWaitingState,
     pubUpdateGemSocketingState,
-    pubUpdatePickSkillState
+    pubUpdatePickSkillState,
+    pubUpdateExpGainedState,
+    pubUpdatePlayerStatsState
 }

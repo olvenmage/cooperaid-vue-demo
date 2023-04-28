@@ -75,7 +75,6 @@ export default abstract class Game {
         }
 
         if (result.startNextEncounter) {
-            console.log("start next encounter!")
             this.nextEncounter()
         }
     }
@@ -151,6 +150,14 @@ export default abstract class Game {
         this.setState(GameState.CHOOSING_REWARD)
     }
 
+    static handoutExp(exp: number) {
+        this.players.value.forEach((player) => {
+            player.gainExp(exp)
+        })
+
+        this.setState(GameState.CHOOSING_REWARD)
+    }
+
     static enterShop() {
         this.setState(GameState.IN_SHOP)
     }
@@ -167,7 +174,7 @@ export default abstract class Game {
         this.exitCombat()
     }
 
-    static exitCombat() {
+    static exitCombat(exp: number = 0) {
         this.currentBattle = null
 
         Game.players.value.forEach(player => {

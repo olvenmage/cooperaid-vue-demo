@@ -30,6 +30,7 @@ export default class DragonEgg extends Identity {
             character.classBar.onFilled = () => {
                 this.name = "Dragon Whelp"
                 this.baseStats = new CoreStats({
+                    baseHealth: 50,
                     constitution: 12,
                     strength: 12,
                     dexterity: 12,

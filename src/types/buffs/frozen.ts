@@ -5,6 +5,7 @@ import type StatMutatingBuff from '../stat-mutating-buff';
 
 export default class FrozenBuff extends Buff implements StatMutatingBuff {
     duration: number = 4 * 1000
+    public isDebuff = true
 
     public imagePath: string | null = "/skills/mage/frost-tomb.png"
 

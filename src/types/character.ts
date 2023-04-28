@@ -52,18 +52,22 @@ export default class Character {
 
     deleted: boolean = false
 
-    constructor(identity: Identity, isFriendly = false, characterSkills: CharacterSkills|null = null) {
+    constructor(identity: Identity, isFriendly = false, characterSkills: CharacterSkills|null = null, stats: CharacterStats|null) {
         this.id = "char" + Math.random().toString(16).slice(2)
         this.identity = identity;
 
         if (characterSkills == null) {
             characterSkills = new CharacterSkills(identity.skills, null)
         }
-        this.characterSkills = characterSkills
-        this.stats = reactive(new CharacterStats(this.identity.baseStats.clone())) as CharacterStats
-        this.baseStats = reactive(new CharacterStats(this.identity.baseStats.clone())) as CharacterStats
 
-        console.log(`create char  ${this.stats.derived.maxHealth.value}`)
+        if (stats == null) {
+            stats = new CharacterStats(this.identity.baseStats.clone())
+        }
+
+        this.characterSkills = characterSkills
+        this.stats = reactive(stats.clone()) as CharacterStats
+        this.baseStats = reactive(stats.clone()) as CharacterStats
+
         this.healthBar = new Healthbar(this.stats.derived.maxHealth.value)
         this.characterPowers = new CharacterPowers()
         this.energyBar = new EnergyBar(this.stats)
@@ -213,6 +217,8 @@ export default class Character {
         if (this.dead) {
             return
         }
+
+        amount = Math.round(amount)
 
         const amountHealed = this.healthBar.increase(amount)
 

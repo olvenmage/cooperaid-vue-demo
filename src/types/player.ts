@@ -11,9 +11,13 @@ import { reactive } from 'vue'
 import Healthbar from './health-bar';
 import PlayerInventory from './player-inventory';
 import Game from '@/core/game';
-import { subSocketGemIntoSkill, subStartSocketing, subStopSocketing } from '@/client-socket/IncomingMessages';
-import { pubSetWaitingState, pubUpdateGemSocketingState } from '@/client-socket/OutgoingMessages';
 import PlayerSocketing from './player-socketing';
+import PlayerExp from './player-exp';
+import PlayerLevelup from './player-levelup';
+import type CharacterStats from './character-stats';
+import type { CoreStats } from './character-stats';
+import PlayerStateStats from './player-state-stats';
+import type WaitState from './state/wait-state';
 
 abstract class PlayerNumberRegistry {
     static currentPlayerIndex = 0
@@ -43,22 +47,35 @@ abstract class PlayerNumberRegistry {
 class PlayerWorkflowState {
     choosingReward: boolean
 
-    public socketing: PlayerSocketing
+    public readonly socketing: PlayerSocketing
+    public readonly expGained: PlayerLevelup
+    public readonly updatingStats: PlayerStateStats
 
     constructor(player: Player) {
         this.choosingReward = false
         this.socketing = (new PlayerSocketing(player)).startListening()
+        this.expGained = new PlayerLevelup(player).startListening()
+        this.updatingStats = new PlayerStateStats(player).startListening()
     }
-
 
     stateInterval() {
         if (this.socketing.active) {
             this.socketing.publishSocketingState()
         }
+
+        if (this.expGained.active) {
+            this.expGained.publishExpGainedState()
+        }
+
+        if (this.updatingStats.active) {
+            this.updatingStats.publishUpdatePlayerStatsState()
+        }
     }
 
     resetState() {
         this.socketing.stopSocketing()
+        this.expGained.acknowledgeExpGained()
+        this.updatingStats.stopUpdatingStats()
     }
 }
 
@@ -75,7 +92,9 @@ class Player {
     public inventory = new PlayerInventory()
 
     public state = new PlayerWorkflowState(this)
-
+    public expBar = new PlayerExp()
+    public statPoints = 0
+    public coreStats!: CoreStats
 
     private innerPlayerClass: PlayerIdentity|null = null
 
@@ -101,6 +120,7 @@ class Player {
             ]
             this.basicSkill = pickRandom(newVal.basicSkills) as Skill|null
             this.healthBar = new Healthbar(newVal.baseStats.getMaxHealth())
+            this.coreStats = newVal.baseStats.clone()
         } else {
             this.skills = [];
         }
@@ -116,6 +136,8 @@ class Player {
         if (playerClass) {
             this.setClass(playerClass)
         }
+
+        console.log(this.expBar.getExpTable(10))
     }
 
     setClass(playerClass: PlayerIdentity) {
@@ -126,6 +148,12 @@ class Player {
     enableAI(): this {
         this.aiEnabled = true
         return this
+    }
+
+    gainExp(amount: number) {
+        const result = this.expBar.gainExp(amount)
+        this.statPoints += result.statPointsGained
+        this.state.expGained.active = true;
     }
 
     createCharacter(): Character {
@@ -142,7 +170,6 @@ class Player {
         character.id = this.id
 
         character.player = this
-
 
         this.combatCharacter = character
         
@@ -175,6 +202,12 @@ class Player {
         }
         
         this.combatCharacter = null 
+    }
+
+    getWaitState(): WaitState {
+        return {
+            skillPoints: this.statPoints
+        }
     }
 }
 

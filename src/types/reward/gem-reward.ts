@@ -47,6 +47,7 @@ export default class GemReward extends Reward {
                
                 Game.webSocket.publish(pubSetWaitingState({
                     playerId: player.id,
+                    state: player.getWaitState()
                 }))
 
                 resolve()

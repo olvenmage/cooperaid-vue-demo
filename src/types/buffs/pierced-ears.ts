@@ -4,6 +4,7 @@ import type StatMutatingBuff from '../stat-mutating-buff';
 
 export default class PiercedEarsBuff extends Buff implements StatMutatingBuff {
     duration: number = 6 * 1000
+    public isCC = true
 
     public imagePath: string | null = "/buffs/pierced-ears.png"
 

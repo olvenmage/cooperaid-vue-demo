@@ -1,6 +1,7 @@
 import { ref, watch } from "vue"
 import type StatsState from "./state/stats-state"
 import GameSettings from "@/core/settings"
+import type { CorePlayerStatsState, DerivedStatsState } from "./state/player-stats-state"
 
 export interface StatsOptionsConstructor {
     maxHealth: number,
@@ -41,6 +42,7 @@ interface CoreStatsObject {
     strength: number
     intelligence: number
     constitution: number
+    baseCrit?: number
 }
 
 export class CoreStats {
@@ -49,6 +51,7 @@ export class CoreStats {
     public strength = new CharacterStat()
     public intelligence = new CharacterStat()
     public constitution = new CharacterStat()
+    public baseCrit = new CharacterStat()
 
     constructor(params: CoreStatsObject) {
         this.dexterity.set(params.dexterity)
@@ -56,11 +59,12 @@ export class CoreStats {
         this.intelligence.set(params.intelligence)
         this.constitution.set(params.constitution)
         this.baseHealth.set(params.baseHealth ?? GameSettings.baseHealth)
+        this.baseCrit.set(params.baseCrit ?? GameSettings.baseMonsterCritChance)
     }
 
     setDerivedStats(derivedStats: DerivedStats)  {
         derivedStats.energyRegenHaste.set(this.dexterity.value * GameSettings.derivedStatsOptions.eneryRegenPerDex)
-        derivedStats.critChance.set(GameSettings.baseCritChance + Math.floor(this.dexterity.value / GameSettings.derivedStatsOptions.dexPerCrit))
+        derivedStats.critChance.set(this.baseCrit.value + Math.floor(this.dexterity.value / GameSettings.derivedStatsOptions.dexPerCrit))
         derivedStats.dodgeChance.set(Math.floor(this.dexterity.value / GameSettings.derivedStatsOptions.dexPerDodge))
 
         derivedStats.castSpeed.set(this.strength.value * GameSettings.derivedStatsOptions.castSpeedIncreasePerStr)
@@ -70,13 +74,14 @@ export class CoreStats {
         derivedStats.maxEnergy.set(10 + Math.floor(this.intelligence.value / GameSettings.derivedStatsOptions.intPerMaxEnergyIncrease))
         derivedStats.magicalArmor.set(Math.floor(this.intelligence.value / GameSettings.derivedStatsOptions.intPerMagicArmor))
 
-        derivedStats.hardiness.set(this.constitution.value* GameSettings.derivedStatsOptions.hardinessPerConst)
+        derivedStats.hardiness.set(this.constitution.value * GameSettings.derivedStatsOptions.hardinessPerConst)
         derivedStats.maxHealth.set(this.getMaxHealth())
         derivedStats.armor.set(Math.floor(this.constitution.value / GameSettings.derivedStatsOptions.constPerArmor))
     }
 
     clone() {
         return new CoreStats({
+            baseCrit: this.baseCrit.value,
             dexterity: this.dexterity.value,
             strength: this.strength.value,
             intelligence: this.intelligence.value,
@@ -91,10 +96,21 @@ export class CoreStats {
         this.strength.recalculate(stats.strength.value)
         this.intelligence.recalculate(stats.intelligence.value)
         this.constitution.recalculate(stats.constitution.value)
+        this.baseCrit.recalculate(stats.baseCrit.value)
     }
 
     getMaxHealth() {
         return this.baseHealth.value + this.constitution.value * GameSettings.derivedStatsOptions.maxHealthPerConst
+    }
+
+    getState(): CorePlayerStatsState {
+        return {
+            baseCrit: this.baseCrit.value,
+            dexterity: this.dexterity.value,
+            constitution: this.constitution.value,
+            strength: this.strength.value,
+            intelligence: this.intelligence.value
+        }
     }
 }
 
@@ -115,6 +131,25 @@ class DerivedStats {
     hardiness = new CharacterStat()
 
     initiative = new CharacterStat()
+
+    getState(): DerivedStatsState {
+        return {
+            energyRegenHaste: this.energyRegenHaste.value,
+            critChance: this.critChance.value,
+            dodgeChance: this.dodgeChance.value,
+
+            castSpeed: this.castSpeed.value,
+            attackDamage: this.attackDamage.value,
+
+            cooldownReduction: this.cooldownReduction.value,
+            maxEnergy: this.maxEnergy.value,
+            magicalArmor: this.magicalArmor.value,
+
+            armor: this.armor.value,
+            maxHealth: this.maxHealth.value,
+            hardiness: this.hardiness.value
+        }
+    }
 }
 
 export default class CharacterStats {

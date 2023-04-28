@@ -49,11 +49,28 @@ const subStopSocketing = createSubscribeDefinition<{
     playerId: string,
 }>('StopSocketing')
 
+const subStartUpdatingStats = createSubscribeDefinition<{
+    playerId: string,
+}>('StartUpdatingStats')
+
+const subStopUpdatingStats = createSubscribeDefinition<{
+    playerId: string,
+}>('StopUpdatingStats')
+
+const subAckExpGained = createSubscribeDefinition<{
+    playerId: string,
+}>('AckExpGained')
+
 const subSocketGemIntoSkill = createSubscribeDefinition<{
     playerId: string,
     skillId: string,
     gemId: string
 }>('SocketGemIntoSkill')
+
+const subAssignSkillPoint = createSubscribeDefinition<{
+    playerId: string,
+    stat: 'dexterity'|'strength'|'constitution'|'intelligence',
+}>('AssignSkillPoint')
 
 export {
     playerJoinMessage,
@@ -66,5 +83,9 @@ export {
     subStartSocketing,
     subStopSocketing,
     subChooseReward,
-    subSocketGemIntoSkill
+    subSocketGemIntoSkill,
+    subAckExpGained,
+    subStartUpdatingStats,
+    subStopUpdatingStats,
+    subAssignSkillPoint
 }

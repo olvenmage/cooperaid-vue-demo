@@ -27,7 +27,7 @@ export default class Archer extends Identity {
 class RapidFire extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Rapid Fire",
-        energyCost: 10,
+        energyCost: 8,
         cooldown: 25 * 1000,
         castTime: 2 * 1000,
         targetType: TargetType.TARGET_SELF,

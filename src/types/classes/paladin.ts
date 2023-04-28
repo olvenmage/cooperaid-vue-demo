@@ -22,11 +22,13 @@ import HammerOfJusticeBuff from '../buffs/hammer-of-justice';
 import HammerOfRetributionSkillGem from '../skill-upgrades/paladin/hammer-of-retribution';
 import HammerOfRestorationSkillGem from '../skill-upgrades/paladin/hammer-of-restoration';
 import HammerOfVengeanceSkillGem from '../skill-upgrades/paladin/hammer-of-vengeance';
+import GameSettings from '@/core/settings';
 
 
 export default class Paladin extends PlayerIdentity {
     public name = "Paladin"
     public baseStats = new CoreStats({
+        baseCrit: GameSettings.basePlayerCritChance,
         constitution: 13,
         strength: 12,
         dexterity: 6,
@@ -123,10 +125,10 @@ export class HolyStrike extends Skill {
         castTime: 1250,
         imagePath: "/paladin/holy-strike.png",
         range: SkillRange.MELEE,
-        damage: 7,
+        damage: 6,
     })
 
-    description: string | null = "Basic. Deal 8 damage to an enemy and restore half of the actual damage dealt to the lowest health ally."
+    description: string | null = "Basic. Deal 6 damage to an enemy and restore half of the actual damage dealt to the lowest health ally."
 
     castSkill(castBy: Character, targets: Character[]): void {
         const results = castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: this.skillData.damageType, threatModifier: 1.1 })

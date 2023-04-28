@@ -13,36 +13,30 @@ import Rogue from "@/types/classes/rogue";
 import Paladin from "@/types/classes/paladin";
 
 const mainRoute: Encounter[] = [
-  new CombatEncounter(
-    [
-      new Enemy(new Halbadier()),
-      new Enemy(new Halbadier()),
-    ]
-  ),
     new CombatEncounter([
       new Enemy(new Goblin()),
       new Enemy(new Goblin()),
       new Enemy(new Goblin()),
-    ]),
+    ], 5),
     new RewardEncounter(),
     new CombatEncounter([
       new Enemy(new Bandit()),
       new Enemy(new Bandit()),
       new Enemy(new Bandit()),
       new Enemy(new Bandit()),
-    ]),
+    ], 9),
     new RewardEncounter(),
     new CombatEncounter(
       [
         new Enemy(new Halbadier()),
         new Enemy(new Archer())
-      ]
+      ], 14
     ),
     new RewardEncounter(),
     new CombatEncounter(
       [
         new Enemy(new Gryphon()),
-      ]
+      ], 17
     ),
     new RewardEncounter(),
     new CombatEncounter(
@@ -50,14 +44,16 @@ const mainRoute: Encounter[] = [
         new Enemy(new Halbadier()),
         new Enemy(new Gryphon()),
         new Enemy(new Archer())
-      ]
+      ], 20
     ),
     new RewardEncounter(),
     new CombatEncounter([
+      new Enemy(new DragonEgg()),
       new Enemy(new DragonEgg()),
       new Enemy(new DragonBoss()),
       new Enemy(new DragonEgg()),
-    ]),
+      new Enemy(new DragonEgg()),
+    ], 30),
   
 ]
 

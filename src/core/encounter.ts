@@ -13,14 +13,14 @@ export interface EncounterFinishedResponse {
 }
 
 export class CombatEncounter extends Encounter {
-    constructor(private enemies: Enemy[]) {
+    constructor(private enemies: Enemy[], private exp: number) {
         super()
     }
 
     async startEncounter(): Promise<EncounterFinishedResponse> {
         const result = await Game.startCombat(this.enemies)
 
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             if (!result.playersWon) {
                 setTimeout(() => {
                     Game.gameover()
@@ -29,9 +29,11 @@ export class CombatEncounter extends Encounter {
 
             Game.exitCombat()
 
+            await Game.handoutExp(this.exp)
+
             resolve({
                 gameover: !result.playersWon,
-                startNextEncounter: true
+                startNextEncounter: false
             })
         })
     }

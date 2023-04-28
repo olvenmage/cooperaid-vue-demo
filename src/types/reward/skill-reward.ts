@@ -32,7 +32,7 @@ export default class SkillReward extends Reward {
             }, 2000)
            
 
-            const chooseGemSubscription = Game.webSocket.subscribe(subChooseNewSkill , (event) => {
+            const chooseSkillSubscription = Game.webSocket.subscribe(subChooseNewSkill , (event) => {
                 if (event.body.playerId != player.id) return
 
                 const chosenSkill = newSkills.find((sk) => sk.id == event.body.skillId)
@@ -42,13 +42,14 @@ export default class SkillReward extends Reward {
                 hasPickedSkill = true;
                 chosenSkill.id = "skill" + Math.random().toString(16).slice(2)
 
-                chooseGemSubscription.unsubscribe()
+                chooseSkillSubscription.unsubscribe()
                 player.skills.push(chosenSkill)
                 player.state.choosingReward = false
                 clearInterval(updateSkillsInterval)
                
                 Game.webSocket.publish(pubSetWaitingState({
                     playerId: player.id,
+                    state: player.getWaitState()
                 }))
 
                 resolve()

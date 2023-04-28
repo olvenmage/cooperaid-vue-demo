@@ -75,8 +75,8 @@ export default abstract class Skill {
         return this.skillData?.cooldown ?? 0 / GameSettings.speedFactor
     }
 
-    get cooldownDisplay(): string {
-        return ((this.cooldown - this.onCooldownTimer) / 1000).toFixed(2)
+    get cooldownDisplay(): number {
+        return Math.round(((this.cooldown - this.onCooldownTimer) / 1000) * 100) / 100
     }
 
     canCast(castBy: Character): boolean {
@@ -242,7 +242,7 @@ export default abstract class Skill {
         this.currentTargets = getTargets()
 
         setTimeout(() => {
-            this.castingTimer += Math.min((this.skillData.castingIncrementer) * (1 + (castBy.stats.derived.castSpeed.value / 100)) * GameSettings.speedFactor, 0)
+            this.castingTimer += Math.max((this.skillData.castingIncrementer) * (1 + (castBy.stats.derived.castSpeed.value / 100)) * GameSettings.speedFactor, 0)
             this.incrementCastTime(castBy, getTargets)
         }, this.skillData.castingIncrementer)
     }
@@ -341,8 +341,8 @@ export default abstract class Skill {
             description: this.description,
             imagePath: this.skillData?.imagePath ?? null,
             targetType: this.skillData?.targetType as unknown as CharacterSkillTargetType,
-            cooldown: this.cooldownDisplay,
-            cooldownRemaining: this.onCooldownTimer,
+            cooldown: this.cooldown,
+            cooldownRemaining: this.onCooldown ? this.cooldownDisplay : 0,
             buffDuration: this.skillData?.buffDuration / GameSettings.speedFactor,
             castTime: this.skillData?.castTime / GameSettings.speedFactor,
             socketedGem: this.socketedUpgrade?.getState(castBy?.identity ?? null, []) ?? null

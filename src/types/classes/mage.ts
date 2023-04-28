@@ -9,10 +9,12 @@ import type EmpowerableSKill from '../skill-types/empowerable-skill';
 import FrozenBuff from '../buffs/frozen'
 import SkillData from '../skill-data';
 import EmpowerBar from '../special-bar/empower-bar';
+import GameSettings from '@/core/settings';
 
 export default class Mage extends PlayerIdentity {
     public name = "Mage"
     public baseStats = new CoreStats({
+        baseCrit: GameSettings.basePlayerCritChance,
         constitution: 6,
         strength: 10,
         dexterity: 10,

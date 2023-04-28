@@ -17,10 +17,12 @@ import { globalThreatEvent } from '@/core/events';
 import { CHARACTER_TRIGGERS } from '../character-triggers';
 import ShatterBuff from '../buffs/shatter';
 import ShockWaveBuff from '../buffs/shock-wave';
+import GameSettings from '@/core/settings';
 
 export default class Juggernaut extends PlayerIdentity {
     public name = "Juggernaut"
     public baseStats = new CoreStats({
+        baseCrit: GameSettings.basePlayerCritChance,
         constitution: 18,
         strength: 12,
         dexterity: 7,

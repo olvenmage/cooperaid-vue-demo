@@ -13,11 +13,13 @@ import AngryYellingSkillGem from '../skill-upgrades/barbarian/angry-yelling';
 import BloodLustBuff from '../buffs/blood-lust';
 import { CHARACTER_TRIGGERS } from '../character-triggers';
 import { BlessedWeapon } from './paladin';
+import GameSettings from '@/core/settings';
 
 
 export default class Barbarian extends PlayerIdentity {
     public name = "Barbarian"
     public baseStats = new CoreStats({
+        baseCrit: GameSettings.basePlayerCritChance,
         constitution: 12,
         strength: 16,
         dexterity: 10,

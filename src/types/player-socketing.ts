@@ -84,10 +84,14 @@ export default class PlayerSocketing {
     stopSocketing() {
         this.socketIntoSkillSubscription?.unsubscribe()
         this.socketIntoSkillSubscription = null
-        this.active = false;
 
-        Game.webSocket.publish(pubSetWaitingState({
-            playerId: this.player.id
-        }))
+        if (this.active) {
+            Game.webSocket.publish(pubSetWaitingState({
+                playerId: this.player.id,
+                state: this.player.getWaitState()
+            }))
+        }
+
+        this.active = false;
     }
 }

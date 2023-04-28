@@ -21,10 +21,12 @@ import Taunt from '../skills/taunt';
 import ShadowStepBuff from '../buffs/shadow-step';
 import ShadowSurge from '../skill-upgrades/rogue/shadow-surge';
 import CoughBombBuff from '../buffs/cough-bomb';
+import GameSettings from '@/core/settings';
 
 export default class Rogue extends PlayerIdentity {
     public name = "Rogue"
     public baseStats = new CoreStats({
+        baseCrit: GameSettings.basePlayerCritChance * 2,
         constitution: 7,
         strength: 12,
         dexterity: 18,
@@ -266,12 +268,12 @@ export class Kick extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         castTime: 250,
         imagePath: "/rogue/kick.png",
-        damage: 8,
+        damage: 6,
         damageType: DamageType.PHYSICAL,
         range: SkillRange.MELEE,
     })
 
-    description: string | null = "Deal 8 damage to an enemy and interrupt their current cast."
+    description: string | null = "Deal 6 damage to an enemy and interrupt their current cast."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {

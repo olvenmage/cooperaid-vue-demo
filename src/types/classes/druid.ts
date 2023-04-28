@@ -21,12 +21,14 @@ import HealthyCommandNatureSkillGem from '../skill-upgrades/druid/healthy-comman
 import HealingIncreaseSkillGem from '../skill-upgrades/generic/healing-increase-skill-gem';
 import CommandNatureArmorBuff from '../buffs/command-nature-armor';
 import { CHARACTER_TRIGGERS } from '../character-triggers';
+import GameSettings from '@/core/settings';
 
 export default class Druid extends PlayerIdentity {
     public name = "Druid"
     public baseStats = new CoreStats({
-        constitution: 11,
-        strength: 11,
+        baseCrit: GameSettings.basePlayerCritChance,
+        constitution: 12,
+        strength: 10,
         dexterity: 11,
         intelligence: 11
     })

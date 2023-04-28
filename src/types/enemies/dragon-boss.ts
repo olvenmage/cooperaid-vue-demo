@@ -8,11 +8,12 @@ import MeltedArmorBuff from '../buffs/melted-armor';
 import CharacterStats, { CoreStats } from '../character-stats';
 import SkillData from '../skill-data';
 import AggressiveBuff from '../buffs/aggressive';
+import StunnedBuff from '../buffs/stunned';
 
 export default class DragonBoss extends Identity {
     public name = "Dragon"
     public baseStats = new CoreStats({
-        baseHealth: 300,
+        baseHealth: 320,
         constitution: 24,
         strength: 16,
         dexterity: 12,
@@ -34,16 +35,22 @@ export class DragonThrash extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Thrash",
         energyCost: 3,
-        cooldown: 2 * 1000,
+        cooldown: 3 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
         imagePath: null,
+        buffDuration: 1 * 1000,
         range: SkillRange.MELEE,
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
         castBy.dealDamageTo({ amount: 12, targets, type: DamageType.PHYSICAL })
+        targets.forEach((target) => {
+            target.addBuff(new StunnedBuff({
+                duration: this.skillData.buffDuration
+            }), castBy)
+        })
     }
 }
 
@@ -110,6 +117,5 @@ export class FireBreath extends Skill {
                 target.addBuff(new MeltedArmorBuff(), castBy)
             })
         }
-       
     }
 }
