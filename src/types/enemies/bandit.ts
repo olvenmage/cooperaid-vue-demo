@@ -75,14 +75,14 @@ class KnockOut extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Knock Out",
         energyCost: 4,
-        cooldown: 12 * 1000,
+        cooldown: 14 * 1000,
         castTime: 4 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         aiTargetting: AiTargetting.RANDOM,
         range: SkillRange.MELEE,
-        buffDuration: 3 * 1000,
+        buffDuration: 2.5 * 1000,
         damage: 8
     })
 

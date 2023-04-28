@@ -39,6 +39,10 @@ export default abstract class TickBuff extends Buff {
     }
 
     override startBuff(attachedCharacter: Character, givenBy: Character|null) {
+        if (this.isCC) {
+            this.duration *= (100 - attachedCharacter.stats.derived.hardiness.value) / 100
+        }
+
         this.attachedCharacter = attachedCharacter
         this.givenBy = givenBy
         this.tickCounter = 0

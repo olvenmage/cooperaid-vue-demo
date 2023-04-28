@@ -453,7 +453,7 @@ export class CoughBomb extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         castTime: 1000,
         damageType: DamageType.POISON,
-        imagePath: "/rogue/shadow-step.png",
+        imagePath: "/rogue/cough-bomb.png",
         buffDuration: 4 * 1000,
         range: SkillRange.RANGED,
         damage: 10

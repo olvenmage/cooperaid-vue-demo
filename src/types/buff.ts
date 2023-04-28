@@ -41,11 +41,17 @@ export default abstract class Buff {
     }
 
     startBuff(attachedCharacter: Character, givenBy: Character|null) {
+        if (this.isCC) {
+            this.duration *= (100 - attachedCharacter.stats.derived.hardiness.value) / 100
+        }
+
         this.attachedCharacter = attachedCharacter
         this.givenBy = givenBy
         this.ended = false
         this.startEffect(attachedCharacter)
         this.incrementDuration(attachedCharacter)
+        
+        
     }
 
     startEffect(character: Character) {
