@@ -13,7 +13,7 @@ import StunnedBuff from '../buffs/stunned';
 export default class DragonBoss extends Identity {
     public name = "Dragon"
     public baseStats = new CoreStats({
-        baseHealth: 320,
+        baseHealth: 420,
         constitution: 24,
         strength: 16,
         dexterity: 12,
@@ -86,7 +86,7 @@ export class DragonRoar extends Skill {
     castSkill(castBy: Character, targets: Character[]): void {
         if (castBy.identity instanceof DragonBoss) {
             castBy.addBuff(new AggressiveBuff(), castBy)
-            castBy.identity.stackingFireDamage += 2
+            castBy.identity.stackingFireDamage += 4
         }
     }
 }
@@ -110,7 +110,8 @@ export class FireBreath extends Skill {
             castBy.dealDamageTo({
                 amount: randomRange(18, 18 + dragonIdentity.stackingFireDamage),
                 targets,
-                type: DamageType.MAGICAL
+                type: DamageType.MAGICAL,
+                noCrit: true
             })
 
             targets.forEach((target) => {
