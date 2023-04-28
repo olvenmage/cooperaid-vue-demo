@@ -26,12 +26,13 @@ export default class Bandit extends Identity {
 }
 
 class GangUp extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Gang Up",
         energyCost: 7,
         cooldown: 12 * 1000,
         castTime: 6 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
     })
@@ -52,12 +53,13 @@ class GangUp extends Skill {
 
 
 class Slice extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Slice",
         energyCost: 3,
         cooldown: 0 * 1000,
         castTime: 4 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
     })

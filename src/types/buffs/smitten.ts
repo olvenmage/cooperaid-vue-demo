@@ -1,6 +1,7 @@
 import Buff from '../buff';
 import type Character from '../character';
 import { CHARACTER_TRIGGERS } from '../character-triggers';
+import DamageSchool from '../damage-school';
 import DamageType from '../damage-type';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
@@ -39,9 +40,9 @@ export default class SmittenBuff extends Buff {
     restoreHealthToAlly(trigger: OnDamageTrigger): void {
         const validDamageToEnemy = trigger.actualDamage > 0 && trigger.damagedBy && trigger.character.isEnemyTo(trigger.damagedBy)
 
-        if (validDamageToEnemy && (trigger.damageType == DamageType.PHYSICAL || trigger.damageType == DamageType.MAGICAL)) {
+        if (validDamageToEnemy && trigger.school != DamageSchool.HOLY && (trigger.damageType == DamageType.PHYSICAL || trigger.damageType == DamageType.MAGICAL)) {
             if (this.params.branding) {
-                this.givenBy?.dealDamageTo({ amount: 4, targets: [trigger.character], type: DamageType.MAGICAL, noCrit: true })
+                this.givenBy?.dealDamageTo({ amount: 4, targets: [trigger.character], type: DamageType.MAGICAL, school: DamageSchool.HOLY, noCrit: true, minAmount: 4 })
             } else {
                 trigger.damagedBy?.restoreHealth(2, this.givenBy, 0.5)
             }

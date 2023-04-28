@@ -38,11 +38,12 @@ export default class Mage extends PlayerIdentity {
 }
 
 export class FrostBolt extends Skill implements EmpowerableSKill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Frostbolt",
         energyCost: 2,
         cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.MAGICAL,
         castTime: 1000,
         imagePath: "/mage/frost-bolt.png",
         range: SkillRange.RANGED,

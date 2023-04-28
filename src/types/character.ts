@@ -22,6 +22,7 @@ import type CharacterState from './state/character-state';
 import type Battle from '@/core/battle';
 import CharacterPowers from './character-powers';
 import CharacterTriggers, { CHARACTER_TRIGGERS } from './character-triggers';
+import DamageSchool from './damage-school';
 
 
 export default class Character {
@@ -188,12 +189,11 @@ export default class Character {
             damageType: damage.type,
             threatModifier: damage.threatModifier ?? 1,
             isDodged: damage.isDodged ?? false,
-            isCrit: damage.isCrit ?? false
+            isCrit: damage.isCrit ?? false,
+            school: damage.school ?? DamageSchool.NONE
         }
 
-        for (const beforeDamageTrigger of this.identity.beforeDamageTakenTriggers) {
-            damageTrigger.actualDamage = beforeDamageTrigger(damageTrigger);
-        }
+        this.triggers.publish(CHARACTER_TRIGGERS.BEFORE_DAMAGE_TAKEN, damageTrigger)
 
         this.healthBar.decrease(damageTrigger.actualDamage)
         

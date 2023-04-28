@@ -6,12 +6,12 @@ export default class CooldownReductionSkillGem extends SkillUpgradeGem {
     public name = "Basic Cooldown Reduction Upgrade"
 
     applies(item: Skill): boolean {
-        return item.skillData.cooldown > 0
+        return item.baseSkillData.cooldown > 0
     }
 
     applyUpgrade(item: Skill) {
-       if ( item.skillData.damage != null) {
-            item.skillData.cooldown *= 0.8
+       if ( item.baseSkillData.damage != null) {
+            item.baseSkillData.cooldown *= 0.8
        }
     }
 }

@@ -66,7 +66,7 @@ export default class Rogue extends PlayerIdentity {
 }
 
 export class FanOfKnives extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Fan of Knives",
         energyCost: 3,
         cooldown: 1 * 1000,
@@ -88,7 +88,7 @@ export class FanOfKnives extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         let damage = this.skillData.damage
-        const AMOUNT_OF_ATTACKS = this.socketedUpgrade instanceof KnifeStormSkillGem ? 5 : 3
+        const AMOUNT_OF_ATTACKS = this.hasGem(KnifeStormSkillGem) ? 5 : 3
 
         for (let i = 0; i < AMOUNT_OF_ATTACKS; i++) {
             const daggerDamage = Math.round(damage / (AMOUNT_OF_ATTACKS - i))
@@ -100,7 +100,7 @@ export class FanOfKnives extends Skill {
                 const damageResult = castBy.dealDamageTo({
                     amount: daggerDamage,
                     targets: [target],
-                    type: DamageType.PHYSICAL,
+                    type: this.skillData.damageType,
                     threatModifier: 1.1,
                     minAmount: 1
                 })
@@ -114,12 +114,13 @@ export class FanOfKnives extends Skill {
 }
 
 export class Dismantle extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Dismantle",
         energyCost: 5,
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         aiTargetting: AiTargetting.HIGHEST_THREAT,
+        damageType: DamageType.PHYSICAL,
         castTime: 500,
         imagePath: "/rogue/dismantle.png",
         buffDuration: 8 * 1000,
@@ -136,7 +137,7 @@ export class Dismantle extends Skill {
 
             target.addBuff(new DismantleBuff({
                 duration: this.skillData.buffDuration,
-                nullifies: this.socketedUpgrade instanceof NullifyingDismantleSkillGem
+                nullifies: this.hasGem(NullifyingDismantleSkillGem)
             }), castBy)
             target.threat?.raiseThreat(castBy, 8)
         })
@@ -144,7 +145,7 @@ export class Dismantle extends Skill {
 }
 
 export class PoisonedStrike extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Poisoned Strike",
         energyCost: 2,
         cooldown: 0 * 1000,
@@ -162,7 +163,7 @@ export class PoisonedStrike extends Skill {
     description: string | null = "Basic. Deal 4 damage to an enemy and apply a stacking poison debuff for a medium duration (stacks 3 times)"
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ targets, type: DamageType.PHYSICAL, amount: this.skillData.damage! })
+        castBy.dealDamageTo({ targets, type: this.skillData.damageType, amount: this.skillData.damage })
 
         targets.forEach((target) => {
             if (castBy.classBar instanceof FocusBar) {
@@ -175,7 +176,7 @@ export class PoisonedStrike extends Skill {
 }
 
 export class Switchblade extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Switchblade",
         energyCost: 2,
         cooldown: 0 * 1000,
@@ -202,13 +203,13 @@ export class Switchblade extends Skill {
                 castBy.classBar.increase(target.stats.derived.armor.value)
             }
 
-            castBy.dealDamageTo({ targets: [target], type: DamageType.PHYSICAL, amount: damage, minAmount: damage })
+            castBy.dealDamageTo({ targets: [target], type: this.skillData.damageType, amount: damage, minAmount: damage })
         })
     }
 }
 
 export class Backstab extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Backstab",
         energyCost: 2,
         cooldown: 0 * 1000,
@@ -250,14 +251,14 @@ export class Backstab extends Skill {
                 threatModifier += 0.5
             }
 
-            castBy.dealDamageTo({ targets: [target], type: DamageType.PHYSICAL, amount: damage, threatModifier })
+            castBy.dealDamageTo({ targets: [target], type: this.skillData.damageType, amount: damage, threatModifier })
         })
     }
 }
 
 
 export class Kick extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Kick",
         energyCost: 4,
         cooldown: 8 * 1000,
@@ -274,7 +275,7 @@ export class Kick extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: this.skillData.damage!, targets: [target], type: this.skillData.damageType!, threatModifier: 1.3 })
+            castBy.dealDamageTo({ amount: this.skillData.damage!, targets: [target], type: this.skillData.damageType, threatModifier: 1.3 })
 
             if (castBy.classBar instanceof FocusBar) {
                 castBy.classBar.increase(4)
@@ -292,13 +293,14 @@ export class Kick extends Skill {
 }
 
 export class SleepDart extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Sleep Dart",
         energyCost: 6,
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         aiTargetting: AiTargetting.RANDOM,
         castTime: 1000,
+        damageType: DamageType.PHYSICAL,
         imagePath: "/rogue/sleep-dart.png",
         buffDuration: 6 * 1000,
         range: SkillRange.RANGED,
@@ -310,8 +312,8 @@ export class SleepDart extends Skill {
         targets.forEach((target) => {
             target.addBuff(new SleepBuff({
                 duration: this.skillData.buffDuration,
-                paralyzes: this.socketedUpgrade instanceof ParalyzingDartSkillGem,
-                exposes: this.socketedUpgrade instanceof ExposingDartSkillGem
+                paralyzes: this.hasGem(ParalyzingDartSkillGem),
+                exposes: this.hasGem(ExposingDartSkillGem)
             }), castBy)
             target.threat?.raiseThreat(castBy, 6)
         })
@@ -319,11 +321,12 @@ export class SleepDart extends Skill {
 }
 
 export class HeartSeeker extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Heartseeker",
         energyCost: 6,
         cooldown: 14 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
+        damageType: DamageType.PHYSICAL,
         aiTargetting: AiTargetting.RANDOM,
         castTime: 1500,
         imagePath: "/rogue/heartseeker.png",
@@ -339,7 +342,7 @@ export class HeartSeeker extends Skill {
             let target = validTargets[0] ?? null
 
             if (target != null) {
-                castBy.dealDamageTo({ amount: this.skillData.damage, targets: [target], type: DamageType.PHYSICAL})
+                castBy.dealDamageTo({ amount: this.skillData.damage, targets: [target], type: this.skillData.damageType })
 
                 if (target.dead) {
                     shoot()
@@ -352,7 +355,7 @@ export class HeartSeeker extends Skill {
 }
 
 export class KillShot extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Killshot",
         energyCost: 4,
         cooldown: 10 * 1000,
@@ -377,12 +380,13 @@ export class KillShot extends Skill {
 }
 
 export class Evasion extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Evasion",
         energyCost: 6,
         cooldown: 25 * 1000,
         targetType: TargetType.TARGET_SELF,
         aiTargetting: AiTargetting.RANDOM,
+        damageType: DamageType.PHYSICAL,
         castTime: 1000,
         imagePath: "/rogue/evasion.png",
         buffDuration: 10 * 1000,
@@ -395,19 +399,20 @@ export class Evasion extends Skill {
         targets.forEach((target) => {
             target.addBuff(new EvasionBuff({
                 duration: this.skillData.buffDuration,
-                speedsUpOnHit: this.socketedUpgrade instanceof QuickMovesSkillGem
+                speedsUpOnHit: this.hasGem(QuickMovesSkillGem)
             }), castBy)
         })
     }
 }
 
 export class ShadowStep extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Shadow Step",
         energyCost: 2,
         cooldown: 10 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
         aiTargetting: AiTargetting.RANDOM,
+        damageType: DamageType.PHYSICAL,
         castTime: 500,
         imagePath: "/rogue/shadow-step.png",
         buffDuration: 8 * 1000,
@@ -429,7 +434,7 @@ export class ShadowStep extends Skill {
                     castBy.classBar.increase(3)
                 }
 
-                if (this.socketedUpgrade instanceof ShadowSurge) {
+                if (this.hasGem(ShadowSurge)) {
                     castBy.energyBar.increase(1)
                 }
             }
@@ -438,13 +443,14 @@ export class ShadowStep extends Skill {
 }
 
 export class CoughBomb extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Cough Bomb",
         energyCost: 3,
-        cooldown: 8 * 1000,
+        cooldown: 7 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         aiTargetting: AiTargetting.RANDOM,
         castTime: 1000,
+        damageType: DamageType.POISON,
         imagePath: "/rogue/shadow-step.png",
         buffDuration: 4 * 1000,
         range: SkillRange.RANGED,
@@ -454,7 +460,7 @@ export class CoughBomb extends Skill {
     description: string | null = "Deal 10 poison damage to an enemy and put a random skill they have off cooldown on cooldown."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ targets, type: DamageType.POISON, amount: this.skillData.damage, threatModifier: 1.2 })
+        castBy.dealDamageTo({ targets, type: this.skillData.damageType, amount: this.skillData.damage, threatModifier: 1.2 })
 
         targets.forEach((target) => {
             const skillToDeactivate = target.skills.find((sk) => !sk.onCooldown && sk.cooldown > 0)

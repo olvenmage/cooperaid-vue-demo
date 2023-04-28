@@ -86,7 +86,7 @@ export default class Barbarian extends PlayerIdentity {
 }
 
 export class RecklessStrike extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Reckless Strike",
         energyCost: 2,
         cooldown: 0,
@@ -103,7 +103,7 @@ export class RecklessStrike extends Skill {
     description: string | null = "Basic. Take 4 damage to deal 10 damage to an enemy."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage ?? 0, type: DamageType.PHYSICAL, threatModifier: 0.8, targets })
+        castBy.dealDamageTo({ amount: this.skillData.damage ?? 0, type: this.skillData.damageType, threatModifier: 0.8, targets })
     }
 
     beforeCast(castBy: Character): void {
@@ -128,7 +128,7 @@ export class RecklessStrike extends Skill {
 }
 
 export class RagingBlow extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Raging Blow",
         energyCost: 4,
         cooldown: 1 * 1000,
@@ -142,7 +142,7 @@ export class RagingBlow extends Skill {
     description: string | null = "Deal 12 damage to an enemy, gain rage equal to the actual damage done."
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
-        const results = castBy.dealDamageTo({ amount: 12, targets, type: DamageType.PHYSICAL })
+        const results = castBy.dealDamageTo({ amount: 12, targets, type: this.skillData.damageType })
 
         if (castBy.classBar != null) {
             for (const result of results) {
@@ -153,7 +153,7 @@ export class RagingBlow extends Skill {
 }
 
 export class Rampage extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Rampage",
         energyCost: 5,
         cooldown: 8 * 1000,
@@ -174,7 +174,7 @@ export class Rampage extends Skill {
 
         const damageResults = castBy.dealDamageTo({ amount: damageToDeal, targets, type: this.skillData.damageType!, threatModifier })
 
-        if (this.socketedUpgrade instanceof BloodthirstyRampage) {
+        if (this.hasGem(BloodthirstyRampage)) {
             for (const damageDealt of damageResults) {
                 castBy.restoreHealth(Math.floor(damageDealt.actualDamage * 0.3), castBy, 0.4)
             }
@@ -183,7 +183,7 @@ export class Rampage extends Skill {
 }
 
 export class Shout extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Shout",
         energyCost: 2,
         cooldown: 0 * 1000,
@@ -202,14 +202,14 @@ export class Shout extends Skill {
 
         castBy.dealDamageTo({ amount: damage, targets, type: this.skillData.damageType!, threatModifier: 2, minAmount: damage })
 
-        if (this.socketedUpgrade instanceof AngryYellingSkillGem && castBy.classBar) {
+        if (this.hasGem(AngryYellingSkillGem) && castBy.classBar) {
             castBy.classBar.increase(targets.length * 2)
         }
     }
 }
 
 export class Whirlwind extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Whirlwind",
         energyCost: 8,
         cooldown: 9 * 1000,
@@ -229,11 +229,12 @@ export class Whirlwind extends Skill {
 }
 
 export class HeavyNet extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Heavy Net",
         energyCost: 4,
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         range: SkillRange.RANGED,
         imagePath: "barbarian/heavy-net.png",
         castTime: 1500,
@@ -251,11 +252,12 @@ export class HeavyNet extends Skill {
 }
 
 export class AxeThrow extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Axe Throw",
         energyCost: 1,
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         castTime: 1000,
         imagePath: "/barbarian/axe-throw.png",
         range: SkillRange.RANGED,
@@ -273,7 +275,7 @@ export class AxeThrow extends Skill {
                 triggerCooldown: false
             }
         } else {
-            castBy.dealDamageTo({ amount: 8, targets, type: DamageType.PHYSICAL, threatModifier: 1 })
+            castBy.dealDamageTo({ amount: 8, targets, type: this.skillData.damageType, threatModifier: 1 })
         }
     }
 
@@ -291,11 +293,12 @@ export class AxeThrow extends Skill {
 
 
 export class BloodLust extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Blood Lust",
         energyCost: 2,
         cooldown: 10 * 1000,
         targetType: TargetType.TARGET_SELF,
+        damageType: DamageType.PHYSICAL,
         castTime: 500,
         imagePath: "/barbarian/blood-lust.png",
         range: SkillRange.MELEE,
@@ -326,11 +329,12 @@ export class BloodLust extends Skill {
 }
 
 export class BloodStrike extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Blood Strike",
         energyCost: 3,
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         castTime: 1100,
         damage: 7,
         imagePath: "/barbarian/blood-strike.png",
@@ -340,7 +344,7 @@ export class BloodStrike extends Skill {
     description: string | null = "Deal 7 damage to an enemy and restore the actual damage done in health to you."
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
-        const results = castBy.dealDamageTo({ amount: this.skillData.damage, targets: targets, type: DamageType.PHYSICAL })
+        const results = castBy.dealDamageTo({ amount: this.skillData.damage, targets: targets, type: this.skillData.damageType })
 
         for (const result of results) {
             castBy.restoreHealth(result.actualDamage, castBy, 0.3)

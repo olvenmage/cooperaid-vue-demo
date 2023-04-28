@@ -6,12 +6,12 @@ export default class EnergyCostSkillGem extends SkillUpgradeGem {
     public name = "Basic Energy Cost Upgrade"
 
     applies(item: Skill): boolean {
-        return item.skillData.energyCost > 3
+        return item.baseSkillData.energyCost > 3
     }
 
     applyUpgrade(item: Skill) {
-       if ( item.skillData.damage != null) {
-            item.skillData.energyCost -= 1
+       if ( item.baseSkillData.damage != null) {
+            item.baseSkillData.energyCost -= 1
        }
     }
 }

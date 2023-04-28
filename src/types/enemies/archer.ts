@@ -25,12 +25,13 @@ export default class Archer extends Identity {
 }
 
 class RapidFire extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Rapid Fire",
         energyCost: 10,
         cooldown: 25 * 1000,
         castTime: 2 * 1000,
         targetType: TargetType.TARGET_SELF,
+        damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
     })
@@ -41,13 +42,14 @@ class RapidFire extends Skill {
 }
 
 class Shoot extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Shoot",
         energyCost: 2,
         cooldown: 0 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         aiTargetting: AiTargetting.HIGHEST_THREAT,
+        damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.RANGED,
     })
@@ -58,12 +60,13 @@ class Shoot extends Skill {
 }
 
 class Assasinate extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Assasinate",
         energyCost: 6,
         cooldown: 12 * 1000,
         castTime: 6 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         aiTargetting: AiTargetting.RANDOM,
         imagePath: null,
         range: SkillRange.RANGED,

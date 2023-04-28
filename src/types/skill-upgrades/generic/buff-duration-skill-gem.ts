@@ -6,12 +6,12 @@ export default class BuffDurationSkillGem extends SkillUpgradeGem {
     public name = "Basic Buff Duration Upgrade"
 
     applies(item: Skill): boolean {
-        return item.skillData.buffDuration > 0
+        return item.baseSkillData.buffDuration > 0
     }
 
     applyUpgrade(item: Skill) {
-       if ( item.skillData.damage != null) {
-            item.skillData.buffDuration *= 1.2
+       if ( item.baseSkillData.damage != null) {
+            item.baseSkillData.buffDuration *= 1.2
        }
     }
 }

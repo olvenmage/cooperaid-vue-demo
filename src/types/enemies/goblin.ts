@@ -25,12 +25,13 @@ export default class Goblin extends Identity {
 }
 
 class GoblinClobber extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Clobber",
         energyCost: 8,
         cooldown: 10 * 1000,
         castTime: 6 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
     })
@@ -42,12 +43,13 @@ class GoblinClobber extends Skill {
 
 
 class GoblinBite extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Bite",
         energyCost: 3,
         cooldown: 0 * 1000,
         castTime: 4 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
     })

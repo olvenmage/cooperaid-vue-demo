@@ -52,12 +52,13 @@ export default class DragonEgg extends Identity {
 }
 
 class Stir extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Stir",
         energyCost: 3,
         cooldown: 2 * 1000,
         castTime: 2 * 1000,
         targetType: TargetType.TARGET_NONE,
+        damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
     })
@@ -70,12 +71,13 @@ class Stir extends Skill {
 }
 
 export class WhelpBite extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Bite",
         energyCost: 3,
         cooldown: 1 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
     })
@@ -87,12 +89,13 @@ export class WhelpBite extends Skill {
 }
 
 export class Ember extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Firespew",
         energyCost: 8,
         cooldown: 4 * 1000,
         castTime: 4 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.MAGICAL,
         imagePath: null,
         range: SkillRange.RANGED,
     })

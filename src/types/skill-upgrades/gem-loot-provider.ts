@@ -26,6 +26,9 @@ import EnergyCostSkillGem from './generic/energy-cost-reduction-skill-gem'
 import AngryYellingSkillGem from './barbarian/angry-yelling'
 import QuickMovesSkillGem from './rogue/quick-moves-skill-gem'
 import ShadowSurge from './rogue/shadow-surge'
+import HammerOfRestorationSkillGem from './paladin/hammer-of-restoration'
+import HammerOfRetributionSkillGem from './paladin/hammer-of-retribution'
+import HammerOfVengeanceSkillGem from './paladin/hammer-of-vengeance'
 
 const GEMS = [
 
@@ -55,6 +58,9 @@ const GEMS = [
     new RejuvenatingLight(),
     new FinishingStrikeSkilGem(),
     new BrandingSmiteSkillGem(),
+    new HammerOfRestorationSkillGem(),
+    new HammerOfRetributionSkillGem(),
+    new HammerOfVengeanceSkillGem(),
 
     // Druid
     new HealthyCommandNatureSkillGem(),

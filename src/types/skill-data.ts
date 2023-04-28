@@ -19,7 +19,7 @@ export interface SkillDataParams {
     canCastOnCooldown?: boolean
     damage?: number
     healing?: number
-    damageType?: DamageType
+    damageType: DamageType
     buffDuration?: number
     maxStacks?: number,
     tags?: SkillTag[]
@@ -45,7 +45,7 @@ export default class SkillData {
     healing: number = 0
     buffDuration: number
     maxStacks: number
-    damageType: DamageType|null
+    damageType: DamageType
     tags: SkillTag[]
     range: SkillRange
 
@@ -136,6 +136,12 @@ export default class SkillData {
     }
 
     clone(): SkillData {
-        return new SkillData(this.currentParams)
+        const newSkillData = new SkillData(this.baseParams)
+
+        if (this.isTransformed) {
+            newSkillData.transform(this.currentParams)
+        }
+
+        return newSkillData
     }
 }

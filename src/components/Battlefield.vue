@@ -54,6 +54,25 @@ function castAtAllEnemies(skill: Skill, character: Character) {
   )
 }
 
+
+function castAtAllFriendlies(skill: Skill, character: Character) {
+  const combatants: Character[] = []
+
+  for (const enemy of enemies) {
+    combatants.push(enemy)
+  }
+
+  for (const player of players) {
+    combatants.push(player.combatCharacter)
+  }
+
+
+  skill.cast(
+    character,
+    () => combatants.filter((target) => !target.dead && !character.isEnemyTo(target))
+  )
+}
+
 function selectCharacter(selectedCharacter: Character) {
   if (!castingSkill.value || !castingCharacter.value) {
     // todo select
@@ -104,6 +123,7 @@ function selectCharacter(selectedCharacter: Character) {
       :casting="player.id == castingCharacter?.id"
       @start-cast="(skill) => startCast(skill, player.combatCharacter)"
       @cast-at-all-enemies="(skill) => castAtAllEnemies(skill, player.combatCharacter)"
+      @cast-at-all-friendlies="(skill) => castAtAllFriendlies(skill, player.combatCharacter)"
       @click.capture="() => selectCharacter(player.combatCharacter)"
     >
    </BattlefieldCharacter>

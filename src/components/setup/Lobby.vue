@@ -37,9 +37,9 @@ const classes = [
 
 const playerAssignment: Record<number, Player|null> = reactive({
   0: null,
-  1: null,
-  2: null,
-  3: null
+  // 1: null,
+  // 2: null,
+  // 3: null
 })
 
 const availableClasses = computed<PlayerIdentity[]>(() => {
@@ -77,13 +77,11 @@ function requestBasicSkillChange(playerId: string, direction: number) {
   const player = players.find((plr) => plr.id == playerId)
 
   if (!player || !player.playerClass) {
-    console.log("no player or class")
     return
   }
 
   if (!player.basicSkill) {
     player.basicSkill = player.playerClass.basicSkills[0]
-    console.log("no basic skill yet")
     return
   }
 

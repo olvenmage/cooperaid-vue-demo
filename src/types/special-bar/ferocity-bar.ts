@@ -27,6 +27,7 @@ export default class FerocityBar extends ClassBar {
         character.skills.forEach((sk) => {
             if (isEmpowerableSkil(sk)) {
                 sk.empower(character)
+                sk.revertCastingSkillData()
                 sk.finishCooldown()
             }
         })
@@ -40,6 +41,7 @@ export default class FerocityBar extends ClassBar {
              character.skills.forEach((sk) => {
                  if (isEmpowerableSkil(sk)) {
                      sk.unempower(character)
+                     sk.revertCastingSkillData()
                      sk.finishCooldown()
                  }
              })

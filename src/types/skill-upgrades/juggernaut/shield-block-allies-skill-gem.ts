@@ -14,6 +14,6 @@ export default class ShieldBlockAlliesSkillGem extends SkillUpgradeGem {
     }
 
     applyUpgrade(item: Skill) {
-       item.skillData.targetType = TargetType.TARGET_FRIENDLY
+       item.baseSkillData.targetType = TargetType.TARGET_FRIENDLY
     }
 }

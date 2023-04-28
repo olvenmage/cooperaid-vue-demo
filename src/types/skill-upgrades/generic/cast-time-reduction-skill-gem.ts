@@ -7,12 +7,12 @@ export default class CastTimeReductionSkillGem extends SkillUpgradeGem {
     public name = "Basic Cast Time Upgrade"
 
     applies(item: Skill): boolean {
-        return item.skillData.castTime > 0
+        return item.baseSkillData.castTime > 0
     }
 
     applyUpgrade(item: Skill) {
-       if ( item.skillData.damage != null) {
-            item.skillData.castTime *= 0.8
+       if ( item.baseSkillData.damage != null) {
+            item.baseSkillData.castTime *= 0.8
        }
     }
 }

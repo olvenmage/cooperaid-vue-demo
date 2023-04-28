@@ -13,6 +13,12 @@ import Rogue from "@/types/classes/rogue";
 import Paladin from "@/types/classes/paladin";
 
 const mainRoute: Encounter[] = [
+  new CombatEncounter(
+    [
+      new Enemy(new Halbadier()),
+      new Enemy(new Halbadier()),
+    ]
+  ),
     new CombatEncounter([
       new Enemy(new Goblin()),
       new Enemy(new Goblin()),

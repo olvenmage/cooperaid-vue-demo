@@ -79,7 +79,7 @@ export default class Juggernaut extends PlayerIdentity {
 }
 
 export class Bash extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Bash",
         energyCost: 2,
         cooldown: 0 * 1000,
@@ -99,7 +99,7 @@ export class Bash extends Skill {
         castBy.dealDamageTo({
             amount: this.BASE_DAMAGE + castBy.stats.derived.armor.value,
             targets,
-            type: DamageType.PHYSICAL,
+            type: this.skillData.damageType,
             threatModifier: 1.2,
             minAmount: 1
         })
@@ -107,7 +107,7 @@ export class Bash extends Skill {
 }
 
 export class BodySlam extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Body Slam",
         energyCost: 2,
         cooldown: 0 * 1000,
@@ -124,15 +124,15 @@ export class BodySlam extends Skill {
         castBy.dealDamageTo({ amount: castBy.stats.derived.armor.value * 2, targets, type: DamageType.PHYSICAL, threatModifier: 1.2})
 
         targets.forEach((target) => {
-            target.dealDamageTo({ amount: target.stats.derived.armor.value, targets: [castBy], type: DamageType.PHYSICAL, threatModifier: 1.2})
+            target.dealDamageTo({ amount: target.stats.derived.armor.value, targets: [castBy], type: this.skillData.damageType, threatModifier: 1.2})
         })
     }
 }
 
 export class Overpower extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Overpower",
-        energyCost: 6,
+        energyCost: 5,
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
@@ -146,7 +146,7 @@ export class Overpower extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: this.skillData.damage, targets: [target], type: DamageType.PHYSICAL, threatModifier: 1.2})
+            castBy.dealDamageTo({ amount: this.skillData.damage, targets: [target], type: this.skillData.damageType, threatModifier: 1.2})
 
             if (castBy.stats.derived.armor.value > target.stats.derived.armor.value && target.castingSkill) {
                 target.castingSkill.interupt()
@@ -156,7 +156,7 @@ export class Overpower extends Skill {
 }
 
 export class ShieldBlock extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Shield Block",
         energyCost: 4,
         cooldown: 6 * 1000,
@@ -176,18 +176,19 @@ export class ShieldBlock extends Skill {
             target.addBuff(new ShieldBlockBuff({
                 duration: this.skillData.buffDuration,
                 damage: this.skillData.damage,
-                durability: this.socketedUpgrade instanceof DurableShieldBlockSkillGem ? 2 : 1
+                durability: this.hasGem(DurableShieldBlockSkillGem) ? 2 : 1
             }), castBy)
         })
     }
 }
 
 export class Shatter extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Shatter",
         energyCost: 3,
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         castTime: 400,
         imagePath: "/juggernaut/shatter.png",
         buffDuration: 8 * 1000,
@@ -208,11 +209,12 @@ export class Shatter extends Skill {
 }
 
 export class BodyGuard extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Body Guard",
         energyCost: 3,
         cooldown: 10 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
+        damageType: DamageType.PHYSICAL,
         castTime: 1100,
         imagePath: "/juggernaut/body-guard.png",
         buffDuration: 8 * 1000,
@@ -242,11 +244,12 @@ export class BodyGuard extends Skill {
 }
 
 export class ShieldShatter extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Shield Shatter",
         energyCost: 6,
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
+        damageType: DamageType.PHYSICAL,
         castTime: 1200,
         imagePath: "/juggernaut/shield-shatter.png",
         range: SkillRange.MELEE,
@@ -256,7 +259,7 @@ export class ShieldShatter extends Skill {
     description: string | null = "Consume all your armor and deal double the amount in piercing damage to all enemies. You lose your armor for a duration"
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: castBy.stats.derived.armor.value * 2, targets, type: DamageType.PHYSICAL, minAmount: castBy.stats.derived.armor.value, threatModifier: 1.4 })
+        castBy.dealDamageTo({ amount: castBy.stats.derived.armor.value * 2, targets, type: this.skillData.damageType, minAmount: castBy.stats.derived.armor.value, threatModifier: 1.4 })
 
         if (castBy.buffs.hasBuff(ShieldBlockBuff)) {
             castBy.buffs.removeBuffByType(ShieldBlockBuff)
@@ -267,10 +270,10 @@ export class ShieldShatter extends Skill {
 }
 
 export class ShockWave extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Shockwave",
         energyCost: 6,
-        cooldown: 16 * 1000,
+        cooldown: 14 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
         damageType: DamageType.PHYSICAL,
         castTime: 1200,
@@ -283,7 +286,7 @@ export class ShockWave extends Skill {
     description: string | null = "Deal 6 damage to all enemies and stun them for a duration based on your strength."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL, threatModifier: 1 })
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: this.skillData.damageType, threatModifier: 1 })
 
         targets.forEach((target) => {
             target.addBuff(new ShockWaveBuff({
@@ -294,11 +297,12 @@ export class ShockWave extends Skill {
 }
 
 export class Fortify extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Fortify",
         energyCost: 5,
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_SELF,
+        damageType: DamageType.PHYSICAL,
         castTime: 1250,
         imagePath: "/juggernaut/fortify.png",
         range: SkillRange.MELEE,
@@ -310,7 +314,7 @@ export class Fortify extends Skill {
         targets.forEach((target) => {
             target.characterPowers.addPower(new ArmorPower())
 
-            if (this.socketedUpgrade instanceof MegaFortificationSkillGem) {
+            if (this.hasGem(MegaFortificationSkillGem)) {
                 target.characterPowers.addPower(new ArmorPower())
             }
         })

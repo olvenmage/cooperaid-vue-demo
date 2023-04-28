@@ -18,6 +18,10 @@ import FinishingStrikeSkilGem from '../skill-upgrades/paladin/finishing-strike';
 import BrandingSmiteSkillGem from '../skill-upgrades/paladin/branding-smite';
 import BlessedWeaponBuff from '../buffs/blessed-weapon';
 import WeaponOfRightenousnessSkillGem from '../skill-upgrades/paladin/weapon-of-righteousness';
+import HammerOfJusticeBuff from '../buffs/hammer-of-justice';
+import HammerOfRetributionSkillGem from '../skill-upgrades/paladin/hammer-of-retribution';
+import HammerOfRestorationSkillGem from '../skill-upgrades/paladin/hammer-of-restoration';
+import HammerOfVengeanceSkillGem from '../skill-upgrades/paladin/hammer-of-vengeance';
 
 
 export default class Paladin extends PlayerIdentity {
@@ -63,11 +67,13 @@ export default class Paladin extends PlayerIdentity {
         new BlessingOfProtection(),
         new Smite(),
         new BlessedWeapon(),
+        new PrayerOfHealing(),
+        new HammerOfJustice(),
     ]
 }
 
 export class HolyShock extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Holy Shock",
         energyCost: 2,
         cooldown: 0 * 1000,
@@ -108,7 +114,7 @@ export class HolyShock extends Skill {
 }
 
 export class HolyStrike extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Holy Strike",
         energyCost: 2,
         cooldown: 0 * 1000,
@@ -118,23 +124,22 @@ export class HolyStrike extends Skill {
         imagePath: "/paladin/holy-strike.png",
         range: SkillRange.MELEE,
         damage: 7,
-        healing: 3
     })
 
-    description: string | null = "Basic. Deal 7 damage to an enemy and restore 3 health to the lowest health ally."
+    description: string | null = "Basic. Deal 8 damage to an enemy and restore half of the actual damage dealt to the lowest health ally."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL, threatModifier: 1.1 })
+        const results = castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: this.skillData.damageType, threatModifier: 1.1 })
 
-        targets.forEach((target) => {
+        for (const result of results) {
             const battle = Game.currentBattle
 
             if (battle) {
                 const alliesSortedByLowHealth = battle.combatants.filter((c) => !c.isEnemyTo(castBy) && !c.dead).sort((c1, c2) => Math.sign(c1.healthBar.current - c2.healthBar.current))
                 
-                let healing = this.skillData.healing
+                let healing = Math.floor(result.actualDamage / 2)
 
-                if (this.socketedUpgrade instanceof FinishingStrikeSkilGem && target.dead) {
+                if (this.hasGem(FinishingStrikeSkilGem) && result.character.dead) {
                     healing *= 3
                 }
 
@@ -146,7 +151,7 @@ export class HolyStrike extends Skill {
             if (castBy.classBar != null) {
                 castBy.classBar.increase(8)
             }
-        })
+        }
     }
 
     override getCastPriority(castBy: Character, target: Character) {
@@ -155,7 +160,7 @@ export class HolyStrike extends Skill {
 }
 
 export class OverwhelmingLight extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Overwhelming Light",
         energyCost: 5,
         cooldown: 7 * 1000,
@@ -171,7 +176,7 @@ export class OverwhelmingLight extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            if (this.socketedUpgrade instanceof OverwhelmingMartyrdom) {
+            if (this.hasGem(OverwhelmingMartyrdom)) {
                 castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, targets: [castBy], threatModifier: 0, noCrit: true })
             } else {
                 castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, targets: [target], threatModifier: 0, noCrit: true })
@@ -186,7 +191,7 @@ export class OverwhelmingLight extends Skill {
     }
 
     override getCastPriority(castBy: Character, target: Character) {
-        if (castBy.isEnemyTo(target) && (target.healthBar.current < this.skillData.damage! || this.socketedUpgrade instanceof OverwhelmingMartyrdom)) {
+        if (castBy.isEnemyTo(target) && (target.healthBar.current < this.skillData.damage! || this.hasGem(OverwhelmingMartyrdom))) {
             return -50
         }
 
@@ -199,7 +204,7 @@ export class OverwhelmingLight extends Skill {
 }
 
 export class Smite extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Smite",
         energyCost: 4,
         cooldown: 5 * 1000,
@@ -219,25 +224,26 @@ export class Smite extends Skill {
             castBy.classBar.increase(12)
         }
 
-        castBy.dealDamageTo({ amount: this.skillData.damage!, targets, type: DamageType.MAGICAL})
+        castBy.dealDamageTo({ amount: this.skillData.damage!, targets, type: this.skillData.damageType })
 
         targets.forEach((target) => {
           
             target.addBuff(new SmittenBuff({
                 duration: this.skillData.buffDuration,
-                branding: this.socketedUpgrade instanceof BrandingSmiteSkillGem
+                branding: this.hasGem(BrandingSmiteSkillGem)
             }), castBy)
         })
     }
 }
 
 export class BlessingOfProtection extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Blessing of Protection",
         energyCost: 3,
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
         castTime: 500,
+        damageType: DamageType.MAGICAL,
         imagePath: "/paladin/blessing-of-protection.png",
         buffDuration: 8 * 1000,
         range: SkillRange.RANGED,
@@ -259,11 +265,12 @@ export class BlessingOfProtection extends Skill {
 }
 
 export class LayOnHands extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Lay on Hands",
         energyCost: 0,
         cooldown: 20 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
+        damageType: DamageType.MAGICAL,
         castTime: 800,
         imagePath: "/paladin/lay-on-hands.png",
         range: SkillRange.RANGED,
@@ -285,7 +292,7 @@ export class LayOnHands extends Skill {
             
             target.restoreHealth(consumeAmount * 3, castBy, 0)
 
-            if (this.socketedUpgrade instanceof RejuvenatingLight) {
+            if (this.hasGem(RejuvenatingLight)) {
                 target.energyBar.increase(2)
             }
 
@@ -313,18 +320,19 @@ export class LayOnHands extends Skill {
 }
 
 export class BlessedWeapon extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Blessed Weapon",
-        energyCost: 0,
+        energyCost: 2,
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
+        damageType: DamageType.MAGICAL,
         castTime: 100,
         imagePath: "/paladin/blessed-weapon.png",
         buffDuration: 10 * 1000,
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Buff an ally to give +3 attack damage"
+    description: string | null = "Buff an ally to give +3 attack damage and turns their damage into magic damage"
 
     canCast(castBy: Character): boolean {
         if (castBy.energyBar.current == 0) {
@@ -338,12 +346,87 @@ export class BlessedWeapon extends Skill {
         targets.forEach((target) => {
             target.addBuff(new BlessedWeaponBuff({
                 duration: this.skillData.buffDuration,
-                damageAmount: this.socketedUpgrade instanceof WeaponOfRightenousnessSkillGem ? 6 : 3
+                damageAmount: this.hasGem(WeaponOfRightenousnessSkillGem) ? 6 : 3
             }), castBy)
         })
     }
 
     override getCastPriority(castBy: Character, target: Character) {
         return 15;
+    }
+}
+
+
+export class PrayerOfHealing extends Skill {
+    baseSkillData: SkillData = new SkillData({
+        name: "Prayer of Healing",
+        energyCost: 6,
+        cooldown: 8 * 1000,
+        targetType: TargetType.TARGET_ALL_FRIENDLIES,
+        damageType: DamageType.MAGICAL,
+        castTime: 1500,
+        imagePath: "/paladin/prayer-of-healing.png",
+        healing: 8,
+        range: SkillRange.RANGED,
+    })
+
+    description: string | null = "Restore 8 health to all allies."
+
+    canCast(castBy: Character): boolean {
+        if (castBy.energyBar.current == 0) {
+            return false
+        }
+
+        return super.canCast(castBy)
+    }
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        targets.forEach((target) => {
+            target.restoreHealth(this.skillData.healing, castBy, 0.8)
+        })
+
+        if (castBy.classBar) {
+            castBy.classBar.increase(targets.length * 4)
+        }
+    }
+
+    override getCastPriority(castBy: Character, target: Character) {
+        return 15;
+    }
+}
+
+export class HammerOfJustice extends Skill {
+    baseSkillData: SkillData = new SkillData({
+        name: "Hammer of Justice",
+        energyCost: 5,
+        cooldown: 10 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
+        castTime: 1500,
+        imagePath: "/paladin/hammer-of-justice.png",
+        range: SkillRange.MELEE,
+        buffDuration: 6 * 1000,
+        damage: 11,
+    })
+
+    description: string | null = "Deal 11 damage to an enemy and mark them for a duration. After the buff ends, stun the enemy based on how much damage you dealt to it."
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: this.skillData.damageType, threatModifier: 1.1 })
+
+        for (const target of targets) {
+            castBy.classBar?.increase(7)
+            target.addBuff(new HammerOfJusticeBuff({
+                duration: this.skillData.buffDuration,
+                msPerDamageDealt: 100,
+                exposes: this.hasGem(HammerOfVengeanceSkillGem),
+                healsOnExpire: this.hasGem(HammerOfRestorationSkillGem),
+                countsAllies: this.hasGem(HammerOfRetributionSkillGem)
+            }), castBy)
+        }
+    }
+
+    override getCastPriority(castBy: Character, target: Character) {
+        return 95 - (target.healthBar.current / target.healthBar.max * 100)
     }
 }

@@ -64,7 +64,7 @@ function addCPU() {
     color: white;
     -webkit-text-stroke-width: 2px;
     -webkit-text-stroke-color: black;
-    font-size: 40px;
+    font-size: 28px;
     margin-top: 0px;
     margin-bottom: 0px;
 }

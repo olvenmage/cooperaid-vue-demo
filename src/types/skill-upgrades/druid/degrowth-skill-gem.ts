@@ -15,6 +15,6 @@ export default class DegrowthSkillGem extends SkillUpgradeGem {
     }
 
     applyUpgrade(item: Skill) {
-       item.skillData.targetType = TargetType.TARGET_ANY
+       item.baseSkillData.targetType = TargetType.TARGET_ANY
     }
 }

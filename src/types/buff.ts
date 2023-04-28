@@ -31,6 +31,7 @@ export default abstract class Buff {
     public givenBy: Character|null = null
     public unique = false
     public isDebuff = false
+    public isCC = true
     public priority: BuffPriority = BuffPriority.NORMAL_1
 
     protected ended = false

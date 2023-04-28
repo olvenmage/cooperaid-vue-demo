@@ -31,12 +31,13 @@ export default class DragonBoss extends Identity {
 }
 
 export class DragonThrash extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Thrash",
         energyCost: 3,
         cooldown: 2 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
     })
@@ -47,12 +48,13 @@ export class DragonThrash extends Skill {
 }
 
 export class DragonSwipe extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Swipe",
         energyCost: 5,
         cooldown: 10 * 1000,
         castTime: 2 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
+        damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
     })
@@ -63,12 +65,13 @@ export class DragonSwipe extends Skill {
 }
 
 export class DragonRoar extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Roar",
         energyCost: 0,
         cooldown: 15 * 1000,
         castTime: 1 * 1000,
         targetType: TargetType.TARGET_NONE,
+        damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.RANGED,
     })
@@ -83,12 +86,13 @@ export class DragonRoar extends Skill {
 
 
 export class FireBreath extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Fire Breath",
         energyCost: 10,
         cooldown: 4 * 1000,
         castTime: 5 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.MAGICAL,
         imagePath: null,
         range: SkillRange.RANGED,
     })

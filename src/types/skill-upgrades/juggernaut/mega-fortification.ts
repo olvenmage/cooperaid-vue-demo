@@ -14,7 +14,7 @@ export default class MegaFortificationSkillGem extends SkillUpgradeGem {
     }
 
     applyUpgrade(item: Skill) {
-        item.skillData.cooldown += 6 * 1000
-        item.skillData.energyCost += 1
+        item.baseSkillData.cooldown += 6 * 1000
+        item.baseSkillData.energyCost += 1
     }
 }

@@ -66,6 +66,11 @@ export default class CharacterAIBrain {
             return
         }
 
+        if (bestSkill.skillData.targetType == TargetType.TARGET_ALL_FRIENDLIES) {
+            bestSkill.cast(character, () => battle.combatants.filter((combatant) => !character.dead && !character.isEnemyTo(combatant)))
+            return
+        }
+
         let targettingMethod: TargetType = bestSkill.skillData.targetType
     
         if (bestSkill.skillData.targetType == TargetType.TARGET_ANY) {

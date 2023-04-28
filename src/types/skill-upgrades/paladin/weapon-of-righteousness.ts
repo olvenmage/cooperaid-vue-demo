@@ -15,6 +15,6 @@ export default class WeaponOfRightenousnessSkillGem extends SkillUpgradeGem {
     }
 
     applyUpgrade(item: Skill) {
-        item.skillData.targetType = TargetType.TARGET_SELF
+        item.baseSkillData.targetType = TargetType.TARGET_SELF
     }
 }

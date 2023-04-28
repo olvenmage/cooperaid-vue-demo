@@ -29,12 +29,13 @@ export default class Halbadier extends Identity {
 }
 
 class Parry extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Parry",
         energyCost: 3,
         cooldown: 8 * 1000,
         castTime: 1.5 * 1000,
         targetType: TargetType.TARGET_SELF,
+        damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
     })
@@ -45,12 +46,13 @@ class Parry extends Skill {
 }
 
 class Poke extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Poke",
         energyCost: 2,
         cooldown: 0 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
     })
@@ -61,12 +63,13 @@ class Poke extends Skill {
 }
 
 class OverheadSlash extends Skill {
-    public skillData: SkillData = new SkillData({
+    public baseSkillData: SkillData = new SkillData({
         name: "Overhead Slash",
-        energyCost: 3,
+        energyCost: 5,
         cooldown: 12 * 1000,
         castTime: 5 * 1000,
         targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
     })

@@ -7,7 +7,8 @@ export enum CharacterSkillTargetType {
     TARGET_NONE,
     TARGET_SELF,
     TARGET_ANY,
-    TARGET_ALL_ENEMIES
+    TARGET_ALL_ENEMIES,
+    TARGET_ALL_FRIENDLIES
 }
 
 export default interface CharacterState {

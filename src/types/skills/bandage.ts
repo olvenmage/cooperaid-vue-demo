@@ -1,10 +1,11 @@
 import PoisonBuff from "../buffs/poison";
 import type Character from "../character";
+import DamageType from "../damage-type";
 import Skill, { AiTargetting, SkillRange, SkillTag, TargetType } from "../skill";
 import SkillData from "../skill-data";
 
 export default class Bandage extends Skill {
-    skillData: SkillData = new SkillData({
+    baseSkillData: SkillData = new SkillData({
         name: "Bandage",
         energyCost: 3,
         cooldown: 4 * 1000,
@@ -15,8 +16,11 @@ export default class Bandage extends Skill {
         interuptsOnDamageTaken: true,
         healing: 6,
         range: SkillRange.MELEE,
+        damageType: DamageType.PHYSICAL,
         tags: [SkillTag.HEAL]
     })
+
+    description: string | null = "Heal an ally for 6 and remove a poison debuff. Cast gets interupted on any damage taken."
 
     BASE_DAMAGE = 3
 

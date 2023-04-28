@@ -19,7 +19,7 @@ const props = defineProps<{
   casting: boolean
 }>()
 
-const emit = defineEmits(['start-cast', 'cast-at-all-enemies'])
+const emit = defineEmits(['start-cast', 'cast-at-all-enemies', 'cast-at-all-friendlies'])
 const hasSavingGrace = computed(() => props.character?.buffs?.hasBuff(SavingGrace))
 const isEnemy = !props.character.isFriendly
 
@@ -33,6 +33,8 @@ function startCast(skill: Skill) {
     skill.cast(props.character, () => [self])
   } else if (skill.skillData.targetType == TargetType.TARGET_ALL_ENEMIES) {
     emit('cast-at-all-enemies', skill)
+  } else if (skill.skillData.targetType == TargetType.TARGET_ALL_FRIENDLIES) {
+    emit('cast-at-all-friendlies', skill)
   } else {
     emit('start-cast', skill)
   }

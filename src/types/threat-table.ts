@@ -12,8 +12,14 @@ interface ThreatEntry {
 export default class ThreatTable {
     private threatTable: ThreatEntry[] = [];
     private currentTarget: ThreatEntry|null = null
+    tauntedByCharacter: Character|null = null
+    tauntedTimeout = 0
 
     getCurrentTarget(): Character|null {
+        if (this.tauntedByCharacter) {
+            return this.tauntedByCharacter
+        }
+
         if (!this.currentTarget || this.currentTarget.character.dead) {
             this.determineCurrentTarget()
         }
@@ -21,12 +27,19 @@ export default class ThreatTable {
         return this.currentTarget?.character || null
     }
 
-    tauntedBy(character: Character) {
+    tauntedBy(character: Character, durationInMs: number) {
+        clearTimeout(this.tauntedTimeout)
         const entry = this.getEntryForCharacter(character)
 
         entry.threat = this.getTopOfTheThreatTable()?.threat || 10
 
         this.currentTarget = entry
+
+        this.tauntedByCharacter = character
+
+        this.tauntedTimeout = setTimeout(() => {
+            this.tauntedByCharacter = null
+        }, durationInMs / GameSettings.speedFactor)
     }
 
     getTopOfTheThreatTable(): ThreatEntry|null {

@@ -6,12 +6,12 @@ export default class DamageIncreaseSkillGem extends SkillUpgradeGem {
     public name = "Basic Damage Upgrade"
 
     applies(item: Skill): boolean {
-        return item.skillData.damage > 0
+        return item.baseSkillData.damage > 0
     }
 
     applyUpgrade(item: Skill) {
-       if ( item.skillData.damage != null) {
-            item.skillData.damage = Math.round(item.skillData.damage * 1.2)
+       if ( item.baseSkillData.damage != null) {
+            item.baseSkillData.damage = Math.round(item.baseSkillData.damage * 1.2)
        }
     }
 }
