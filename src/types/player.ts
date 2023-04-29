@@ -14,7 +14,7 @@ import Game from '@/core/game';
 import PlayerSocketing from './player-socketing';
 import PlayerExp from './player-exp';
 import PlayerLevelup from './player-levelup';
-import type CharacterStats from './character-stats';
+import CharacterStats from './character-stats';
 import type { CoreStats } from './character-stats';
 import PlayerStateStats from './player-state-stats';
 import type WaitState from './state/wait-state';
@@ -167,9 +167,10 @@ class Player {
         }
 
         const charSkills = new CharacterSkills(this.skills, this.basicSkill)
+        const charStats = new CharacterStats(this.coreStats)
 
         charSkills.resetCooldowns()
-        const character = reactive(new Character(this.playerClass, true, charSkills)) as Character
+        const character = reactive(new Character(this.playerClass, true, charSkills, charStats)) as Character
 
         character.healthBar = this.healthBar
         character.id = this.id

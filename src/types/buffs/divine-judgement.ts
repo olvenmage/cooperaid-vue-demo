@@ -28,7 +28,7 @@ export default class DivineJudgementBuff extends Buff {
 
     override endEffect(character: Character): void {
         if (!character.dead && this.givenBy) {
-            this.givenBy.dealDamageTo({ targets: [character], amount: this.params.damage, type: this.params.damageType })
+            this.givenBy.dealDamageTo({ targets: [character], amount: this.params.damage, type: this.params.damageType, minAmount: this.params.damage })
             this.givenBy.classBar?.increase(12)
         }
 

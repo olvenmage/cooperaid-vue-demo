@@ -449,7 +449,7 @@ export class DivineJudgement extends Skill {
         damage: 14,
     })
 
-    description: string | null = "Call a divine judgement on an enemy, after a duration, deal 14 physical damage to them."
+    description: string | null = "Call a divine judgement on an enemy, after a duration, deal 14 physical piercing damage to them."
 
     castSkill(castBy: Character, targets: Character[]): void {
         for (const target of targets) {

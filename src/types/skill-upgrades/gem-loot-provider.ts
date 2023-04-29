@@ -94,7 +94,7 @@ export default abstract class GemLootProvider {
 
             // Only get a gem that can be applied to a skill and include no duplicates
             const upgradeGemThatApplies = shuffleArray(GEMS).find((gem) => {
-                return gem.applies(skill) && gem.name != skill.socketedUpgrade?.name && !loot.some((lootGem) => lootGem.name == gem.name)
+                return gem.applies(skill) && gem.name != skill.socketedUpgrade?.name && !loot.some((lootGem) => lootGem.name == gem.name) && !player.inventory.skillGems.some((invGem) => invGem.name == gem.name)
             })
 
             if (upgradeGemThatApplies) {

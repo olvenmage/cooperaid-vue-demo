@@ -18,7 +18,9 @@ import Healer from "@/types/enemies/healer";
 const soloRoute: Encounter[] = [
     new CombatEncounter([
       new Enemy(new Bandit()),
-    ], 300),
+    ], 500),
+    new RewardEncounter(),
+    new RewardEncounter(),
     new RewardEncounter(),
     new RewardEncounter(),
     new RewardEncounter(),
