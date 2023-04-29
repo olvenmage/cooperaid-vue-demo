@@ -26,6 +26,11 @@ export default class CharacterAIBrain {
             if (skill.onCooldown) {
                 continue
             }
+
+            if (skill.skillData.energyCost == 0) {
+                bestSkill = skill
+                break;
+            }
             
             if (skill.skillData.energyCost > character.energyBar.current) {
                 // sometimes save energy for expensive skill

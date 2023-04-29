@@ -42,7 +42,7 @@ export default class GemReward extends Reward {
 
                 chooseGemSubscription.unsubscribe()
                 player.inventory.addGem(chosenGem)
-                player.state.choosingReward = false
+                player.state.choosingReward.stopChoosingReward()
                 clearInterval(updateGemsInterval)
                
                 Game.webSocket.publish(pubSetWaitingState({

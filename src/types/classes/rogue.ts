@@ -22,6 +22,9 @@ import ShadowStepBuff from '../buffs/shadow-step';
 import ShadowSurge from '../skill-upgrades/rogue/shadow-surge';
 import CoughBombBuff from '../buffs/cough-bomb';
 import GameSettings from '@/core/settings';
+import CooldownReductionSkillGem from '../skill-upgrades/generic/cooldown-reduction-skill-gem';
+import BuffDurationSkillGem from '../skill-upgrades/generic/buff-duration-skill-gem';
+import ToxicBombsSkillGem from '../skill-upgrades/rogue/toxic-bombs-skill-gem';
 
 export default class Rogue extends PlayerIdentity {
     public name = "Rogue"
@@ -29,8 +32,8 @@ export default class Rogue extends PlayerIdentity {
         baseCrit: GameSettings.basePlayerCritChance * 2,
         constitution: 7,
         strength: 12,
-        dexterity: 18,
-        intelligence: 7
+        dexterity: 18, 
+        intelligence: 7,
     })
     public maxHealth = 35
     public imagePath = "/classes/rogue.png"
@@ -266,7 +269,7 @@ export class Kick extends Skill {
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         aiTargetting: AiTargetting.RANDOM,
-        castTime: 250,
+        castTime: 500,
         imagePath: "/rogue/kick.png",
         damage: 6,
         damageType: DamageType.PHYSICAL,
@@ -276,21 +279,23 @@ export class Kick extends Skill {
     description: string | null = "Deal 6 damage to an enemy and interrupt their current cast."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: this.skillData.damage!, targets: [target], type: this.skillData.damageType, threatModifier: 1.3 })
+        const results = castBy.dealDamageTo({ amount: this.skillData.damage!, targets: targets, type: this.skillData.damageType, threatModifier: 1.3 })
 
+        for (const result of results) {
             if (castBy.classBar instanceof FocusBar) {
                 castBy.classBar.increase(4)
             }
-            
-            if (target.castingSkill != null) {
-                target.castingSkill.interupt()
 
-                if (castBy.classBar instanceof FocusBar) {
-                    castBy.classBar.increase(10)
+            if (!result.isDodged) {
+                if (result.character.castingSkill != null) {
+                    result.character.castingSkill.interupt()
+    
+                    if (castBy.classBar instanceof FocusBar) {
+                        castBy.classBar.increase(10)
+                    }
                 }
             }
-        })
+        }
     }
 }
 
@@ -298,7 +303,7 @@ export class SleepDart extends Skill {
     baseSkillData: SkillData = new SkillData({
         name: "Sleep Dart",
         energyCost: 6,
-        cooldown: 12 * 1000,
+        cooldown: 15 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         aiTargetting: AiTargetting.RANDOM,
         castTime: 1000,
@@ -470,6 +475,12 @@ export class CoughBomb extends Skill {
             if (skillToDeactivate) {
                 skillToDeactivate?.startCooldown(target)
                 castBy.classBar?.increase(6)
+            }
+
+            if (this.socketedUpgrade instanceof ToxicBombsSkillGem) {
+                target.addBuff(new PoisonBuff(1, this.skillData.buffDuration!, 3), castBy)
+                target.addBuff(new PoisonBuff(1, this.skillData.buffDuration!, 3), castBy)
+                target.addBuff(new PoisonBuff(1, this.skillData.buffDuration!, 3), castBy)
             }
         })
     }

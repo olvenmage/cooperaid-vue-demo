@@ -8,8 +8,6 @@ import Classbar from "./character/Classbar.vue";
 import { defineEmits } from 'vue'
 import Castbar from './character/Castbar.vue';
 import SavingGrace from '@/types/buffs/saving-grace';
-import { TargetType } from '../types/skill';
-import GameSettings from '@/core/settings';
 import CharacterWindow from './CharacterWindow.vue';
 import BuffDisplay from './character/BuffDisplay.vue';
 
@@ -26,14 +24,18 @@ const isEnemy = !props.character.isFriendly
 let color = props.character.identity.color
 
 function startCast(skill: Skill) {
-  if (skill.skillData.targetType == TargetType.TARGET_NONE) {
+  // TARGET_NONE
+  if (skill.skillData.targetType == 2) {
     skill.cast(props.character, () => [])
-  } else if (skill.skillData.targetType == TargetType.TARGET_SELF) {
+    // TARGET_SELF
+  } else if (skill.skillData.targetType == 3) {
     const self = props.character
     skill.cast(props.character, () => [self])
-  } else if (skill.skillData.targetType == TargetType.TARGET_ALL_ENEMIES) {
+    // TARGET_ALL_ENEMIES
+  } else if (skill.skillData.targetType == 5) {
     emit('cast-at-all-enemies', skill)
-  } else if (skill.skillData.targetType == TargetType.TARGET_ALL_FRIENDLIES) {
+    // TARGET_ALL_FRIENDLIES
+  } else if (skill.skillData.targetType == 6) {
     emit('cast-at-all-friendlies', skill)
   } else {
     emit('start-cast', skill)
@@ -50,7 +52,7 @@ function startCast(skill: Skill) {
       <Classbar v-if="character.classBar" :class-bar="character.classBar"></Classbar>
     <Castbar  :character="character"></Castbar>
       <BuffDisplay :character="character"> </BuffDisplay>
-      <div v-if="!isEnemy" class="char-spell-list">
+      <div class="char-spell-list">
     <div
       class="spell-item"
       v-for="skill in character.skills"

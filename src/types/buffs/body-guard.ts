@@ -4,23 +4,35 @@ import type Character from '../character';
 import type CharacterStats from '../character-stats';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
-import { CHARACTER_TRIGGERS } from '../character-triggers';
+import { CHARACTER_TRIGGERS, type CharacterTriggerPayload } from '../character-triggers';
+import type SkillData from '../skill-data';
+
+interface BodyGuardParams {
+    duration: number
+    increasesDamage: boolean
+}
 
 export default class BodyGuardBuff extends Buff {
     duration: number = 8 * 1000
     callback = this.bodyGuardAlly.bind(this)
+    increaseDamageCallback = this.increaseDamage.bind(this)
 
     public imagePath: string | null = "/skills/juggernaut/body-guard.png"
     public priority: BuffPriority = BuffPriority.LATE_2
 
-    constructor(newDuration: number) {
+    params: BodyGuardParams
+
+    constructor(params: BodyGuardParams) {
         super()
-        this.duration = newDuration
+        this.duration = params.duration
+        this.params = params 
     }
 
     override startEffect(character: Character): void {
-        if (character.classBar) {
-            character.triggers.on(CHARACTER_TRIGGERS.BEFORE_DAMAGE_TAKEN, this.callback)
+        character.triggers.on(CHARACTER_TRIGGERS.BEFORE_DAMAGE_TAKEN, this.callback)
+
+        if (this.params.increasesDamage) {
+            character.triggers.on(CHARACTER_TRIGGERS.BEFORE_SKILL_CAST, this.increaseDamageCallback)
         }
 
         super.startEffect(character)
@@ -28,6 +40,10 @@ export default class BodyGuardBuff extends Buff {
 
     override endEffect(character: Character): void {
         character.triggers.off(CHARACTER_TRIGGERS.BEFORE_DAMAGE_TAKEN, this.callback)
+
+        if (this.params.increasesDamage) {
+            character.triggers.off(CHARACTER_TRIGGERS.BEFORE_SKILL_CAST, this.increaseDamageCallback)
+        }
 
         super.endEffect(character)
     }
@@ -47,5 +63,9 @@ export default class BodyGuardBuff extends Buff {
         })
 
         trigger.actualDamage = trigger.actualDamage - damageReduced
+    }
+
+    increaseDamage(trigger: CharacterTriggerPayload<SkillData>) {
+        trigger.damage *= 1.2
     }
 }

@@ -23,6 +23,7 @@ import HammerOfRetributionSkillGem from '../skill-upgrades/paladin/hammer-of-ret
 import HammerOfRestorationSkillGem from '../skill-upgrades/paladin/hammer-of-restoration';
 import HammerOfVengeanceSkillGem from '../skill-upgrades/paladin/hammer-of-vengeance';
 import GameSettings from '@/core/settings';
+import DivineJudgementBuff from '../buffs/divine-judgement';
 
 
 export default class Paladin extends PlayerIdentity {
@@ -71,6 +72,7 @@ export default class Paladin extends PlayerIdentity {
         new BlessedWeapon(),
         new PrayerOfHealing(),
         new HammerOfJustice(),
+        new DivineJudgement(),
     ]
 }
 
@@ -430,5 +432,32 @@ export class HammerOfJustice extends Skill {
 
     override getCastPriority(castBy: Character, target: Character) {
         return 95 - (target.healthBar.current / target.healthBar.max * 100)
+    }
+}
+
+export class DivineJudgement extends Skill {
+    baseSkillData: SkillData = new SkillData({
+        name: "Divine Judgement",
+        energyCost: 3,
+        cooldown: 14 * 1000,
+        targetType: TargetType.TARGET_ENEMY,
+        damageType: DamageType.PHYSICAL,
+        castTime: 1500,
+        imagePath: "/paladin/divine-judgement.png",
+        range: SkillRange.MELEE,
+        buffDuration: 4 * 1000,
+        damage: 14,
+    })
+
+    description: string | null = "Call a divine judgement on an enemy, after a duration, deal 14 physical damage to them."
+
+    castSkill(castBy: Character, targets: Character[]): void {
+        for (const target of targets) {
+            target.addBuff(new DivineJudgementBuff({
+                duration: this.skillData.buffDuration,
+                damage: this.skillData.damage,
+                damageType: this.skillData.damageType
+            }), castBy)
+        }
     }
 }

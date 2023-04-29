@@ -34,10 +34,11 @@ class GoblinClobber extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
+        damage: 12
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: 12, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -52,9 +53,10 @@ class GoblinBite extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
+        damage: 4
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: 4, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
     }
 }

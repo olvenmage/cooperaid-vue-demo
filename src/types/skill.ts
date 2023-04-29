@@ -11,6 +11,7 @@ import Game from '@/core/game';
 import shuffleArray from '@/utils/shuffleArray';
 import { CHARACTER_TRIGGERS } from './character-triggers';
 import type SkillUpgradeGem from './skill-upgrade';
+import displayNumber from '@/utils/displayNumber';
 
 enum TargetType {
     TARGET_ENEMY,
@@ -72,11 +73,11 @@ export default abstract class Skill {
     }
 
     get cooldown(): number {
-        return this.skillData?.cooldown ?? 0 / GameSettings.speedFactor
+        return this.skillData.cooldown / GameSettings.speedFactor
     }
 
     get cooldownDisplay(): number {
-        return Math.round(((this.cooldown - this.onCooldownTimer) / 1000) * 100) / 100
+        return displayNumber((this.cooldown - this.onCooldownTimer) / 1000)
     }
 
     canCast(castBy: Character): boolean {
@@ -160,9 +161,9 @@ export default abstract class Skill {
         }
 
         setTimeout(() => {
-            this.onCooldownTimer += 1000
+            this.onCooldownTimer += 350
             this.incrementCooldown()
-        }, 990)
+        }, 350)
     }
 
     hasGem(gemClass: typeof SkillUpgradeGem): boolean {
@@ -207,7 +208,7 @@ export default abstract class Skill {
 
         this.casting = true
 
-        if (this.castingTimer >= (this.skillData?.castTime ?? 0)) {
+        if (this.castingTimer >= this.skillData.castTime) {
             this.casted = true
             this.castingTimer = 0
             this.casting = false
@@ -334,17 +335,17 @@ export default abstract class Skill {
     getState(castBy: Character|null, battle: Battle|null): CharacterSkill {
         return {
             id: this.id,
-            name: this.skillData?.name,
+            name: this.skillData.name,
             canCast: castBy ? this.canCast(castBy) : true,
-            energyCost: this.skillData?.energyCost,
+            energyCost: this.skillData.energyCost,
             validTargets: battle && castBy ? battle.combatants.filter((cb) => this.isTargetValid(castBy, cb)).map((c) => c.id) : [],
             description: this.description,
-            imagePath: this.skillData?.imagePath ?? null,
-            targetType: this.skillData?.targetType as unknown as CharacterSkillTargetType,
-            cooldown: this.cooldown,
+            imagePath: this.skillData.imagePath ?? null,
+            targetType: this.skillData.targetType as unknown as CharacterSkillTargetType,
+            cooldown: displayNumber(this.cooldown),
             cooldownRemaining: this.onCooldown ? this.cooldownDisplay : 0,
-            buffDuration: this.skillData?.buffDuration / GameSettings.speedFactor,
-            castTime: this.skillData?.castTime / GameSettings.speedFactor,
+            buffDuration: this.skillData.buffDuration / GameSettings.speedFactor,
+            castTime: displayNumber(this.skillData.castTime / GameSettings.speedFactor),
             socketedGem: this.socketedUpgrade?.getState(castBy?.identity ?? null, []) ?? null
         }
     }

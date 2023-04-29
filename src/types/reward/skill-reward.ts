@@ -44,7 +44,7 @@ export default class SkillReward extends Reward {
 
                 chooseSkillSubscription.unsubscribe()
                 player.skills.push(chosenSkill)
-                player.state.choosingReward = false
+                player.state.choosingReward.stopChoosingReward()
                 clearInterval(updateSkillsInterval)
                
                 Game.webSocket.publish(pubSetWaitingState({

@@ -18,6 +18,7 @@ import type CharacterStats from './character-stats';
 import type { CoreStats } from './character-stats';
 import PlayerStateStats from './player-state-stats';
 import type WaitState from './state/wait-state';
+import PlayerChoosingReward from './player-choosing-reward';
 
 abstract class PlayerNumberRegistry {
     static currentPlayerIndex = 0
@@ -45,17 +46,16 @@ abstract class PlayerNumberRegistry {
 }
 
 class PlayerWorkflowState {
-    choosingReward: boolean
-
     public readonly socketing: PlayerSocketing
     public readonly expGained: PlayerLevelup
     public readonly updatingStats: PlayerStateStats
+    public readonly choosingReward: PlayerChoosingReward
 
     constructor(player: Player) {
-        this.choosingReward = false
         this.socketing = (new PlayerSocketing(player)).startListening()
         this.expGained = new PlayerLevelup(player).startListening()
         this.updatingStats = new PlayerStateStats(player).startListening()
+        this.choosingReward = new PlayerChoosingReward(player).startListening()
     }
 
     stateInterval() {
@@ -70,12 +70,17 @@ class PlayerWorkflowState {
         if (this.updatingStats.active) {
             this.updatingStats.publishUpdatePlayerStatsState()
         }
+
+        if (this.choosingReward.active) {
+            this.choosingReward.publishRewardState()
+        }
     }
 
     resetState() {
         this.socketing.stopSocketing()
         this.expGained.acknowledgeExpGained()
         this.updatingStats.stopUpdatingStats()
+        this.choosingReward.stopChoosingReward()
     }
 }
 

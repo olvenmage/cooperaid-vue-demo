@@ -6,6 +6,7 @@ import type CharacterStats from "./character-stats";
 import { isStackingBuff } from "./stacking-buff";
 import { isStatMutatingBuff } from "./stat-mutating-buff";
 import type { BuffState } from "./state/character-state";
+import { CHARACTER_TRIGGERS } from "./character-triggers";
 
 export default class CharacterBuffs {
     private character: Character
@@ -52,8 +53,8 @@ export default class CharacterBuffs {
                 this.onBuffsChangedCallbacks.forEach((cb) => cb())  
                 return
             }
-
         }
+
 
         buff.addExpiredTrigger(() => {
             const index = this.collection[buff.priority].findIndex((collectionBuff) => collectionBuff.id == buff.id)
@@ -67,6 +68,7 @@ export default class CharacterBuffs {
         this.collection[buff.priority].push(reactive(buff) as Buff)      
 
         buff.startBuff(this.character, givenBy)
+        this.character.triggers.publish(CHARACTER_TRIGGERS.ON_BUFF_RECEIVED, { buff })
         this.onBuffsChangedCallbacks.forEach((cb) => cb())  
     }
 

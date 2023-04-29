@@ -29,6 +29,13 @@ import ShadowSurge from './rogue/shadow-surge'
 import HammerOfRestorationSkillGem from './paladin/hammer-of-restoration'
 import HammerOfRetributionSkillGem from './paladin/hammer-of-retribution'
 import HammerOfVengeanceSkillGem from './paladin/hammer-of-vengeance'
+import ToxicBombsSkillGem from './rogue/toxic-bombs-skill-gem'
+import BloodBerserkSkillGem from './barbarian/blood-berserk'
+import RagingBlowSkillGem from './barbarian/bloodthirsty-rampage copy'
+import DeepSleepSkillGem from './druid/deep-sleep-skill-gem'
+import GuardingScalesSkillGem from './druid/guarding-scales-skill-gem'
+import WingManSkillGem from './juggernaut/wing-man-skill-gem'
+import ForcefulShieldShatterSkillGem from './juggernaut/forceful-shield-shatter'
 
 const GEMS = [
 
@@ -44,6 +51,8 @@ const GEMS = [
     new ShieldBlockAlliesSkillGem(),
     new DurableShieldBlockSkillGem(),
     new MegaFortificationSkillGem(),
+    new WingManSkillGem(),
+    new ForcefulShieldShatterSkillGem(),
 
     // Rogue
     new ExposingDartSkillGem(),
@@ -52,6 +61,7 @@ const GEMS = [
     new ParalyzingDartSkillGem(),
     new QuickMovesSkillGem(),
     new ShadowSurge(),
+    new ToxicBombsSkillGem(),
 
     // Paladin
     new OverwhelmingMartyrdom(),
@@ -65,10 +75,14 @@ const GEMS = [
     // Druid
     new HealthyCommandNatureSkillGem(),
     new DegrowthSkillGem(),
+    new DeepSleepSkillGem(),
+    new GuardingScalesSkillGem(),
 
     // Barbarian
     new BloodthirstyRampage(),
     new AngryYellingSkillGem(),
+    new BloodBerserkSkillGem(),
+    new RagingBlowSkillGem()
 ]
 
 export default abstract class GemLootProvider {

@@ -2,6 +2,7 @@ import type Character from "./character";
 import type { DealDamageToParams } from "./damage";
 import type { BeforeDealDamageTrigger } from "./identity";
 import type SkillData from "./skill-data";
+import type OnBuffReceivedTrigger from "./triggers/on-buff-received-trigger";
 import type OnDamageTrigger from "./triggers/on-damage-trigger";
 import type OnDodgeTrigger from "./triggers/on-dodge.trigger";
 
@@ -11,7 +12,8 @@ export enum CHARACTER_TRIGGERS {
     BEFORE_DAMAGE_TAKEN,
     ON_DAMAGE_TAKEN,
     BEFORE_DAMAGE_DEALT,
-    ON_DODGE
+    ON_DODGE,
+    ON_BUFF_RECEIVED
 }
 
 type CharacterTriggerCallback<E extends Record<any, any>> = (trigger: CharacterTriggerPayload<E>) => any
@@ -27,6 +29,7 @@ type CharacterTriggerCallbacks = {
     [CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN]: OnDamageTrigger,
     [CHARACTER_TRIGGERS.BEFORE_DAMAGE_DEALT]: DealDamageToParams,
     [CHARACTER_TRIGGERS.ON_DODGE]: OnDodgeTrigger,
+    [CHARACTER_TRIGGERS.ON_BUFF_RECEIVED]: OnBuffReceivedTrigger,
 }
 
 export default class CharacterTriggers {
@@ -37,6 +40,7 @@ export default class CharacterTriggers {
         [CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN]: [],
         [CHARACTER_TRIGGERS.BEFORE_DAMAGE_DEALT]: [],
         [CHARACTER_TRIGGERS.ON_DODGE]: [],
+        [CHARACTER_TRIGGERS.ON_BUFF_RECEIVED]: [],
     }
 
     constructor(private character: Character) {

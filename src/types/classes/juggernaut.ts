@@ -18,6 +18,8 @@ import { CHARACTER_TRIGGERS } from '../character-triggers';
 import ShatterBuff from '../buffs/shatter';
 import ShockWaveBuff from '../buffs/shock-wave';
 import GameSettings from '@/core/settings';
+import WingManSkillGem from '../skill-upgrades/juggernaut/wing-man-skill-gem';
+import ForcefulShieldShatterSkillGem from '../skill-upgrades/juggernaut/forceful-shield-shatter';
 
 export default class Juggernaut extends PlayerIdentity {
     public name = "Juggernaut"
@@ -91,15 +93,14 @@ export class Bash extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         imagePath: "/juggernaut/bash.png",
         range: SkillRange.MELEE,
+        damage: 2
     })
 
     description: string | null = "Basic. Deal 2 + <ARMOR> damage to an enemy"
 
-    BASE_DAMAGE = 2
-
     castSkill(castBy: Character, targets: Character[]): void {
         castBy.dealDamageTo({
-            amount: this.BASE_DAMAGE + castBy.stats.derived.armor.value,
+            amount: this.skillData.damage + castBy.stats.derived.armor.value,
             targets,
             type: this.skillData.damageType,
             threatModifier: 1.2,
@@ -235,7 +236,10 @@ export class BodyGuard extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            target.addBuff(new BodyGuardBuff(this.skillData.buffDuration), castBy)
+            target.addBuff(new BodyGuardBuff({
+                duration: this.skillData.buffDuration,
+                increasesDamage: this.hasGem(WingManSkillGem)
+            }), castBy)
         })
 
         Game.eventBus.publish(globalThreatEvent({
@@ -261,7 +265,13 @@ export class ShieldShatter extends Skill {
     description: string | null = "Consume all your armor and deal double the amount in piercing damage to all enemies. You lose your armor for a duration"
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: castBy.stats.derived.armor.value * 2, targets, type: this.skillData.damageType, minAmount: castBy.stats.derived.armor.value, threatModifier: 1.4 })
+        let dmg = castBy.stats.derived.armor.value * 2
+
+        if (this.hasGem(ForcefulShieldShatterSkillGem)) {
+            dmg += castBy.stats.derived.attackDamage.value
+        }
+
+        castBy.dealDamageTo({ amount: dmg, targets, type: this.skillData.damageType, minAmount: castBy.stats.derived.armor.value, threatModifier: 1.4 })
 
         if (castBy.buffs.hasBuff(ShieldBlockBuff)) {
             castBy.buffs.removeBuffByType(ShieldBlockBuff)

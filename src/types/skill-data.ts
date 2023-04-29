@@ -22,6 +22,7 @@ export interface SkillDataParams {
     damageType: DamageType
     buffDuration?: number
     maxStacks?: number,
+    extraCrit?: number,
     tags?: SkillTag[]
 }
 
@@ -36,6 +37,7 @@ export default class SkillData {
     aiTargetting
     // cast time in microseconds
     castTime: number
+    extraCrit: number
 
     interuptsOnDamageTaken
 
@@ -82,6 +84,7 @@ export default class SkillData {
         this.damageType = params.damageType ?? null
         this.buffDuration = params.buffDuration ?? 0
         this.maxStacks = params.maxStacks ?? 0
+        this.extraCrit = params.extraCrit ?? 0
     }
 
     resetToBase() {
@@ -133,6 +136,7 @@ export default class SkillData {
         this.damageType = params.damageType ?? null
         this.buffDuration = params.buffDuration ?? 0
         this.maxStacks = params.maxStacks ?? 0
+        this.extraCrit = params.extraCrit ?? 0
     }
 
     clone(): SkillData {

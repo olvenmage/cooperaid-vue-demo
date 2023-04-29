@@ -13,7 +13,7 @@ import StunnedBuff from '../buffs/stunned';
 export default class Bandit extends Identity {
     public name = "Bandit"
     public baseStats = new CoreStats({
-        constitution: 8,
+        constitution: 9,
         strength: 10,
         dexterity: 11,
         intelligence: 4
@@ -64,10 +64,11 @@ class Slice extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
+        damage: 5
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: 5, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
     }
 }
 

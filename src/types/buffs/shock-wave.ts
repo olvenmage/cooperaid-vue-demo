@@ -17,6 +17,7 @@ export default class ShockWaveBuff extends Buff implements StatMutatingBuff {
     public tickInterval: number = 1000;
     duration: number = 1 * 1000
 
+    public isCC: boolean = true
     triggered = false
 
     public imagePath: string | null = "/skills/juggernaut/shock-wave.png"

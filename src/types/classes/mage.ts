@@ -14,6 +14,7 @@ import GameSettings from '@/core/settings';
 export default class Mage extends PlayerIdentity {
     public name = "Mage"
     public baseStats = new CoreStats({
+        baseHealth: 1000,
         baseCrit: GameSettings.basePlayerCritChance,
         constitution: 6,
         strength: 10,

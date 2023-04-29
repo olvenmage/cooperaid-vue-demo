@@ -13,8 +13,8 @@ import StunnedBuff from '../buffs/stunned';
 export default class DragonBoss extends Identity {
     public name = "Dragon"
     public baseStats = new CoreStats({
-        baseHealth: 420,
-        constitution: 24,
+        baseHealth: 350,
+        constitution: 40,
         strength: 16,
         dexterity: 12,
         intelligence: 18
@@ -42,15 +42,19 @@ export class DragonThrash extends Skill {
         imagePath: null,
         buffDuration: 1 * 1000,
         range: SkillRange.MELEE,
+        damage: 11
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: 12, targets, type: DamageType.PHYSICAL })
-        targets.forEach((target) => {
-            target.addBuff(new StunnedBuff({
-                duration: this.skillData.buffDuration
-            }), castBy)
-        })
+        const results = castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
+
+        for (const result of results) {
+            if (!result.isDodged) {
+                result.character.addBuff(new StunnedBuff({
+                    duration: this.skillData.buffDuration
+                }), castBy)
+            }
+        }
     }
 }
 
@@ -64,10 +68,11 @@ export class DragonSwipe extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
+        damage: 12
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: 12, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -76,7 +81,7 @@ export class DragonRoar extends Skill {
         name: "Roar",
         energyCost: 0,
         cooldown: 15 * 1000,
-        castTime: 1 * 1000,
+        castTime: 1.5 * 1000,
         targetType: TargetType.TARGET_NONE,
         damageType: DamageType.PHYSICAL,
         imagePath: null,
@@ -86,7 +91,7 @@ export class DragonRoar extends Skill {
     castSkill(castBy: Character, targets: Character[]): void {
         if (castBy.identity instanceof DragonBoss) {
             castBy.addBuff(new AggressiveBuff(), castBy)
-            castBy.identity.stackingFireDamage += 4
+            castBy.identity.stackingFireDamage += 3
         }
     }
 }

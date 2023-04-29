@@ -3,7 +3,6 @@ import { nextTick, ref, computed, onMounted, reactive } from 'vue';
 import type Skill from '@/types/skill';
 import type Character from '../types/character';
 import BattlefieldCharacter from './BattlefieldCharacter.vue';
-import { TargetType } from '@/types/skill';
 import Game from '@/core/game';
 
 
@@ -79,14 +78,7 @@ function selectCharacter(selectedCharacter: Character) {
     return
   }
 
-  // check if target is valid
-  if (castingSkill.value.skillData.targetType == TargetType.TARGET_ENEMY && !castingCharacter.value.isEnemyTo(selectedCharacter)) {
-    castingSkill.value = null
-    castingCharacter.value = null
-    return
-  } else if (castingSkill.value.skillData.targetType == TargetType.TARGET_FRIENDLY && castingCharacter.value.isEnemyTo(selectedCharacter)) {
-    castingSkill.value = null
-    castingCharacter.value = null
+  if (!castingSkill.value.isTargetValid(castingCharacter.value, selectCharacter)) {
     return
   }
 

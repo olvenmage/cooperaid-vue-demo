@@ -9,24 +9,22 @@ import type SkillData from '../skill-data';
 import type StatMutatingBuff from '../stat-mutating-buff';
 import type BeforePhysicalAttackTrigger from '../triggers/before-skill-cast-trigger';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
-import BloodBerserkBuff from './blood-berserk';
 
-interface BloodLustParams {
+interface BloodBerserkParams {
     duration: number,
-    healthConsumed: number,
-    increaseCrit: boolean
 }
 
-export default class BloodLustBuff extends Buff {
+export default class BloodBerserkBuff extends Buff implements StatMutatingBuff {
     duration: number = 5 * 1000
     priority = BuffPriority.LAST_1
 
-    public imagePath: string | null = "/skills/barbarian/blood-lust.png"
+    public imagePath: string | null = null
+    public showDuration: boolean = false
 
-    callback = this.increaseNextAttack.bind(this)
-    params: BloodLustParams
+    callback = this.increaseCritAttack.bind(this)
+    params: BloodBerserkParams
 
-    constructor(params: BloodLustParams) {
+    constructor(params: BloodBerserkParams) {
         super()
         this.duration = params.duration
         this.params = params
@@ -34,15 +32,6 @@ export default class BloodLustBuff extends Buff {
 
     override startEffect(character: Character): void {
         character.triggers.on(CHARACTER_TRIGGERS.BEFORE_SKILL_CAST, this.callback)
-
-        if (this.params.increaseCrit) {
-            this.givenBy?.addBuff(
-                new BloodBerserkBuff({
-                    duration: this.duration
-                })
-                , this.givenBy
-            )
-        }
 
         super.startEffect(character)
     }
@@ -53,9 +42,13 @@ export default class BloodLustBuff extends Buff {
         super.endEffect(character)
     }
 
-    increaseNextAttack(trigger: CharacterTriggerPayload<SkillData>) {
+    mutateStats(stats: CharacterStats): CharacterStats {
+        stats.derived.critChance.set(stats.derived.critChance.value + 10)
+        return stats
+    }
+
+    increaseCritAttack(trigger: CharacterTriggerPayload<SkillData>) {
         if (trigger.damageType == DamageType.PHYSICAL && trigger.damage > 0) {
-            trigger.damage += this.params.healthConsumed
             this.endEffect(trigger.character)
         }
     }

@@ -8,16 +8,26 @@ export default class FocusBar extends ClassBar {
         super(100, "#AB6DAC")
     }
 
-    public tickInterval: number = 1000
-    tickConsumeAmount = 18
+    public tickInterval: number = 500
+    tickConsumeAmount = 10
 
     tickEffect(character: Character) {
+        const castReductionMS = Math.round(this.tickIntervalSpeedRelative / 2)
+        const cdReductionMS = this.tickIntervalSpeedRelative
+
+        if (character.castingSkill && character.castingSkill.castingTimer < (castReductionMS / 2)) {
+            character.castingSkill.castingTimer += castReductionMS
+        } else {
+            // on cooldown skills, longest cd first
+            const skills = character.skills.filter((sk) => sk.onCooldown).sort((sk1, sk2) => Math.sign(sk2.onCooldownTimer - sk1.onCooldownTimer))
+            
+            if (skills[0]) {
+                skills[0].onCooldownTimer += cdReductionMS
+            }
+        }
     }
 
     override mutateStats(stats: CharacterStats): CharacterStats {
-        stats.derived.castSpeed.set(stats.derived.castSpeed.value + 100)
-        stats.derived.energyRegenHaste.set(stats.derived.energyRegenHaste.value + 50)
-
         return stats
     }
 }   

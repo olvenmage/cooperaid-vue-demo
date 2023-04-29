@@ -144,7 +144,7 @@ export default abstract class Game {
 
     static handoutRewards() {
         this.players.value.forEach(player => {
-            player.state.choosingReward = true
+            player.state.choosingReward.startChoosingReward()
         });
 
         this.setState(GameState.CHOOSING_REWARD)

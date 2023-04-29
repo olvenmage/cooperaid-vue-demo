@@ -82,11 +82,12 @@ export class WhelpBite extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
+        damage: 5
     })
 
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: 5, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
     }
 }
 

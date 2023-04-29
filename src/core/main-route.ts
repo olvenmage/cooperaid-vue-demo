@@ -28,6 +28,10 @@ const randomEmpire = () => {
 
 const mainRoute: Encounter[] = [
     new CombatEncounter([
+      new Enemy(new Gryphon()),
+    ], 5),
+    new RewardEncounter(),
+    new CombatEncounter([
       new Enemy(new Goblin()),
       new Enemy(new Goblin()),
       new Enemy(new Goblin()),
@@ -40,7 +44,8 @@ const mainRoute: Encounter[] = [
       [
         new Enemy(randomEmpire()),
         new Enemy(randomEmpire()),
-        new Enemy(randomEmpire())
+        new Enemy(randomEmpire()),
+        new Enemy(randomEmpire()),
       ], 14
     ),
     new RewardEncounter(),

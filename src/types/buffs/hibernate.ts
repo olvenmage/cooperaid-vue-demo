@@ -8,41 +8,48 @@ import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import FocusBar from '../special-bar/focus-bar';
 import TickBuff from '../tick-buff';
 import { CHARACTER_TRIGGERS, type CharacterTriggerPayload } from '../character-triggers';
+import FerocityBar from '../special-bar/ferocity-bar';
 
-interface SleepBuffParams {
+interface HibernateBuffParams {
     duration: number,
-    paralyzes: boolean,
-    exposes: boolean
+    doesntInteruptOnDamage: boolean
 }
 
-export default class SleepBuff extends TickBuff implements StatMutatingBuff {
+export default class HibernateBuff extends TickBuff implements StatMutatingBuff {
     public tickInterval: number = 1000;
     duration: number = 7 * 1000
-    public isCC = true
 
     triggered = false
 
     callback = this.breakSleep.bind(this)
     
-    public imagePath: string | null = "/skills/rogue/sleep-dart.png"
-    params: SleepBuffParams
+    public imagePath: string | null = "/skills/druid/bear/calm.png"
+    params: HibernateBuffParams
 
-    constructor(params: SleepBuffParams) {
+    constructor(params: HibernateBuffParams) {
         super()
         this.duration = params.duration
         this.params = params
     }
 
     tickEffect(character: Character): void {
-        if (this.givenBy?.classBar instanceof FocusBar) {
-            this.givenBy.classBar.increase(
-                3
+        if (this.givenBy?.classBar instanceof FerocityBar) {
+            this.givenBy.classBar.decrease(
+                10
+            )
+
+            character.restoreHealth(
+                Math.floor(0.05 * character.healthBar.max),
+                character,
+                0.6
             )
         }
     }
 
     override startEffect(character: Character): void {
-        character.triggers.on(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.callback)
+        if (!this.params.doesntInteruptOnDamage) {
+            character.triggers.on(CHARACTER_TRIGGERS.ON_DAMAGE_TAKEN, this.callback)
+        }
 
         super.startEffect(character)
     }
@@ -56,10 +63,6 @@ export default class SleepBuff extends TickBuff implements StatMutatingBuff {
     mutateStats(stats: CharacterStats): CharacterStats {
         stats.stunned = true
 
-        if (this.params.paralyzes) {
-            stats.derived.energyRegenHaste.set(stats.derived.energyRegenHaste.value - 50)
-        }
-    
         return stats
     }
 
@@ -72,10 +75,6 @@ export default class SleepBuff extends TickBuff implements StatMutatingBuff {
             }
 
             this.endEffect(trigger.character)
-
-            if (this.params.exposes) {
-                trigger.actualDamage = Math.round(trigger.actualDamage * 1.5)
-            }
         }
     }
 }

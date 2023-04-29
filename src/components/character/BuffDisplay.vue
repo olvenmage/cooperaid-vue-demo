@@ -4,6 +4,7 @@ import type Character from '@/types/character';
 import type Healthbar from '@/types/health-bar';
 import type CharacterState from '@/types/state/character-state';
 import type { BuffState } from '@/types/state/character-state';
+import displayNumber from '@/utils/displayNumber';
 import { ref, watchEffect } from 'vue';
 
 const props = defineProps<{
@@ -23,7 +24,7 @@ setInterval(() => buffs.value = props.character.buffs.getState(), 200 )
       <template v-for="buff in buffs">
         <div class="buff" v-if="buff.imagePath">
           <img :src="`/src/assets${buff.imagePath}`" class="buff-image">
-          <span v-if="buff.showDuration" class="buff-duration game-font">{{ buff.durationLeft / 1000 }}</span>
+          <span v-if="buff.showDuration" class="buff-duration game-font">{{ displayNumber(buff.durationLeft / 1000) }}</span>
         </div>
       </template>
     </div>

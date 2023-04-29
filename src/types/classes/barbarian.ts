@@ -14,31 +14,36 @@ import BloodLustBuff from '../buffs/blood-lust';
 import { CHARACTER_TRIGGERS } from '../character-triggers';
 import { BlessedWeapon } from './paladin';
 import GameSettings from '@/core/settings';
+import CooldownReductionSkillGem from '../skill-upgrades/generic/cooldown-reduction-skill-gem';
+import DamageIncreaseSkillGem from '../skill-upgrades/generic/damage-increase-skill-gem';
+import BloodBerserkSkillGem from '../skill-upgrades/barbarian/blood-berserk';
+import BloodBerserkBuff from '../buffs/blood-berserk';
+import RagingBlowSkillGem from '../skill-upgrades/barbarian/bloodthirsty-rampage copy';
 
 
 export default class Barbarian extends PlayerIdentity {
     public name = "Barbarian"
     public baseStats = new CoreStats({
         baseCrit: GameSettings.basePlayerCritChance,
-        constitution: 12,
+        constitution: 11,
         strength: 16,
-        dexterity: 10,
-        intelligence: 6
+        dexterity: 12,
+        intelligence: 5
     })
     public imagePath = "/classes/barbarian.png"
     public playerClass = PlayerClass.BARBARIAN
-    public basicSkills: Skill[] = [new RecklessStrike(), new Shout()]
+    public basicSkills: Skill[] = [new AxeThrow(), new RecklessStrike(), new Shout()]
     public color = "#E7623E";
     public description: string = "The Barbarian, different as they might be, are defined by their rage: unbridled, unquenchable, and unthinking fury. With unmatched combat prowess, they are willing to go to any length to ensure victory."
 
     public skills = [
-        new Rampage(),
+        new Rampage()
     ]
 
     private rageGeneratedCallback = this.generateRageOnDamage.bind(this)
 
     possibleSkills: Skill[] = [
-        new RagingBlow(),
+        new EnragingBlow(),
         new Rampage(),
         new AxeThrow(),
         new HeavyNet(),
@@ -72,9 +77,8 @@ export default class Barbarian extends PlayerIdentity {
 
         let ragePercentagePenalty = 0.35
         
-        if (damagedBy?.id == character.id) {
-            ragePercentagePenalty = 0.15
-        } else if (damagedBy && !character.isEnemyTo(damagedBy)){
+        if (damagedBy && !character.isEnemyTo(damagedBy)){
+            // Increase rage penalty by double the amount if the damage is from an ally
             ragePercentagePenalty *= 2
         }
 
@@ -102,14 +106,14 @@ export class RecklessStrike extends Skill {
 
     selfDamageAmount = 4
 
-    description: string | null = "Basic. Take 4 damage to deal 10 damage to an enemy."
+    description: string | null = "Basic. Take 4 damage (+ AD) to deal 10 damage to an enemy."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage ?? 0, type: this.skillData.damageType, threatModifier: 0.8, targets })
+        castBy.dealDamageTo({ amount: this.skillData.damage ?? 0, type: this.skillData.damageType, threatModifier: 0.85, targets })
     }
 
     beforeCast(castBy: Character): void {
-        castBy.takeDamage({ amount: this.selfDamageAmount, damagedBy: castBy, type: DamageType.BLEED });
+        castBy.takeDamage({ amount: this.selfDamageAmount + castBy.stats.derived.attackDamage.value, damagedBy: castBy, type: DamageType.BLEED });
     }
 
     override canCast(castBy: Character): boolean {
@@ -129,9 +133,9 @@ export class RecklessStrike extends Skill {
     }
 }
 
-export class RagingBlow extends Skill {
+export class EnragingBlow extends Skill {
     baseSkillData: SkillData = new SkillData({
-        name: "Raging Blow",
+        name: "Enraging Blow",
         energyCost: 4,
         cooldown: 1 * 1000,
         targetType: TargetType.TARGET_ENEMY,
@@ -139,12 +143,19 @@ export class RagingBlow extends Skill {
         castTime: 2000,
         imagePath: "/barbarian/raging-blow.png",
         range: SkillRange.MELEE,
+        damage: 10
     })
 
-    description: string | null = "Deal 12 damage to an enemy, gain rage equal to the actual damage done."
+    description: string | null = "Deal 10 damage to an enemy, gain rage equal to the actual damage done."
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
-        const results = castBy.dealDamageTo({ amount: 12, targets, type: this.skillData.damageType })
+        let damage = this.skillData.damage
+
+        if (this.socketedUpgrade instanceof RagingBlowSkillGem && castBy.classBar?.activated) {
+            damage *= 1.5
+        }
+
+        const results = castBy.dealDamageTo({ amount: Math.round(damage), targets, type: this.skillData.damageType })
 
         if (castBy.classBar != null) {
             for (const result of results) {
@@ -161,13 +172,13 @@ export class Rampage extends Skill {
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
-        castTime: 1250,
+        castTime: 1500,
         imagePath: "/barbarian/rampage.png",
-        damage: 10,
+        damage: 8,
         range: SkillRange.MELEE,
     })
 
-    description: string | null = "Deal 10 to an enemy, deals more damage the lower your health (max: 20)"
+    description: string | null = "Deal 8 to an enemy, deals up to double damage based on how low health you are. Increases threat caused the higher health you are."
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         const missingHealthPercentage = (castBy.healthBar.current / castBy.healthBar.max);
@@ -239,7 +250,7 @@ export class HeavyNet extends Skill {
         damageType: DamageType.PHYSICAL,
         range: SkillRange.RANGED,
         imagePath: "barbarian/heavy-net.png",
-        castTime: 1500,
+        castTime: 1750,
         buffDuration: 10 * 1000
     })
 
@@ -260,7 +271,7 @@ export class AxeThrow extends Skill {
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
-        castTime: 1000,
+        castTime: 1250,
         imagePath: "/barbarian/axe-throw.png",
         range: SkillRange.RANGED,
     })
@@ -298,7 +309,7 @@ export class BloodLust extends Skill {
     baseSkillData: SkillData = new SkillData({
         name: "Blood Lust",
         energyCost: 2,
-        cooldown: 10 * 1000,
+        cooldown: 12 * 1000,
         targetType: TargetType.TARGET_SELF,
         damageType: DamageType.PHYSICAL,
         castTime: 500,
@@ -320,11 +331,14 @@ export class BloodLust extends Skill {
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         const healthConsumed = Math.round(0.25 * castBy.healthBar.current)
 
-        castBy.dealDamageTo({ amount: healthConsumed, targets: [castBy], type: DamageType.BLEED })
+        const bloodBerserk = this.socketedUpgrade instanceof BloodBerserkSkillGem
+
+        castBy.dealDamageTo({ amount: healthConsumed, targets: [castBy], type: DamageType.BLEED, noCrit: !bloodBerserk })
 
         castBy.addBuff(new BloodLustBuff({
             duration: this.skillData.buffDuration,
-            healthConsumed: Math.round((castBy.healthBar.max - castBy.healthBar.current) * 0.3)
+            healthConsumed: Math.round((castBy.healthBar.max - castBy.healthBar.current) * 0.3),
+            increaseCrit: bloodBerserk
         }), castBy)
 
     }
@@ -338,12 +352,12 @@ export class BloodStrike extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
         castTime: 1100,
-        damage: 7,
+        damage: 6,
         imagePath: "/barbarian/blood-strike.png",
         range: SkillRange.MELEE,
     })
 
-    description: string | null = "Deal 7 damage to an enemy and restore the actual damage done in health to you."
+    description: string | null = "Deal 6 damage to an enemy and restore the actual damage done in health to you."
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         const results = castBy.dealDamageTo({ amount: this.skillData.damage, targets: targets, type: this.skillData.damageType })

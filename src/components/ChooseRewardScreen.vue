@@ -1,63 +1,18 @@
 <script setup lang="ts">
-import { nextTick, computed, onMounted, reactive, watch } from 'vue';
+import { computed } from 'vue';
 import Game from '@/core/game';
 
 import PlayerSelect from './setup/PlayerSelect.vue';
-import { pubUpdatePickRewardState } from '../client-socket/OutgoingMessages'
-import { subChooseReward } from '../client-socket/IncomingMessages'
-import HealingReward from '@/types/reward/healing-reward';
-import SkillReward from '@/types/reward/skill-reward';
-import GemReward from '@/types/reward/gem-reward';
 import GameTitle from './GameTitle.vue';
 
 const players = computed(() => Game.players.value)
 
 const canContinue = true
-const interval = setInterval(() => updateRewardsInterval(), 2000)
-
-onMounted(() => updateRewardsInterval())
 
 function nextEncounter(): void {
-    clearInterval(interval)
     Game.nextEncounter()
 }
 
-
-function updateRewardsInterval() {
-
-    for (const player of players.value) {
-        if (player.state.choosingReward) {
-            const validRewards = [
-              new HealingReward(),
-              new GemReward(),
-            ]
-
-            if (player.skills.length < 4) {
-                validRewards.push(new SkillReward())
-            }
-
-            Game.webSocket.publish(pubUpdatePickRewardState({
-                playerId: player.id,
-                state: validRewards.map((r) => r.getState())
-            }))
-
-            const chooseRewardSubscription = Game.webSocket.subscribe(subChooseReward, async (event) => {
-                if (event.body.playerId != player.id) return
-                const chosenReward = validRewards.find((reward) => reward.name == event.body.rewardName)
-
-                if (!chosenReward || !player.state.choosingReward) {
-                  return
-                }
-
-
-                player.state.choosingReward = false
-                chooseRewardSubscription.unsubscribe()
-
-                await chosenReward.onChosen(player)
-            })
-        }
-    }
-}
 
 </script>
 <template>

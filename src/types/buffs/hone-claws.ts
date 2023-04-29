@@ -11,22 +11,22 @@ import type BeforePhysicalAttackTrigger from '../triggers/before-skill-cast-trig
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import BloodBerserkBuff from './blood-berserk';
 
-interface BloodLustParams {
+interface HoneClawsBuffParams {
     duration: number,
-    healthConsumed: number,
-    increaseCrit: boolean
 }
 
-export default class BloodLustBuff extends Buff {
+export default class HoneClawsBuff extends Buff implements StatMutatingBuff {
     duration: number = 5 * 1000
-    priority = BuffPriority.LAST_1
+    priority = BuffPriority.EARLY_3
 
-    public imagePath: string | null = "/skills/barbarian/blood-lust.png"
+    public imagePath: string | null = "/skills/druid/bear/hone-claws.png"
 
-    callback = this.increaseNextAttack.bind(this)
-    params: BloodLustParams
+    callback = this.increaseStackCount.bind(this)
+    params: HoneClawsBuffParams
 
-    constructor(params: BloodLustParams) {
+    stackCount = 1
+
+    constructor(params: HoneClawsBuffParams) {
         super()
         this.duration = params.duration
         this.params = params
@@ -34,15 +34,6 @@ export default class BloodLustBuff extends Buff {
 
     override startEffect(character: Character): void {
         character.triggers.on(CHARACTER_TRIGGERS.BEFORE_SKILL_CAST, this.callback)
-
-        if (this.params.increaseCrit) {
-            this.givenBy?.addBuff(
-                new BloodBerserkBuff({
-                    duration: this.duration
-                })
-                , this.givenBy
-            )
-        }
 
         super.startEffect(character)
     }
@@ -53,10 +44,14 @@ export default class BloodLustBuff extends Buff {
         super.endEffect(character)
     }
 
-    increaseNextAttack(trigger: CharacterTriggerPayload<SkillData>) {
+    mutateStats(stats: CharacterStats): CharacterStats {
+        stats.derived.attackDamage.set(stats.derived.attackDamage.value + (this.stackCount * 2))
+        return stats
+    }
+
+    increaseStackCount(trigger: CharacterTriggerPayload<SkillData>) {
         if (trigger.damageType == DamageType.PHYSICAL && trigger.damage > 0) {
-            trigger.damage += this.params.healthConsumed
-            this.endEffect(trigger.character)
+            this.stackCount++
         }
     }
 }

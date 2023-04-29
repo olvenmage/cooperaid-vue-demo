@@ -8,28 +8,31 @@ import SkillData from '../skill-data';
 import FerocityBar from '../special-bar/ferocity-bar'
 import ThornsBuff from '../buffs/thorns-buff';
 import ThickSkinBuff from '../buffs/thick-skin';
-import NaturesProtectionBuff from '../buffs/command-nature-armor';
 import Game from '@/core/game';
 import { globalThreatEvent } from '@/core/events';
-import Taunt from '../skills/taunt';
 import RegrowthBuff from '../buffs/regrowth';
 import EntangleBuff from '../buffs/entangle'
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import BestialWrathBuff from '../buffs/bestial-wrath';
 import PrimalStrikedBuff from '../buffs/primal-striked';
 import HealthyCommandNatureSkillGem from '../skill-upgrades/druid/healthy-command-skill-gem';
-import HealingIncreaseSkillGem from '../skill-upgrades/generic/healing-increase-skill-gem';
 import CommandNatureArmorBuff from '../buffs/command-nature-armor';
 import { CHARACTER_TRIGGERS } from '../character-triggers';
 import GameSettings from '@/core/settings';
+import HibernateBuff from '../buffs/hibernate';
+import DeepSleepSkillGem from '../skill-upgrades/druid/deep-sleep-skill-gem';
+import InnervateBuff from '../buffs/innervated';
+import HoneClawsBuff from '../buffs/hone-claws';
+import ProtectiveScalesBuff from '../buffs/protective-scales';
+import GuardingScalesSkillGem from '../skill-upgrades/druid/guarding-scales-skill-gem';
 
 export default class Druid extends PlayerIdentity {
     public name = "Druid"
     public baseStats = new CoreStats({
         baseCrit: GameSettings.basePlayerCritChance,
-        constitution: 12,
-        strength: 10,
-        dexterity: 11,
+        constitution: 11,
+        strength: 12,
+        dexterity: 10,
         intelligence: 11
     })
     public imagePath = "/classes/druid.png"
@@ -57,7 +60,7 @@ export default class Druid extends PlayerIdentity {
     }
 
     public skills = [
-        new Regrowth(),
+        new Regrowth()
     ]
 
     possibleSkills = [
@@ -65,6 +68,8 @@ export default class Druid extends PlayerIdentity {
         new Regrowth(),
         new Entangle(),
         new Renewal(),
+        new Innervate(),
+        new ProtectiveScales()
     ]
 
     generateFerocityOnDamage({character, actualDamage, damagedBy}: OnDamageTrigger) {
@@ -170,7 +175,7 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
                 if (target.isEnemyTo(castBy)) {
                     castBy.dealDamageTo({ amount: this.skillData.damage, type: this.skillData.damageType!, targets: [target]})
                 } else {
-                    castBy.dealDamageTo({ amount: 1, minAmount: 1, type: DamageType.PHYSICAL, targets: [target] })
+                    castBy.dealDamageTo({ amount: 1, minAmount: 1, type: DamageType.BLEED, targets: [target], noCrit: true  })
                     target.addBuff(new PrimalStrikedBuff(this.skillData.buffDuration), castBy)
                     Game.eventBus.publish(globalThreatEvent({ healer: target, amount: 3}))
                     Game.eventBus.publish(globalThreatEvent({ healer: castBy, amount: 1}))
@@ -213,7 +218,7 @@ export class Thorns extends Skill implements EmpowerableSKill {
     baseSkillData: SkillData = new SkillData({
         name: "Thorns",
         energyCost: 2,
-        cooldown: 11 * 1000,
+        cooldown: 12 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
         damageType: DamageType.PHYSICAL,
         castTime: 1250,
@@ -228,7 +233,7 @@ export class Thorns extends Skill implements EmpowerableSKill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
-            castBy.addBuff(new ThickSkinBuff(), castBy)
+            castBy.dealDamageTo({ amount: this.skillData.damage, minAmount: 1, targets, type: this.skillData.damageType })
         } else {
             targets.forEach((target) => {
                 target.addBuff(new ThornsBuff(this.skillData.buffDuration), castBy)
@@ -244,12 +249,12 @@ export class Thorns extends Skill implements EmpowerableSKill {
 
     empower(castBy: Character): void {
         this.baseSkillData.transform({
-            name: "Thick Skin",
-            energyCost: 4,
-            targetType: TargetType.TARGET_NONE,
-            imagePath: "/druid/bear/thick-skin.png",
+            name: "Sharp Spines",
+            energyCost: 2,
+            targetType: TargetType.TARGET_ALL_ENEMIES,
+            imagePath: "/druid/bear/sharp-spines.png",
             castTime: 1000,
-            range: SkillRange.MELEE,
+            damage: 1,
         })
 
         this.empowered = true
@@ -341,6 +346,11 @@ export class Regrowth extends Skill implements EmpowerableSKill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
+            castBy.addBuff(new HibernateBuff({
+                duration: (this.skillData.buffDuration / 2),
+                doesntInteruptOnDamage: this.socketedUpgrade instanceof DeepSleepSkillGem
+            }), castBy )
+
             if (castBy.classBar instanceof FerocityBar) {
                 castBy.classBar.decrease(35)
             }
@@ -360,9 +370,9 @@ export class Regrowth extends Skill implements EmpowerableSKill {
 
     empower(castBy: Character): void {
         this.baseSkillData.transform({
-            name: "Calm",
+            name: "Hibernate",
             energyCost: 2,
-            targetType: TargetType.TARGET_NONE,
+            targetType: TargetType.TARGET_SELF,
             imagePath: "/druid/bear/calm.png",
             castTime: 1000,
         })
@@ -416,6 +426,105 @@ export class Entangle extends Skill implements EmpowerableSKill {
             imagePath: "/druid/bear/big-bite.png",
             castTime: 1400,
             damage: 14
+        })
+    }
+
+    unempower(castBy: Character): void {
+        this.skillData.transformBack()
+    }
+}
+
+export class Innervate extends Skill implements EmpowerableSKill {
+    baseSkillData: SkillData = new SkillData({
+        name: "Innervate",
+        energyCost: 3,
+        cooldown: 20 * 1000,
+        targetType: TargetType.TARGET_FRIENDLY,
+        damageType: DamageType.MAGICAL,
+        range: SkillRange.RANGED,
+        imagePath: "druid/innervate.png",
+        castTime: 1250,
+        buffDuration: 8 * 1000
+    })
+
+    description: string | null = "Increases an ally's energy regen by 50% for a duration."
+
+    castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
+        if (this.skillData.isTransformed) {
+           targets.forEach((target) => {
+            targets.forEach((target) => {
+                target.addBuff(new HoneClawsBuff({ duration: this.skillData.buffDuration * 2 }), castBy)
+            })
+           })
+        } else {
+            targets.forEach((target) => {
+                target.addBuff(new InnervateBuff({ duration: this.skillData.buffDuration }), castBy)
+            })
+
+            Game.eventBus.publish(globalThreatEvent({
+                healer: castBy,
+                amount: 12
+            }))
+        }
+    }
+
+    empower(castBy: Character): void {
+        this.baseSkillData.transform({
+            name: "Hone claws",
+            energyCost: 3,
+            targetType: TargetType.TARGET_SELF,
+            imagePath: "/druid/bear/hone-claws.png",
+            castTime: 1000,
+        })
+    }
+
+    unempower(castBy: Character): void {
+        this.skillData.transformBack()
+    }
+}
+
+
+export class ProtectiveScales extends Skill implements EmpowerableSKill {
+    baseSkillData: SkillData = new SkillData({
+        name: "Protective Scales",
+        energyCost: 3,
+        cooldown: 18 * 1000,
+        targetType: TargetType.TARGET_FRIENDLY,
+        damageType: DamageType.MAGICAL,
+        range: SkillRange.RANGED,
+        imagePath: "druid/protective-scales.png",
+        castTime: 1000,
+        buffDuration: 12 * 1000
+    })
+
+    description: string | null = "Protect an ally, nullifying the next debuff they receive."
+
+    castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
+        if (this.skillData.isTransformed) {
+            castBy.addBuff(new ThickSkinBuff(), castBy)
+        } else {
+            targets.forEach((target) => {
+                target.addBuff(new ProtectiveScalesBuff({
+                    duration: this.skillData.buffDuration,
+                    protects: this.hasGem(GuardingScalesSkillGem)
+                }), castBy)
+            })
+
+            Game.eventBus.publish(globalThreatEvent({
+                healer: castBy,
+                amount: 8
+            }))
+        }
+    }
+
+    empower(castBy: Character): void {
+        this.baseSkillData.transform({
+            name: "Thick Skin",
+            energyCost: 4,
+            targetType: TargetType.TARGET_NONE,
+            imagePath: "/druid/bear/thick-skin.png",
+            castTime: 1000,
+            range: SkillRange.MELEE,
         })
     }
 

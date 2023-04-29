@@ -11,13 +11,13 @@ export default abstract class GameSettings {
     // DIFFICULTY
     static baseHealth = 20
     static basePlayerCritChance = 3
-    static speedFactor = 0.5
+    static speedFactor = 0.3
     static baseMonsterCritChance = 3
     static defaultEnergyRegenAmount = 100
     static startingEnergyPercentage = 0.5
     static generateEnergyWhileCasting = true
     static statPointsPerLevel = 4
-    static extraEnemyHealthModifier = 1.0
+    static extraEnemyHealthModifier = 0.75
     static derivedStatsOptions: StatConfigState = {
         // DEX
         eneryRegenPerDex: 1,
@@ -30,13 +30,13 @@ export default abstract class GameSettings {
 
         // CONST
         hardinessPerConst: 1,
-        constPerArmor: 6,
+        constPerArmor: 5,
         maxHealthPerConst: 3,
 
         // INT
         cooldownReductionPerInt: 1,
-        intPerMagicArmor: 6,
-        intPerMaxEnergyIncrease: 6
+        intPerMagicArmor: 5,
+        intPerMaxEnergyIncrease: 5
     }
     static exp = {
         // affecting the amount of XP (lower values = more XP required per level) (X)

@@ -10,7 +10,7 @@ import RapidFireBuff from '../buffs/rapid-fire';
 export default class Archer extends Identity {
     public name = "Archer"
     public baseStats = new CoreStats({
-        baseHealth: 30,
+        baseHealth: 35,
         constitution: 10,
         strength: 16,
         dexterity: 16,
@@ -53,10 +53,11 @@ class Shoot extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.RANGED,
+        damage: 8
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: 9, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -71,9 +72,10 @@ class Assasinate extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         imagePath: null,
         range: SkillRange.RANGED,
+        damage: 18
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: 18, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
     }
 }

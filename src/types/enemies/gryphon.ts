@@ -15,9 +15,9 @@ export default class Gryphon extends Identity {
     public baseStats = new CoreStats({
         baseHealth: 90,
         constitution: 20,
-        strength: 18,
+        strength: 20,
         dexterity: 24,
-        intelligence: 12
+        intelligence: 15
     })
     public imagePath = "/enemies/gryphon.png"
 
@@ -39,6 +39,7 @@ class BeakAttack extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
+        damage: 10,
     })
 
     override canCast(castBy: Character): boolean {
@@ -50,14 +51,14 @@ class BeakAttack extends Skill {
     }
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: 10, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
     }
 }
 
 class SkyDive extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Sky Dive",
-        energyCost: 5,
+        energyCost: 4,
         cooldown: 2 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
@@ -86,7 +87,7 @@ class Squawk extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Squawk",
         energyCost: 2,
-        cooldown: 10 * 1000,
+        cooldown: 12 * 1000,
         castTime: 2 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
         damageType: DamageType.PHYSICAL,
@@ -107,15 +108,16 @@ class TakeFlight extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Take Flight",
         energyCost: 5,
-        cooldown: 25 * 1000,
+        cooldown: 24 * 1000,
         castTime: 5 * 1000,
         targetType: TargetType.TARGET_SELF,
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.RANGED,
+        buffDuration: 10 * 1000
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.addBuff(new FlyingBuff(10 * 1000), castBy)
+        castBy.addBuff(new FlyingBuff(this.skillData.buffDuration), castBy)
     }
 }

@@ -21,6 +21,10 @@ export default abstract class ClassBar {
         this.current = 0;
         this.color = color
     }
+    
+    get tickIntervalSpeedRelative() {
+        return this.tickInterval / GameSettings.speedFactor
+    }
 
     increase(amount: number) {
         this.current = Math.min(this.current + amount, this.max);
@@ -77,6 +81,6 @@ export default abstract class ClassBar {
 
         setTimeout(() => {
             this.activeTick(character)
-        }, this.tickInterval / GameSettings.speedFactor);
+        }, this.tickIntervalSpeedRelative);
     }
 }

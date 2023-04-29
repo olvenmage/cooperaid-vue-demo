@@ -55,26 +55,28 @@ class Poke extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
+        damage: 6
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: 6, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
     }
 }
 
 class OverheadSlash extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Overhead Slash",
-        energyCost: 5,
+        energyCost: 7,
         cooldown: 12 * 1000,
         castTime: 5 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
+        damage: 14
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: 14, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
     }
 }
