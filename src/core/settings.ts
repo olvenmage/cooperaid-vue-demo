@@ -11,13 +11,13 @@ export default abstract class GameSettings {
     // DIFFICULTY
     static baseHealth = 20
     static basePlayerCritChance = 3
-    static speedFactor = 0.3
+    static speedFactor = 0.5
     static baseMonsterCritChance = 3
-    static defaultEnergyRegenAmount = 100
+    static defaultEnergyRegenAmount = 125
     static startingEnergyPercentage = 0.5
     static generateEnergyWhileCasting = true
     static statPointsPerLevel = 4
-    static extraEnemyHealthModifier = 0.75
+    static extraEnemyHealthModifier = 0.2
     static derivedStatsOptions: StatConfigState = {
         // DEX
         eneryRegenPerDex: 1,

@@ -56,11 +56,8 @@ export default class PlayerStateStats {
             if (event.body.playerId != this.player.id || !this.active) return
 
             if (this.player.statPoints <= 0) {
-                console.log("niet vor mij")
                 return;
             }
-
-            console.log(event.body.stat)
 
             switch(event.body.stat) {
                 case 'dexterity': 

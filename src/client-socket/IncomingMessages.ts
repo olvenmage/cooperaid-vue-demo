@@ -49,6 +49,10 @@ const subStopSocketing = createSubscribeDefinition<{
     playerId: string,
 }>('StopSocketing')
 
+const subStopShopping = createSubscribeDefinition<{
+    playerId: string,
+}>('StopShopping')
+
 const subStartUpdatingStats = createSubscribeDefinition<{
     playerId: string,
 }>('StartUpdatingStats')
@@ -99,5 +103,6 @@ export {
     subStopUpdatingStats,
     subAssignSkillPoint,
     subBuyItemFromShop,
-    subSellItemToShop
+    subSellItemToShop,
+    subStopShopping
 }

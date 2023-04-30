@@ -47,7 +47,7 @@ export class FrostBolt extends Skill implements EmpowerableSKill {
         cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.MAGICAL,
-        castTime: 1000,
+        castTime: 750,
         imagePath: "/mage/frost-bolt.png",
         range: SkillRange.RANGED,
     })

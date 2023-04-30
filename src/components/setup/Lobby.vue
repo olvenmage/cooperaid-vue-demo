@@ -146,7 +146,7 @@ function requestClassChange(playerId: string, selectIndex: number) {
 function start() {
   Game.startGame({
     players: Game.players.value as Player[],
-    route: soloRoute,
+    route: mainRoute,
   })
 }
 

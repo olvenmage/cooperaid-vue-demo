@@ -45,7 +45,7 @@ class RapidFire extends Skill {
 class Shoot extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Shoot",
-        energyCost: 2,
+        energyCost: 4,
         cooldown: 0 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
@@ -64,7 +64,7 @@ class Shoot extends Skill {
 class Assasinate extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Assasinate",
-        energyCost: 6,
+        energyCost: 7,
         cooldown: 12 * 1000,
         castTime: 6 * 1000,
         targetType: TargetType.TARGET_ENEMY,

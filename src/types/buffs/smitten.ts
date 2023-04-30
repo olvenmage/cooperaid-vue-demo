@@ -42,9 +42,9 @@ export default class SmittenBuff extends Buff {
 
         if (validDamageToEnemy && trigger.school != DamageSchool.HOLY && (trigger.damageType == DamageType.PHYSICAL || trigger.damageType == DamageType.MAGICAL)) {
             if (this.params.branding) {
-                this.givenBy?.dealDamageTo({ amount: 4, targets: [trigger.character], type: DamageType.MAGICAL, school: DamageSchool.HOLY, noCrit: true, minAmount: 4 })
+                this.givenBy?.dealDamageTo({ amount: 6, targets: [trigger.character], type: DamageType.MAGICAL, school: DamageSchool.HOLY, noCrit: true, minAmount: 4 })
             } else {
-                trigger.damagedBy?.restoreHealth(2, this.givenBy, 0.5)
+                trigger.damagedBy?.restoreHealth(3, this.givenBy, 0.5)
             }
 
             if (this.givenBy?.classBar) {

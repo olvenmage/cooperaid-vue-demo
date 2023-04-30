@@ -46,7 +46,7 @@ class GoblinClobber extends Skill {
 class GoblinBite extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Bite",
-        energyCost: 3,
+        energyCost: 4,
         cooldown: 0 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,

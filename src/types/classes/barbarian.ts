@@ -98,7 +98,7 @@ export class RecklessStrike extends Skill {
         cooldown: 0,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
-        castTime: 1000,
+        castTime: 500,
         imagePath: "/barbarian/reckless-strike.png",
         damage: 10,
         range: SkillRange.MELEE
@@ -138,7 +138,7 @@ export class EnragingBlow extends Skill {
         cooldown: 1 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
-        castTime: 2000,
+        castTime: 1500,
         imagePath: "/barbarian/raging-blow.png",
         range: SkillRange.MELEE,
         damage: 10
@@ -170,7 +170,7 @@ export class Rampage extends Skill {
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
-        castTime: 1500,
+        castTime: 1000,
         imagePath: "/barbarian/rampage.png",
         damage: 8,
         range: SkillRange.MELEE,
@@ -200,7 +200,7 @@ export class Shout extends Skill {
         cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
         damageType: DamageType.PHYSICAL,
-        castTime: 1000,
+        castTime: 500,
         imagePath: "/barbarian/shout.png",
         range: SkillRange.RANGED,
         damage: 6
@@ -226,7 +226,7 @@ export class Whirlwind extends Skill {
         cooldown: 9 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
         damageType: DamageType.PHYSICAL,
-        castTime: 1500,
+        castTime: 1250,
         imagePath: "/barbarian/whirlwind.png",
         range: SkillRange.MELEE,
         damage: 12
@@ -248,7 +248,7 @@ export class HeavyNet extends Skill {
         damageType: DamageType.PHYSICAL,
         range: SkillRange.RANGED,
         imagePath: "/barbarian/heavy-net.png",
-        castTime: 1750,
+        castTime: 1500,
         buffDuration: 10 * 1000
     })
 
@@ -269,7 +269,7 @@ export class AxeThrow extends Skill {
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
-        castTime: 1250,
+        castTime: 250,
         imagePath: "/barbarian/axe-throw.png",
         range: SkillRange.RANGED,
     })
@@ -294,7 +294,7 @@ export class AxeThrow extends Skill {
         return {
             name: "Retrieve Axe",
             energyCost: 1,
-            castTime: 1500,
+            castTime: 750,
             imagePath: "/barbarian/retrieve-axe.png",
             targetType: TargetType.TARGET_NONE,
             range: SkillRange.MELEE,
@@ -310,7 +310,7 @@ export class BloodLust extends Skill {
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_SELF,
         damageType: DamageType.PHYSICAL,
-        castTime: 500,
+        castTime: 250,
         imagePath: "/barbarian/blood-lust.png",
         range: SkillRange.MELEE,
         buffDuration: 8 * 1000
@@ -349,7 +349,7 @@ export class BloodStrike extends Skill {
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
-        castTime: 1100,
+        castTime: 1000,
         damage: 6,
         imagePath: "/barbarian/blood-strike.png",
         range: SkillRange.MELEE,

@@ -30,8 +30,8 @@ export default class Bandit extends Identity {
 class GangUp extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Gang Up",
-        energyCost: 7,
-        cooldown: 12 * 1000,
+        energyCost: 8,
+        cooldown: 14 * 1000,
         castTime: 6 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
@@ -57,9 +57,9 @@ class GangUp extends Skill {
 class Slice extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Slice",
-        energyCost: 3,
+        energyCost: 4,
         cooldown: 0 * 1000,
-        castTime: 4 * 1000,
+        castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
         imagePath: null,
@@ -75,7 +75,7 @@ class Slice extends Skill {
 class KnockOut extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Knock Out",
-        energyCost: 4,
+        energyCost: 6,
         cooldown: 14 * 1000,
         castTime: 4 * 1000,
         targetType: TargetType.TARGET_ENEMY,

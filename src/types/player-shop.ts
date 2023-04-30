@@ -1,7 +1,7 @@
 import Game from "@/core/game";
 import type Player from "./player";
 import { pubSetWaitingState, pubUpdateGemSocketingState, pubUpdateShoppingState } from "@/client-socket/OutgoingMessages";
-import { subSellItemToShop, subBuyItemFromShop, subSocketGemIntoSkill, subStartSocketing, subStopSocketing } from "@/client-socket/IncomingMessages";
+import { subSellItemToShop, subBuyItemFromShop, subSocketGemIntoSkill, subStartSocketing, subStopSocketing, subStopShopping } from "@/client-socket/IncomingMessages";
 import type { AppSocketSubscription } from "@/app-socket/lib/core/types";
 import NewSkillLootProvider from "./new-skill-loot-provider";
 import GemLootProvider from "./skill-upgrades/gem-loot-provider";
@@ -54,6 +54,11 @@ export default class PlayerShop {
     }
 
     startListening(): this {
+        Game.webSocket.subscribe(subStopShopping, (event) => {
+            if (event.body.playerId != this.player.id) return
+            this.stopShopping()
+        })
+
         return this
     }
 

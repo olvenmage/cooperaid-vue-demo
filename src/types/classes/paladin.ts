@@ -83,14 +83,14 @@ export class HolyShock extends Skill {
         cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ANY,
         damageType: DamageType.MAGICAL,
-        castTime: 1250,
+        castTime: 750,
         imagePath: "/paladin/holy-shock.png",
-        healing: 5,
-        damage: 6,
+        healing: 8,
+        damage: 8,
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Basic. Deal 6 damage to an enemy or restore 5 health to an ally."
+    description: string | null = "Basic. Deal 8 damage to an enemy or restore 8 health to an ally."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
@@ -124,13 +124,13 @@ export class HolyStrike extends Skill {
         cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
-        castTime: 1250,
+        castTime: 500,
         imagePath: "/paladin/holy-strike.png",
         range: SkillRange.MELEE,
-        damage: 6,
+        damage: 5,
     })
 
-    description: string | null = "Basic. Deal 6 damage to an enemy and restore half of the actual damage dealt to the lowest health ally."
+    description: string | null = "Basic. Deal 5 damage to an enemy and restore half of the actual damage dealt to the lowest health ally."
 
     castSkill(castBy: Character, targets: Character[]): void {
         const results = castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: this.skillData.damageType, threatModifier: 1.1 })
@@ -170,13 +170,13 @@ export class OverwhelmingLight extends Skill {
         cooldown: 7 * 1000,
         targetType: TargetType.TARGET_ANY,
         damageType: DamageType.MAGICAL,
-        castTime: 1500,
+        castTime: 1000,
         imagePath: "/paladin/overwhelming-light.png",
-        damage: 10,
+        damage: 12,
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Deal 10 damage to any target, if they survive, heal them for double the amount."
+    description: string | null = "Deal 12 damage to any target, if they survive, heal them for double the amount."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
@@ -214,14 +214,14 @@ export class Smite extends Skill {
         cooldown: 5 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.MAGICAL,
-        castTime: 1500,
+        castTime: 1000,
         imagePath: "/paladin/smite.png",
-        damage: 8,
+        damage: 10,
         buffDuration: 6 * 1000,
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Smite an enemy, dealing 8 magic damage and marking them. For a duration each ally restores 2 health when they attack it."
+    description: string | null = "Smite an enemy, dealing 10 magic damage and marking them. For a duration each ally restores 3 health when they attack it."
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (castBy.classBar) {
@@ -246,7 +246,7 @@ export class BlessingOfProtection extends Skill {
         energyCost: 3,
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
-        castTime: 500,
+        castTime: 250,
         damageType: DamageType.MAGICAL,
         imagePath: "/paladin/blessing-of-protection.png",
         buffDuration: 8 * 1000,
@@ -275,7 +275,7 @@ export class LayOnHands extends Skill {
         cooldown: 20 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
         damageType: DamageType.MAGICAL,
-        castTime: 800,
+        castTime: 500,
         imagePath: "/paladin/lay-on-hands.png",
         range: SkillRange.RANGED,
     })
@@ -330,7 +330,7 @@ export class BlessedWeapon extends Skill {
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
         damageType: DamageType.MAGICAL,
-        castTime: 100,
+        castTime: 500,
         imagePath: "/paladin/blessed-weapon.png",
         buffDuration: 10 * 1000,
         range: SkillRange.RANGED,
@@ -368,7 +368,7 @@ export class PrayerOfHealing extends Skill {
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_ALL_FRIENDLIES,
         damageType: DamageType.MAGICAL,
-        castTime: 1500,
+        castTime: 1250,
         imagePath: "/paladin/prayer-of-healing.png",
         healing: 8,
         range: SkillRange.RANGED,
@@ -406,7 +406,7 @@ export class HammerOfJustice extends Skill {
         cooldown: 10 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
-        castTime: 1500,
+        castTime: 1000,
         imagePath: "/paladin/hammer-of-justice.png",
         range: SkillRange.MELEE,
         buffDuration: 6 * 1000,
@@ -442,7 +442,7 @@ export class DivineJudgement extends Skill {
         cooldown: 14 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
-        castTime: 1500,
+        castTime: 1000,
         imagePath: "/paladin/divine-judgement.png",
         range: SkillRange.MELEE,
         buffDuration: 4 * 1000,

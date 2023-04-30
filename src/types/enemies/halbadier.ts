@@ -31,8 +31,8 @@ export default class Halbadier extends Identity {
 class Parry extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Parry",
-        energyCost: 3,
-        cooldown: 8 * 1000,
+        energyCost: 4,
+        cooldown: 10 * 1000,
         castTime: 1.5 * 1000,
         targetType: TargetType.TARGET_SELF,
         damageType: DamageType.PHYSICAL,
@@ -48,7 +48,7 @@ class Parry extends Skill {
 class Poke extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Poke",
-        energyCost: 2,
+        energyCost: 4,
         cooldown: 0 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
@@ -66,7 +66,7 @@ class Poke extends Skill {
 class OverheadSlash extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Overhead Slash",
-        energyCost: 7,
+        energyCost: 8,
         cooldown: 12 * 1000,
         castTime: 5 * 1000,
         targetType: TargetType.TARGET_ENEMY,

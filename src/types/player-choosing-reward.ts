@@ -7,6 +7,7 @@ import SkillReward from "./reward/skill-reward";
 import HealingReward from "./reward/healing-reward";
 import GemReward from "./reward/gem-reward";
 import type Reward from "./reward/reward";
+import RessurectReward from "./reward/ressurect-reward";
 
 export default class PlayerChoosingReward {
     active = false
@@ -27,7 +28,7 @@ export default class PlayerChoosingReward {
         const rewards = [];
 
         if (this.player.healthBar.current <= 0) {
-             
+            rewards.push(new RessurectReward())
         } else {
             rewards.push(new HealingReward(), new GemReward())
 

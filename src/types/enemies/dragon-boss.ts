@@ -14,7 +14,7 @@ export default class DragonBoss extends Identity {
     public name = "Dragon"
     public baseStats = new CoreStats({
         baseHealth: 350,
-        constitution: 40,
+        constitution: 30,
         strength: 16,
         dexterity: 12,
         intelligence: 18
@@ -34,7 +34,7 @@ export default class DragonBoss extends Identity {
 export class DragonThrash extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Thrash",
-        energyCost: 3,
+        energyCost: 5,
         cooldown: 3 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
@@ -42,7 +42,7 @@ export class DragonThrash extends Skill {
         imagePath: null,
         buffDuration: 1 * 1000,
         range: SkillRange.MELEE,
-        damage: 11
+        damage: 13
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -61,9 +61,9 @@ export class DragonThrash extends Skill {
 export class DragonSwipe extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Swipe",
-        energyCost: 5,
+        energyCost: 8,
         cooldown: 10 * 1000,
-        castTime: 2 * 1000,
+        castTime: 2.5 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
         damageType: DamageType.PHYSICAL,
         imagePath: null,

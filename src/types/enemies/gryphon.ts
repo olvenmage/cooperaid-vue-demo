@@ -32,8 +32,8 @@ export default class Gryphon extends Identity {
 class BeakAttack extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Beak Attack",
-        energyCost: 4,
-        cooldown: 2 * 1000,
+        energyCost: 5,
+        cooldown: 1 * 1000,
         castTime: 3.5 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
@@ -58,8 +58,8 @@ class BeakAttack extends Skill {
 class SkyDive extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Sky Dive",
-        energyCost: 4,
-        cooldown: 2 * 1000,
+        energyCost: 5,
+        cooldown: 1 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
@@ -86,7 +86,7 @@ class SkyDive extends Skill {
 class Squawk extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Squawk",
-        energyCost: 2,
+        energyCost: 3,
         cooldown: 12 * 1000,
         castTime: 2 * 1000,
         targetType: TargetType.TARGET_ALL_ENEMIES,
@@ -107,7 +107,7 @@ class Squawk extends Skill {
 class TakeFlight extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Take Flight",
-        energyCost: 5,
+        energyCost: 6,
         cooldown: 24 * 1000,
         castTime: 5 * 1000,
         targetType: TargetType.TARGET_SELF,

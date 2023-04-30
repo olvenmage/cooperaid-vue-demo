@@ -17,6 +17,7 @@ export default class AggressiveBuff extends Buff implements StatMutatingBuff, St
     mutateStats(stats: CharacterStats): CharacterStats {
         stats.derived.energyRegenHaste.set(stats.derived.energyRegenHaste.value + (20 * this.stackCount))
         stats.derived.castSpeed.set(stats.derived.castSpeed.value + (20 * this.stackCount))
+        stats.derived.hardiness.set(stats.derived.hardiness.value + (5 * this.stackCount))
 
         return stats
     }

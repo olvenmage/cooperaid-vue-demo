@@ -87,7 +87,7 @@ export class CommandNature extends Skill implements EmpowerableSKill {
         energyCost: 2,
         cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ANY,
-        castTime: 1000,
+        castTime: 500,
         imagePath: "/druid/command-nature.png",
         buffDuration: 6 * 1000,
         damageType: DamageType.MAGICAL,
@@ -154,7 +154,7 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
         energyCost: 2,
         cooldown: 0 * 1000,
         targetType: TargetType.TARGET_ANY,
-        castTime: 1000,
+        castTime: 500,
         imagePath: "/druid/primal-strike.png",
         buffDuration: 5 * 1000,
         damageType: DamageType.PHYSICAL,
@@ -169,7 +169,7 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
-            castBy.dealDamageTo({ amount: this.skillData.damage, type: this.skillData.damageType!, targets, threatModifier: 1.5})
+            castBy.dealDamageTo({ amount: this.skillData.damage, type: this.skillData.damageType, targets, threatModifier: 1.3})
         } else {
             targets.forEach((target) => {
                 if (target.isEnemyTo(castBy)) {
@@ -221,7 +221,7 @@ export class Thorns extends Skill implements EmpowerableSKill {
         cooldown: 12 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
         damageType: DamageType.PHYSICAL,
-        castTime: 1250,
+        castTime: 750,
         imagePath: "/druid/thorns.png",
         buffDuration: 10 * 1000,
         range: SkillRange.RANGED,
@@ -269,11 +269,11 @@ export class Thorns extends Skill implements EmpowerableSKill {
 export class Renewal extends Skill implements EmpowerableSKill {
     baseSkillData: SkillData = new SkillData({
         name: "Renewal",
-        energyCost: 7,
+        energyCost: 6,
         cooldown: 18 * 1000,
         targetType: TargetType.TARGET_ANY,
         damageType: DamageType.MAGICAL,
-        castTime: 1200,
+        castTime: 750,
         imagePath: "/druid/renewal.png",
         range: SkillRange.RANGED,
     })
@@ -333,14 +333,14 @@ export class Regrowth extends Skill implements EmpowerableSKill {
         cooldown: 8 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
         damageType: DamageType.MAGICAL,
-        castTime: 1200,
+        castTime: 500,
         imagePath: "/druid/regrowth.png",
         buffDuration: 12 * 1000,
-        healing: 16,
+        healing: 20,
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Buff an ally to restore 16 health over time."
+    description: string | null = "Buff an ally to restore 20 health over time."
 
     empowered = false
 
@@ -392,14 +392,15 @@ export class Entangle extends Skill implements EmpowerableSKill {
         energyCost: 4,
         cooldown: 14 * 1000,
         targetType: TargetType.TARGET_ENEMY,
-        damageType: DamageType.PHYSICAL,
+        damageType: DamageType.MAGICAL,
         range: SkillRange.RANGED,
         imagePath: "/druid/entangle.png",
-        castTime: 1500,
-        buffDuration: 4 * 1000
+        castTime: 1000,
+        damage: 8,
+        buffDuration: 3 * 1000
     })
 
-    description: string | null = "Entangles an enemy for a short duration, setting their speed and energy boost to 0."
+    description: string | null = "Entangles an enemy for a short duration, dealing magical damage and reducing their energy regen and cast speed by 100%"
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         if (this.skillData.isTransformed) {
@@ -411,9 +412,11 @@ export class Entangle extends Skill implements EmpowerableSKill {
                 }
             })
         } else {
+            castBy.dealDamageTo({ amount: this.skillData.damage, type: DamageType.MAGICAL, targets })
+
             targets.forEach((target) => {
                 target.addBuff(new EntangleBuff(this.skillData.buffDuration), castBy)
-                target.raiseThreat(castBy, 10)
+                target.raiseThreat(castBy, 6)
             })
         }
     }
@@ -422,6 +425,7 @@ export class Entangle extends Skill implements EmpowerableSKill {
         this.baseSkillData.transform({
             name: "Big Bite",
             energyCost: 6,
+            damageType: DamageType.PHYSICAL,
             targetType: TargetType.TARGET_ENEMY,
             imagePath: "/druid/bear/big-bite.png",
             castTime: 1400,
@@ -438,12 +442,12 @@ export class Innervate extends Skill implements EmpowerableSKill {
     baseSkillData: SkillData = new SkillData({
         name: "Innervate",
         energyCost: 3,
-        cooldown: 20 * 1000,
+        cooldown: 18 * 1000,
         targetType: TargetType.TARGET_FRIENDLY,
         damageType: DamageType.MAGICAL,
         range: SkillRange.RANGED,
         imagePath: "/druid/innervate.png",
-        castTime: 1250,
+        castTime: 750,
         buffDuration: 8 * 1000
     })
 

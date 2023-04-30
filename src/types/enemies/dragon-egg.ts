@@ -56,7 +56,7 @@ export default class DragonEgg extends Identity {
 class Stir extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Stir",
-        energyCost: 3,
+        energyCost: 2,
         cooldown: 2 * 1000,
         castTime: 2 * 1000,
         targetType: TargetType.TARGET_NONE,

@@ -50,7 +50,7 @@ class CureWounds extends Skill {
 class PrayerOfHealing extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Prayer Of Healing",
-        energyCost: 5,
+        energyCost: 6,
         cooldown: 12 * 1000,
         castTime: 4.5 * 1000,
         targetType: TargetType.TARGET_ALL_FRIENDLIES,
@@ -70,7 +70,7 @@ class PrayerOfHealing extends Skill {
 class Repent extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Repent",
-        energyCost: 4,
+        energyCost: 8,
         cooldown: 25 * 1000,
         castTime: 3.5 * 1000,
         targetType: TargetType.TARGET_ENEMY,
