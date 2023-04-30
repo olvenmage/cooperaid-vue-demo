@@ -50,7 +50,7 @@ function startCast(skill: Skill) {
       <Healthbar :pulses="!isEnemy" :health-bar="character.healthBar" :saving-grace="hasSavingGrace"></Healthbar>
       <Energybar v-if="character.isFriendly"  :energy-bar="character.energyBar"></Energybar>
       <Classbar v-if="character.classBar" :class-bar="character.classBar"></Classbar>
-    <Castbar  :character="character"></Castbar>
+      <Castbar  :character="character"></Castbar>
       <BuffDisplay :character="character"> </BuffDisplay>
       <div class="char-spell-list">
     <div

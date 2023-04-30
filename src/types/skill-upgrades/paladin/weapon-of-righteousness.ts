@@ -8,7 +8,7 @@ export default class WeaponOfRightenousnessSkillGem extends SkillUpgradeGem {
     public description: string = "Blessed Weapon can now only be cast on yourself but adds double the damage."
     public name = "Weapon Of Rightenousness"
 
-    public imagePath = "/paladin/uncommon.png"
+    public imagePath = "/gems/paladin/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof BlessedWeapon

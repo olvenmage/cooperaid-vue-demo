@@ -159,6 +159,10 @@ export default abstract class Game {
     }
 
     static enterShop() {
+        this.players.value.forEach(player => {
+            player.state.shopping.startShopping()
+        });
+
         this.setState(GameState.IN_SHOP)
     }
 

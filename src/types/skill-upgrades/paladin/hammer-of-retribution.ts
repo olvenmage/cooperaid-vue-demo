@@ -8,7 +8,7 @@ export default class HammerOfRetributionSkillGem extends SkillUpgradeGem {
     public description: string = "Hammer of Justice now counts damage done by allies."
     public name = "Hammer of Retribution"
 
-    public imagePath = "/paladin/uncommon.png"
+    public imagePath = "/gems/paladin/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof HammerOfJustice

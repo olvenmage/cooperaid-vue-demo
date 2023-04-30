@@ -8,7 +8,7 @@ export default class HammerOfRestorationSkillGem extends SkillUpgradeGem {
     public description: string = "Hammer of Justice now restores the lowest health ally by 40% of the damage dealt during the debuff."
     public name = "Hammer of Restoration"
 
-    public imagePath = "/paladin/uncommon.png"
+    public imagePath = "/gems/paladin/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof HammerOfJustice

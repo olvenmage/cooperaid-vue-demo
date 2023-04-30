@@ -8,7 +8,7 @@ export default class ShadowSurge extends SkillUpgradeGem {
     public description: string = "Every skill you interupt with Shadowstep grants 1 energy."
     public name = "Shadow Surge"
 
-    public imagePath = "/rogue/uncommon.png"
+    public imagePath = "/gems/rogue/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof ShadowStep

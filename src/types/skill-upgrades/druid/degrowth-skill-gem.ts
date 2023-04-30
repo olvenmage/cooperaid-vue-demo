@@ -8,7 +8,7 @@ export default class DegrowthSkillGem extends SkillUpgradeGem {
     public description: string = "Allows Regrowth to be cast on enemies and deal damage instead of healing"
     public name = "Degrowth"
 
-    public imagePath = "/druid/uncommon.png"
+    public imagePath = "/gems/druid/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof Regrowth

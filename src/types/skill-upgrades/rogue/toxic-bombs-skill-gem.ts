@@ -8,7 +8,7 @@ export default class ToxicBombsSkillGem extends SkillUpgradeGem {
     public description: string = "Cough Bomb now applies three stacks of poison"
     public name = "Toxic Bombs"
 
-    public imagePath = "/rogue/uncommon.png"
+    public imagePath = "/gems/rogue/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof CoughBomb

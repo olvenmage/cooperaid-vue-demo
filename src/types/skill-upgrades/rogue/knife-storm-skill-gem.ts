@@ -8,7 +8,7 @@ export default class KnifeStormSkillGem extends SkillUpgradeGem {
     public description: string = "Deals 3 extra damage and divides it amongst 2 extra daggers but randomly targets enemies"
     public name = "Knife Storm"
 
-    public imagePath = "/rogue/uncommon.png"
+    public imagePath = "/gems/rogue/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof FanOfKnives

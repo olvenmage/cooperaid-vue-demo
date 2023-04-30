@@ -13,7 +13,7 @@ export interface EncounterFinishedResponse {
 }
 
 export class CombatEncounter extends Encounter {
-    constructor(private enemies: Enemy[], private exp: number) {
+    constructor(private enemies: Enemy[], private exp: number, private gold: number = 0) {
         super()
     }
 
@@ -28,6 +28,8 @@ export class CombatEncounter extends Encounter {
             }
 
             Game.exitCombat()
+
+            Game.players.value.forEach((player) => player.resources.gold += this.gold)
 
             await Game.handoutExp(this.exp)
 
@@ -57,7 +59,7 @@ export class RewardEncounter extends Encounter {
 }
 
 export class ShopEncounter extends Encounter {
-    constructor(private items: any[]) {
+    constructor() {
         super()
     }
 

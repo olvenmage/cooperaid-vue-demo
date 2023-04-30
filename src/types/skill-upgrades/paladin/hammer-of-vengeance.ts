@@ -8,7 +8,7 @@ export default class HammerOfVengeanceSkillGem extends SkillUpgradeGem {
     public description: string = "Hammer of Justice now reduces the enemy's armor and magical armor by 2 during the debuff."
     public name = "Hammer of Vengeneance"
 
-    public imagePath = "/paladin/uncommon.png"
+    public imagePath = "/gems/paladin/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof HammerOfJustice

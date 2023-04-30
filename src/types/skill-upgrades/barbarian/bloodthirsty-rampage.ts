@@ -8,7 +8,7 @@ export default class BloodthirstyRampage extends SkillUpgradeGem {
     public description: string = "Rampage now has 30% lifesteal"
     public name = "Bloodthirsty Rampage"
 
-    public imagePath = "/barbarian/uncommon.png"
+    public imagePath = "/gems/barbarian/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof Rampage

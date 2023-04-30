@@ -1,7 +1,5 @@
-export default interface UpgradeGemState {
-    id: string
-    name: string
-    description: string
-    imagePath: string|null
+import type ItemState from "./item-state"
+
+export default interface UpgradeGemState extends ItemState {
     appliesTo: string[]
 }

@@ -1,13 +1,15 @@
 import Character from "./character"
 import type Identity from "./identity"
+import Item from "./item"
 import type Player from "./player"
 import type Skill from "./skill"
 import type UpgradeGemState from "./state/upgrade-gem-state"
 
-export default abstract class UpgradeGem<T> {
+export default abstract class UpgradeGem<T> extends Item {
     public id = "gem" + Math.random().toString(16).slice(2)
     public abstract name: string
     public abstract description: string
+    public goldValue: number = 10
 
     abstract applyUpgrade(item: T): void
     abstract applies(item: T): boolean
@@ -24,11 +26,11 @@ export default abstract class UpgradeGem<T> {
         }
     }
 
-    getImagePath(playerClass: Identity|null): string|null {
+    override getImagePath(playerClass: Identity|null): string|null {
         if (this.imagePath) {
             return this.imagePath
         }
 
-        return `/${playerClass?.name.toLocaleLowerCase()}/basic.png`
+        return `/gems/${playerClass?.name.toLocaleLowerCase()}/basic.png`
     }
 }

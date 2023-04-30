@@ -5,13 +5,16 @@ import type Skill from './skill';
 import Taunt from './skills/taunt';
 import Bandage from './skills/bandage';
 
-export default abstract class NewSkillLootProvider {
-    static getNewSkillOptions(player: Player, amount = 3): Skill[] {
+export default abstract class NeutralSkillProvider {
+    static neutralSkills = [
+        new Taunt(),
+        new Bandage()
+    ]
+
+    static getNeutralSkilloptions(player: Player, amount = 3): Skill[] {
         const loot: Skill[] = [];
 
-        for (const skill of shuffleArray([
-            ...player.playerClass!.possibleSkills,
-        ])) {
+        for (const skill of shuffleArray(this.neutralSkills)) {
             // no duplicate skills
             if (player.allSkills.findIndex((sk) => sk.skillData.name == skill.skillData.name) !== -1) {
                 continue

@@ -12,8 +12,6 @@ const canContinue = true
 function nextEncounter(): void {
     Game.nextEncounter()
 }
-
-
 </script>
 <template>
   <img src="src/assets/menu-background.png" class="menu-background">
@@ -33,8 +31,6 @@ function nextEncounter(): void {
           </PlayerSelect>
           
         </div>
-       
-       
       </template>
    
     </div>

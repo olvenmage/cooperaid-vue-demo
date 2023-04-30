@@ -8,7 +8,7 @@ export default class ExposingDartSkillGem extends SkillUpgradeGem {
     public description: string = "The attack that awakes the enemy from sleep dart deals 50% more damage"
     public name = "Exposing Dart"
 
-    public imagePath = "/rogue/uncommon.png"
+    public imagePath = "/gems/rogue/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof SleepDart

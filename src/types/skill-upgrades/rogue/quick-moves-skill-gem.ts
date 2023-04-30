@@ -7,7 +7,7 @@ export default class QuickMovesSkillGem extends SkillUpgradeGem {
     public description: string = "Evasion now grants a stacking speed buff every time you succesfully dodge an attack."
     public name = "Quick Moves"
 
-    public imagePath = "/rogue/uncommon.png"
+    public imagePath = "/gems/rogue/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof Evasion

@@ -8,7 +8,7 @@ export default class HealthyCommandNatureSkillGem extends SkillUpgradeGem {
     public description: string = "Command Nature now restores 3 health per stack when it expires."
     public name = "Healthy Command"
 
-    public imagePath = "/druid/uncommon.png"
+    public imagePath = "/gems/druid/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof CommandNature

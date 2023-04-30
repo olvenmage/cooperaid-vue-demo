@@ -19,6 +19,8 @@ import type { CoreStats } from './character-stats';
 import PlayerStateStats from './player-state-stats';
 import type WaitState from './state/wait-state';
 import PlayerChoosingReward from './player-choosing-reward';
+import PlayerResources from './player-resources';
+import PlayerShop from './player-shop';
 
 abstract class PlayerNumberRegistry {
     static currentPlayerIndex = 0
@@ -50,12 +52,14 @@ class PlayerWorkflowState {
     public readonly expGained: PlayerLevelup
     public readonly updatingStats: PlayerStateStats
     public readonly choosingReward: PlayerChoosingReward
+    public readonly shopping: PlayerShop
 
     constructor(player: Player) {
         this.socketing = (new PlayerSocketing(player)).startListening()
         this.expGained = new PlayerLevelup(player).startListening()
         this.updatingStats = new PlayerStateStats(player).startListening()
         this.choosingReward = new PlayerChoosingReward(player).startListening()
+        this.shopping = new PlayerShop(player).startListening()
     }
 
     stateInterval() {
@@ -74,6 +78,10 @@ class PlayerWorkflowState {
         if (this.choosingReward.active) {
             this.choosingReward.publishRewardState()
         }
+
+        if (this.shopping.active) {
+            this.shopping.publishShoppingState()
+        }
     }
 
     resetState() {
@@ -81,6 +89,7 @@ class PlayerWorkflowState {
         this.expGained.acknowledgeExpGained()
         this.updatingStats.stopUpdatingStats()
         this.choosingReward.stopChoosingReward()
+        this.shopping.stopShopping()
     }
 }
 
@@ -95,6 +104,7 @@ class Player {
     public basicSkill: Skill|null = null
     public healthBar: Healthbar = new Healthbar(20)
     public inventory = new PlayerInventory()
+    public resources = new PlayerResources()
 
     public state = new PlayerWorkflowState(this)
     public expBar = new PlayerExp()
@@ -212,7 +222,8 @@ class Player {
 
     getWaitState(): WaitState {
         return {
-            skillPoints: this.statPoints
+            skillPoints: this.statPoints,
+            resources: this.resources.getState()
         }
     }
 }

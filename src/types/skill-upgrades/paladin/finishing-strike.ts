@@ -7,7 +7,7 @@ export default class FinishingStrikeSkilGem extends SkillUpgradeGem {
     public description: string = "Holy strike heals for tripple the amount if it's the last hit on the target."
     public name = "Finishing Strike"
 
-    public imagePath = "/paladin/uncommon.png"
+    public imagePath = "/gems/paladin/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof HolyStrike

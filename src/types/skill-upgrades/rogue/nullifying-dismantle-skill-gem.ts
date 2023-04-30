@@ -7,7 +7,7 @@ export default class NullifyingDismantleSkillGem extends SkillUpgradeGem {
     public description: string = "Dismantle now also removes magical amror"
     public name = "Nulifying Dismantlet"
 
-    public imagePath = "/rogue/uncommon.png"
+    public imagePath = "/gems/rogue/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof Dismantle

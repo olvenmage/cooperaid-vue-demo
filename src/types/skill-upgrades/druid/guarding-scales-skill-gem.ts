@@ -8,7 +8,7 @@ export default class GuardingScalesSkillGem extends SkillUpgradeGem {
     public description: string = "Protective scales now gives a stacking armor and magical armor buff while it isn't triggered."
     public name = "Guarding Scales"
 
-    public imagePath = "/druid/uncommon.png"
+    public imagePath = "/gems/druid/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof ProtectiveScales

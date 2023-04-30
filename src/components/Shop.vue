@@ -5,6 +5,12 @@ import CharacterWindow from './CharacterWindow.vue';
 
 const players = Game.players.value
 
+const canContinue = true
+
+function nextEncounter(): void {
+    Game.nextEncounter()
+}
+
 </script>
 
 <template>
@@ -14,12 +20,14 @@ const players = Game.players.value
   <CharacterWindow
       v-for="player in players"
       :key="player.id"
-      :character="player"
+      :character="player.combatCharacter"
       :casting-skill="null"
     >
    </CharacterWindow>
     </div>
-   
+    <button class="btn btn-lg btn-primary btn-block game-font" :disabled="!canContinue" @click="nextEncounter">
+        CONTINUE
+    </button>
    </section>
 </template>
 

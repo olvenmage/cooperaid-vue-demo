@@ -7,7 +7,7 @@ export default class DurableShieldBlockSkillGem extends SkillUpgradeGem {
     public description: string = "Shield Block can now take two hits before breaking"
     public name = "Durable Shield Block"
 
-    public imagePath = "/juggernaut/uncommon.png"
+    public imagePath = "/gems/juggernaut/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof ShieldBlock

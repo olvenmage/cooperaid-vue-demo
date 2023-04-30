@@ -8,7 +8,7 @@ export default class ParalyzingDartSkillGem extends SkillUpgradeGem {
     public description: string = "Sleep Dart now also reduces energy regen speed by 50% on the target"
     public name = "Paralyzing Dart"
 
-    public imagePath = "/rogue/uncommon.png"
+    public imagePath = "/gems/rogue/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof SleepDart

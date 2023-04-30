@@ -1,5 +1,5 @@
 import type Encounter from "./encounter";
-import { CombatEncounter, RewardEncounter, TestEncounter } from '@/core/encounter';
+import { CombatEncounter, RewardEncounter, ShopEncounter, TestEncounter } from '@/core/encounter';
 import Enemy from '@/types/enemy';
 import DragonBoss from '@/types/enemies/dragon-boss';
 import DragonEgg from '@/types/enemies/dragon-egg';
@@ -20,7 +20,7 @@ const banditEncounter = new CombatEncounter([
   new Enemy(new Bandit()),
   new Enemy(new Bandit()),
   new Enemy(new Bandit()),
-], 9)
+], 9, 5)
 
 const randomEmpire = () => {
   return pickRandom([new Halbadier(), new Archer(), new Healer()]) as Identity
@@ -28,15 +28,11 @@ const randomEmpire = () => {
 
 const mainRoute: Encounter[] = [
     new CombatEncounter([
-      new Enemy(new Gryphon()),
-    ], 5),
-    new RewardEncounter(),
-    new CombatEncounter([
       new Enemy(new Goblin()),
       new Enemy(new Goblin()),
       new Enemy(new Goblin()),
       new Enemy(new Goblin()),
-    ], 5),
+    ], 5, 4),
     new RewardEncounter(),
     banditEncounter,
     new RewardEncounter(),
@@ -46,13 +42,14 @@ const mainRoute: Encounter[] = [
         new Enemy(randomEmpire()),
         new Enemy(randomEmpire()),
         new Enemy(randomEmpire()),
-      ], 14
+      ], 14, 8
     ),
     new RewardEncounter(),
+    new ShopEncounter(),
     new CombatEncounter(
       [
         new Enemy(new Gryphon()),
-      ], 17
+      ], 17, 8
     ),
     new RewardEncounter(),
     new CombatEncounter(
@@ -61,9 +58,10 @@ const mainRoute: Encounter[] = [
         new Enemy(randomEmpire()),
         new Enemy(new Gryphon()),
         new Enemy(new Archer())
-      ], 20
+      ], 20, 10
     ),
     new RewardEncounter(),
+    new ShopEncounter(),
     new CombatEncounter([
       new Enemy(new DragonEgg()),
       new Enemy(new DragonEgg()),

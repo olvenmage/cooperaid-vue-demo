@@ -8,7 +8,7 @@ export default class DeepSleepSkillGem extends SkillUpgradeGem {
     public description: string = "Hibernate now doesnt break on damage"
     public name = "Deep Sleep"
 
-    public imagePath = "/druid/uncommon.png"
+    public imagePath = "/gems/druid/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof Regrowth

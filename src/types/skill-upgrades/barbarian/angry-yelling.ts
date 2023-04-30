@@ -8,7 +8,7 @@ export default class AngryYellingSkillGem extends SkillUpgradeGem {
     public description: string = "Shout generates 2 rage per enemy affected"
     public name = "Angry Yelling"
 
-    public imagePath = "/barbarian/uncommon.png"
+    public imagePath = "/gems/barbarian/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof Shout

@@ -67,6 +67,16 @@ const subSocketGemIntoSkill = createSubscribeDefinition<{
     gemId: string
 }>('SocketGemIntoSkill')
 
+const subBuyItemFromShop = createSubscribeDefinition<{
+    playerId: string,
+    itemId: string,
+}>('BuyItemFromShop')
+
+const subSellItemToShop = createSubscribeDefinition<{
+    playerId: string,
+    itemId: string,
+}>('SellItemToShop')
+
 const subAssignSkillPoint = createSubscribeDefinition<{
     playerId: string,
     stat: 'dexterity'|'strength'|'constitution'|'intelligence',
@@ -87,5 +97,7 @@ export {
     subAckExpGained,
     subStartUpdatingStats,
     subStopUpdatingStats,
-    subAssignSkillPoint
+    subAssignSkillPoint,
+    subBuyItemFromShop,
+    subSellItemToShop
 }

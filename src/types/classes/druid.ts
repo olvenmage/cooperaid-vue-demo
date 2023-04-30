@@ -394,7 +394,7 @@ export class Entangle extends Skill implements EmpowerableSKill {
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
         range: SkillRange.RANGED,
-        imagePath: "druid/entangle.png",
+        imagePath: "/druid/entangle.png",
         castTime: 1500,
         buffDuration: 4 * 1000
     })
@@ -442,7 +442,7 @@ export class Innervate extends Skill implements EmpowerableSKill {
         targetType: TargetType.TARGET_FRIENDLY,
         damageType: DamageType.MAGICAL,
         range: SkillRange.RANGED,
-        imagePath: "druid/innervate.png",
+        imagePath: "/druid/innervate.png",
         castTime: 1250,
         buffDuration: 8 * 1000
     })
@@ -492,7 +492,7 @@ export class ProtectiveScales extends Skill implements EmpowerableSKill {
         targetType: TargetType.TARGET_FRIENDLY,
         damageType: DamageType.MAGICAL,
         range: SkillRange.RANGED,
-        imagePath: "druid/protective-scales.png",
+        imagePath: "/druid/protective-scales.png",
         castTime: 1000,
         buffDuration: 12 * 1000
     })

@@ -8,7 +8,7 @@ export default class BloodBerserkSkillGem extends SkillUpgradeGem {
     public description: string = "Blood Lust can now crit and makes the attack you do with it have +10% crit"
     public name = "Blood Beserk"
 
-    public imagePath = "/barbarian/uncommon.png"
+    public imagePath = "/gems/barbarian/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof BloodLust

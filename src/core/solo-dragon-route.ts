@@ -1,5 +1,5 @@
 import type Encounter from "./encounter";
-import { CombatEncounter, RewardEncounter, TestEncounter } from '@/core/encounter';
+import { CombatEncounter, RewardEncounter, ShopEncounter, TestEncounter } from '@/core/encounter';
 import Enemy from '@/types/enemy';
 import DragonBoss from '@/types/enemies/dragon-boss';
 import DragonEgg from '@/types/enemies/dragon-egg';
@@ -17,8 +17,9 @@ import Healer from "@/types/enemies/healer";
 
 const soloRoute: Encounter[] = [
     new CombatEncounter([
-      new Enemy(new Bandit()),
-    ], 500),
+      new Enemy(new Goblin()),
+    ], 500, 50),
+    new ShopEncounter(),
     new RewardEncounter(),
     new RewardEncounter(),
     new RewardEncounter(),
@@ -31,6 +32,9 @@ const soloRoute: Encounter[] = [
     new RewardEncounter(),
     new RewardEncounter(),
     new RewardEncounter(),
+    new CombatEncounter([
+      new Enemy(new DragonBoss()),
+    ], 30),
     new CombatEncounter([
       new Enemy(new DragonBoss()),
     ], 30),

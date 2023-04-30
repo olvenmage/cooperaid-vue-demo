@@ -10,6 +10,7 @@ import type { CharacterSkill } from "./types/character-state";
 import type ExpGainedState from "@/types/state/exp-gained-state";
 import type PlayerStatsState from "@/types/state/player-stats-state";
 import type WaitState from "@/types/state/wait-state";
+import type ShoppingState from "@/types/state/shopping-state";
 
 const pubUpdatePlayerState = createPublishDefinition<{
     playerId: string,
@@ -61,6 +62,11 @@ const pubUpdatePickSkillState = createPublishDefinition<{
     state: CharacterSkill[]
 }>('UpdatePickSkillState')
 
+const pubUpdateShoppingState = createPublishDefinition<{
+    playerId: string,
+    state: ShoppingState
+}>('UpdateShoppingState')
+
 
 
 export {
@@ -73,5 +79,6 @@ export {
     pubUpdateGemSocketingState,
     pubUpdatePickSkillState,
     pubUpdateExpGainedState,
-    pubUpdatePlayerStatsState
+    pubUpdatePlayerStatsState,
+    pubUpdateShoppingState
 }

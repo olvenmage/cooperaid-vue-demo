@@ -6,7 +6,7 @@ export default class WingManSkillGem extends SkillUpgradeGem {
     public description: string = "Body Guard now also gives the ally +20% damage done for the duration"
     public name = "Guarding Shield Block"
 
-    public imagePath = "/juggernaut/uncommon.png"
+    public imagePath = "/gems/juggernaut/uncommon.png"
 
     applies(item: Skill): boolean {
         return item instanceof BodyGuard

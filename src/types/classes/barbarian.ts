@@ -104,20 +104,18 @@ export class RecklessStrike extends Skill {
         range: SkillRange.MELEE
     })
 
-    selfDamageAmount = 4
-
-    description: string | null = "Basic. Take 4 damage (+ AD) to deal 10 damage to an enemy."
+    description: string | null = "Basic. Recklessly Strike an enemy for 10 damage. Deals your attack damage in damage back to you."
 
     castSkill(castBy: Character, targets: Character[]): void {
         castBy.dealDamageTo({ amount: this.skillData.damage ?? 0, type: this.skillData.damageType, threatModifier: 0.85, targets })
     }
 
     beforeCast(castBy: Character): void {
-        castBy.takeDamage({ amount: this.selfDamageAmount + castBy.stats.derived.attackDamage.value, damagedBy: castBy, type: DamageType.BLEED });
+        castBy.takeDamage({ amount: castBy.stats.derived.attackDamage.value, damagedBy: castBy, type: DamageType.BLEED });
     }
 
     override canCast(castBy: Character): boolean {
-        if (castBy.healthBar.current <= this.selfDamageAmount) {
+        if (castBy.healthBar.current <= castBy.stats.derived.attackDamage.value) {
             return false
         }
 
@@ -249,7 +247,7 @@ export class HeavyNet extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
         range: SkillRange.RANGED,
-        imagePath: "barbarian/heavy-net.png",
+        imagePath: "/barbarian/heavy-net.png",
         castTime: 1750,
         buffDuration: 10 * 1000
     })
