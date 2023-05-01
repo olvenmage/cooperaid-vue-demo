@@ -50,7 +50,7 @@ export default class HoneClawsBuff extends Buff implements StatMutatingBuff {
     }
 
     increaseStackCount(trigger: CharacterTriggerPayload<SkillData>) {
-        if (trigger.damageType == DamageType.PHYSICAL && trigger.damage > 0) {
+        if (trigger.damageType == DamageType.PHYSICAL && trigger.damage.value > 0) {
             this.stackCount++
         }
     }

@@ -101,7 +101,7 @@ export class RecklessStrike extends Skill {
         damageType: DamageType.PHYSICAL,
         castTime: 500,
         imagePath: "/barbarian/reckless-strike.png",
-        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.75),
+        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 0.9),
         range: SkillRange.MELEE,
     })
 
@@ -116,7 +116,7 @@ export class RecklessStrike extends Skill {
     }
 
     override canCast(castBy: Character): boolean {
-        if (castBy.healthBar.current <= castBy.stats.derived.attackDamage.value) {
+        if (castBy.healthBar.current <= Math.floor(castBy.stats.core.strength.value * 0.25)) {
             return false
         }
 
@@ -173,7 +173,7 @@ export class Rampage extends Skill {
         damageType: DamageType.PHYSICAL,
         castTime: 1000,
         imagePath: "/barbarian/rampage.png",
-        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.75),
+        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 1),
         range: SkillRange.MELEE,
         strengthDamageModifier: 0.6
     })

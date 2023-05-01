@@ -257,8 +257,8 @@ export default abstract class Skill {
             return false;
         }
 
-        this.skillData.damage.applyStats(castBy.stats.core)
-        this.skillData.healing.applyStats(castBy.stats.core)
+        this.skillData.damage.applyStats(castBy.stats)
+        this.skillData.healing.applyStats(castBy.stats)
 
         this.casted = false
         this.castingSkillData = this.baseSkillData.clone()
@@ -331,6 +331,20 @@ export default abstract class Skill {
         return 0
     }
 
+    getFormattedDescription(castBy: Character|null) {
+        let description = this.description ?? ''
+
+        if (this.skillData.damage) {
+            description = description.replace('{damage}', this.skillData.damage.getFormulaText(castBy))
+        }
+
+        if (this.skillData.healing) {
+            description = description.replace('{healing}', this.skillData.healing.getFormulaText(castBy))
+        }
+        
+        return description
+    }
+
     getState(castBy: Character|null, battle: Battle|null): CharacterSkill {
         return {
             id: this.id,
@@ -338,7 +352,7 @@ export default abstract class Skill {
             canCast: castBy ? this.canCast(castBy) : true,
             energyCost: this.skillData.energyCost,
             validTargets: battle && castBy ? battle.combatants.filter((cb) => this.isTargetValid(castBy, cb)).map((c) => c.id) : [],
-            description: (this.description ?? '').replace('{damage}', this.skillData.damage.getFormulaText(castBy)).replace('{healing}', this.skillData.healing.getFormulaText(castBy)),
+            description: this.getFormattedDescription(castBy),
             imagePath: this.skillData.imagePath ?? null,
             targetType: this.skillData.targetType as unknown as CharacterSkillTargetType,
             cooldown: displayNumber(this.cooldown),

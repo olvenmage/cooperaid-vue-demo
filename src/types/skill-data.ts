@@ -46,24 +46,24 @@ export class DynamicSkillDataValue {
         this.initialValue = value
     }
 
-    private getAppliedValue(statType: StatType, coreStats: CoreStats) {
+    private getAppliedValue(statType: StatType, stats: CharacterStats) {
         const modifier = this.statModifiers[statType as StatType]
 
         if (statType === 'armor') {
-            const armor = new CharacterStats(coreStats).derived.armor.value * modifier
+            const armor = stats.derived.armor.value * modifier
 
             return armor
         } else {
             // is goed or
-            return coreStats[statType as StatType].value * modifier
+            return stats.core[statType as StatType].value * modifier
         }
     }
 
-    applyStats(coreStats: CoreStats) {
+    applyStats(stats: CharacterStats) {
         let modifiedValue = this.initialValue
 
         for (const statType in this.statModifiers) {
-           modifiedValue += this.getAppliedValue(statType as StatType, coreStats)
+           modifiedValue += this.getAppliedValue(statType as StatType, stats)
         }
 
         this.value = modifiedValue
@@ -100,7 +100,7 @@ export class DynamicSkillDataValue {
 
             if (modifier > 0) {
                 if (castBy) {
-                    const formatted = Math.round(this.getAppliedValue(statType as StatType, castBy.stats.core))
+                    const formatted = Math.round(this.getAppliedValue(statType as StatType, castBy.stats))
                     amount += formatted
 
                     text += ` <span class="${statType}-color">(+${formatted}) [${modifier * 100}%]</span>`

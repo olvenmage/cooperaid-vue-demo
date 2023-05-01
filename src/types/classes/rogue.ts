@@ -226,7 +226,7 @@ export class Backstab extends Skill {
         castTime: 500,
         imagePath: "/rogue/backstab.png",
         damageType: DamageType.PHYSICAL,
-        damage: new DynamicSkillDataValue(1).modifiedBy('strength', 0.5).modifiedBy('dexterity', 0.5),
+        damage: new DynamicSkillDataValue(1).modifiedBy('strength', 0.4).modifiedBy('dexterity', 0.4),
         range: SkillRange.MELEE,
         strengthDamageModifier: 0.5,
     })

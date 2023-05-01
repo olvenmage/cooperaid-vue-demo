@@ -9,7 +9,7 @@ export default abstract class GameSettings {
 
 
     // DIFFICULTY
-    static baseHealth = 50
+    static baseHealth = 35
     static basePlayerCritChance = 3
     static speedFactor = 0.5
     static baseMonsterCritChance = 3

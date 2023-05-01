@@ -168,7 +168,7 @@ export class ShieldBlock extends Skill {
         cooldown: 6 * 1000,
         targetType: TargetType.TARGET_SELF,
         damageType: DamageType.PHYSICAL,
-        damage: new DynamicSkillDataValue(1).modifiedBy('constitution', 0.5),
+        damage: new DynamicSkillDataValue(1).modifiedBy('constitution', 0.4),
         castTime: 250,
         imagePath: "/juggernaut/shield-block.png",
         buffDuration: 5 * 1000,
@@ -295,7 +295,7 @@ export class ShockWave extends Skill {
         imagePath: "/juggernaut/shock-wave.png",
         range: SkillRange.MELEE,
         buffDuration: 0.5 * 1000,
-        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.8),
+        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.7),
     })
 
     description: string | null = "Deal {damage} damage to all enemies and stun them for a duration based on your strength."

@@ -137,7 +137,7 @@ export class CommandNature extends Skill implements EmpowerableSKill {
             castTime: 1000,
             damageType: DamageType.PHYSICAL,
             range: SkillRange.MELEE,
-            damage: new DynamicSkillDataValue(5).modifiedBy('strength', 0.8)
+            damage: new DynamicSkillDataValue(5).modifiedBy('strength', 1.1)
         })
 
         this.empowered = true
@@ -161,7 +161,7 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
         damageType: DamageType.PHYSICAL,
         maxStacks: 4,
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.8),
+        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 0.8),
     })
 
     description: string | null = "Basic. Deal {damage} physical damage to an enemy, or deal 1 piercing damage to an ally and give them a stacking cast speed buff"
@@ -203,7 +203,7 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
             castTime: 1000,
             damageType: DamageType.PHYSICAL,
             range: SkillRange.MELEE,
-            damage: new DynamicSkillDataValue(5).modifiedBy('strength', 0.8),
+            damage: new DynamicSkillDataValue(5).modifiedBy('strength', 1.1),
         })
 
         this.empowered = true
