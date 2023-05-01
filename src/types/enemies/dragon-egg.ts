@@ -7,7 +7,7 @@ import randomRange from '@/utils/randomRange';
 import MeltedArmorBuff from '../buffs/melted-armor';
 import CharacterStats, { CoreStats } from '../character-stats';
 import ClassBar from '../class-bar';
-import SkillData from '../skill-data';
+import SkillData, { DynamicSkillDataValue } from '../skill-data';
 
 export default class DragonEgg extends Identity {
     public name = "Dragon Egg"
@@ -82,12 +82,12 @@ export class WhelpBite extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: 5
+        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 0.6)
     })
 
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -101,9 +101,10 @@ export class Ember extends Skill {
         damageType: DamageType.MAGICAL,
         imagePath: null,
         range: SkillRange.RANGED,
+        damage: new DynamicSkillDataValue(5).modifiedBy('intelligence', 0.6)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: 8, targets, type: DamageType.MAGICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.MAGICAL })
     }
 }

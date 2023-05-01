@@ -4,7 +4,7 @@ import Identity from '../identity';
 import Skill, { AiTargetting, SkillRange, TargetType } from '../skill';
 import DamageType from '../damage-type';
 import CharacterStats, { CoreStats } from '../character-stats';
-import SkillData from '../skill-data';
+import SkillData, { DynamicSkillDataValue } from '../skill-data';
 import { BlessingOfProtection } from '../classes/paladin';
 import StunnedBuff from '../buffs/stunned';
 
@@ -37,12 +37,12 @@ class CureWounds extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.RANGED,
-        healing: 10
+        healing: new DynamicSkillDataValue(2).modifiedBy('intelligence', 0.6)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            target.restoreHealth(this.skillData.healing, castBy)
+            target.restoreHealth(this.skillData.healing.value, castBy)
         })
     }
 }
@@ -57,12 +57,12 @@ class PrayerOfHealing extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.RANGED,
-        healing: 16
+        healing: new DynamicSkillDataValue(2).modifiedBy('intelligence', 0.7)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            target.restoreHealth(this.skillData.healing, castBy)
+            target.restoreHealth(this.skillData.healing.value, castBy)
         })
     }
 }
@@ -77,7 +77,7 @@ class Repent extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.RANGED,
-        buffDuration: 3 * 1000
+        buffDuration: 2.5 * 1000
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

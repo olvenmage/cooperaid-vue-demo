@@ -204,8 +204,8 @@ class Player {
         return {
             id: this.id,
             name: this.name,
-            playerClass: this.playerClass?.getPlayerIdentityState() || null,
-            basicSkill: this.basicSkill?.getState(null, null) || null
+            playerClass: this.playerClass?.getPlayerIdentityState(this.combatCharacter) || null,
+            basicSkill: this.basicSkill?.getState(this.combatCharacter, null) || null
         }
     }
 

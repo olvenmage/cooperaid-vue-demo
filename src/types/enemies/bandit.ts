@@ -6,7 +6,7 @@ import EnergyBar from '../energy-bar';
 import Healthbar from '../health-bar';
 import DamageType from '../damage-type';
 import CharacterStats, { CoreStats } from '../character-stats';
-import SkillData from '../skill-data';
+import SkillData, { DynamicSkillDataValue } from '../skill-data';
 import Game from '@/core/game';
 import StunnedBuff from '../buffs/stunned';
 
@@ -64,11 +64,11 @@ class Slice extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: 5
+        damage: new DynamicSkillDataValue(2).modifiedBy('dexterity', 0.3).modifiedBy('strength', 0.3)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -83,12 +83,12 @@ class KnockOut extends Skill {
         imagePath: null,
         aiTargetting: AiTargetting.RANDOM,
         range: SkillRange.MELEE,
-        buffDuration: 2.5 * 1000,
-        damage: 8
+        buffDuration: 2 * 1000,
+        damage: new DynamicSkillDataValue(2).modifiedBy('dexterity', 0.4).modifiedBy('strength', 0.4),
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL })
 
         targets.forEach((target) => {
             target.addBuff(new StunnedBuff({ duration: this.skillData.buffDuration }), castBy)

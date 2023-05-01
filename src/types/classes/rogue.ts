@@ -8,7 +8,7 @@ import DismantleBuff from '../buffs/dismantle';
 import SleepBuff from '../buffs/asleep';
 import PoisonBuff from '../buffs/poison';
 import FocusBar from '../special-bar/focus-bar'
-import SkillData from '../skill-data';
+import SkillData, { DynamicSkillDataValue } from '../skill-data';
 import ParalyzingDartSkillGem from '../skill-upgrades/rogue/paralyzing-dart-skill-gem';
 import NullifyingDismantleSkillGem from '../skill-upgrades/rogue/nullifying-dismantle-skill-gem';
 import ExposingDartSkillGem from '../skill-upgrades/rogue/exposing-dart-skill-gem';
@@ -29,6 +29,7 @@ import ToxicBombsSkillGem from '../skill-upgrades/rogue/toxic-bombs-skill-gem';
 export default class Rogue extends PlayerIdentity {
     public name = "Rogue"
     public baseStats = new CoreStats({
+        isPlayer: true,
         baseCrit: GameSettings.basePlayerCritChance * 2,
         constitution: 7,
         strength: 12,
@@ -80,19 +81,20 @@ export class FanOfKnives extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         castTime: 750,
         imagePath: "/rogue/blade-flurry.png",
-        damage: 9,
+        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 0.5).modifiedBy('dexterity', 0.5),
         range: SkillRange.RANGED,
+        strengthDamageModifier: 0.5,
     })
 
    
     MS_DELAY_BETWEEN_ATTACK = 50
 
-    description: string | null = "Deal 9 damage divided between three ranged hits. (Min 1 damage per hit)"
+    description: string | null = "Deal {damage} damage divided between three ranged hits. (Min 1 damage per hit)"
 
     FOCUS_PER_ACTUAL_DAMAGE_DEALT = 2
 
     castSkill(castBy: Character, targets: Character[]): void {
-        let damage = this.skillData.damage
+        let damage = this.skillData.damage.value
         const AMOUNT_OF_ATTACKS = this.hasGem(KnifeStormSkillGem) ? 5 : 3
 
         for (let i = 0; i < AMOUNT_OF_ATTACKS; i++) {
@@ -159,16 +161,16 @@ export class PoisonedStrike extends Skill {
         castTime: 500,
         imagePath: "/rogue/poisoned-strike.png",
         damageType: DamageType.PHYSICAL,
-        damage: 4,
+        damage: new DynamicSkillDataValue(1).modifiedBy('strength', 0.4).modifiedBy('dexterity', 0.4),
         buffDuration: 6 * 1000,
         maxStacks: 3,
         range: SkillRange.MELEE,
     })
 
-    description: string | null = "Basic. Deal 4 damage to an enemy and apply a stacking poison debuff for a medium duration (stacks 3 times)"
+    description: string | null = "Basic. Deal {damage} damage to an enemy and apply a stacking poison debuff for a medium duration (stacks 3 times)"
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ targets, type: this.skillData.damageType, amount: this.skillData.damage })
+        castBy.dealDamageTo({ targets, type: this.skillData.damageType, amount: this.skillData.damage.value })
 
         targets.forEach((target) => {
             if (castBy.classBar instanceof FocusBar) {
@@ -190,11 +192,12 @@ export class Switchblade extends Skill {
         castTime: 500,
         imagePath: "/rogue/switchblade.png",
         damageType: DamageType.PHYSICAL,
-        damage: 4,
+        damage: new DynamicSkillDataValue(1).modifiedBy('strength', 0.2).modifiedBy('dexterity', 0.2),
         range: SkillRange.MELEE,
+        strengthDamageModifier: 0.4,
     })
 
-    description: string | null = "Basic. Deal 4 + target enemy's armor in piercing damage"
+    description: string | null = "Basic. Deal {damage} + target enemy's armor in piercing damage"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
@@ -202,7 +205,7 @@ export class Switchblade extends Skill {
                 castBy.classBar.increase(2)
             }
 
-            const damage = this.skillData.damage + target.stats.derived.armor.value
+            const damage = this.skillData.damage.value + target.stats.derived.armor.value
 
             if (castBy.classBar instanceof FocusBar) {
                 castBy.classBar.increase(target.stats.derived.armor.value)
@@ -223,11 +226,12 @@ export class Backstab extends Skill {
         castTime: 500,
         imagePath: "/rogue/backstab.png",
         damageType: DamageType.PHYSICAL,
-        damage: 5,
+        damage: new DynamicSkillDataValue(1).modifiedBy('strength', 0.5).modifiedBy('dexterity', 0.5),
         range: SkillRange.MELEE,
+        strengthDamageModifier: 0.5,
     })
 
-    description: string | null = "Basic. Deal 5 damage to an enemy, deals double damage if the enemy is attacking someone else."
+    description: string | null = "Basic. Deal {damage} damage to an enemy, deals double damage if the enemy is attacking someone else."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
@@ -235,7 +239,7 @@ export class Backstab extends Skill {
                 castBy.classBar.increase(3)
             }
 
-            let damage = this.skillData.damage
+            let damage = this.skillData.damage.value
             let threatModifier = 1
 
             const backstabBonus = (target.threat && target.threat.getCurrentTarget()?.id !== castBy.id) || target.stats.stunned
@@ -271,15 +275,16 @@ export class Kick extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         castTime: 250,
         imagePath: "/rogue/kick.png",
-        damage: 6,
+        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 0.7).modifiedBy('dexterity', 0.25),
         damageType: DamageType.PHYSICAL,
         range: SkillRange.MELEE,
+        strengthDamageModifier: 0.8,
     })
 
-    description: string | null = "Deal 6 damage to an enemy and interrupt their current cast."
+    description: string | null = "Deal {damage} damage to an enemy and interrupt their current cast."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        const results = castBy.dealDamageTo({ amount: this.skillData.damage!, targets: targets, type: this.skillData.damageType, threatModifier: 1.3 })
+        const results = castBy.dealDamageTo({ amount: this.skillData.damage.value, targets: targets, type: this.skillData.damageType, threatModifier: 1.3 })
 
         for (const result of results) {
             if (castBy.classBar instanceof FocusBar) {
@@ -337,11 +342,13 @@ export class HeartSeeker extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         castTime: 1000,
         imagePath: "/rogue/heartseeker.png",
-        damage: 14,
+        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.6).modifiedBy('dexterity', 0.4),
         range: SkillRange.RANGED,
+        strengthDamageModifier: 0.35,
+        dexterityDamageModifier: 0.35,
     })
 
-    description: string | null = "Deal 14 damage to the lowest health target, if that kills it, repeat this."
+    description: string | null = "Deal {damage} damage to the lowest health target, if that kills it, repeat this."
 
     castSkill(castBy: Character, targets: Character[]): void {
         const shoot = () => {
@@ -349,7 +356,7 @@ export class HeartSeeker extends Skill {
             let target = validTargets[0] ?? null
 
             if (target != null) {
-                castBy.dealDamageTo({ amount: this.skillData.damage, targets: [target], type: this.skillData.damageType })
+                castBy.dealDamageTo({ amount: this.skillData.damage.value, targets: [target], type: this.skillData.damageType })
 
                 if (target.dead) {
                     shoot()
@@ -371,17 +378,19 @@ export class KillShot extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         castTime: 750,
         imagePath: "/rogue/killshot.png",
-        damage: 12,
+        damage: new DynamicSkillDataValue(4).modifiedBy('dexterity', 0.5).modifiedBy('strength', 0.5),
         range: SkillRange.RANGED,
+        strengthDamageModifier: 0.35,
+        dexterityDamageModifier: 0.35,
     })
 
-    description: string | null = "Deal 12 damage to an enemy, damage is increased by 3 per debuff on the target."
+    description: string | null = "Deal {damage} damage to an enemy, damage is increased by 10% per debuff on the target."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             const debuffAmount = target.buffs.filter((b) => !b.givenBy?.isEnemyTo(castBy)).length
 
-            castBy.dealDamageTo({ targets: [target], amount: this.skillData.damage + (3 * debuffAmount ), type: DamageType.PHYSICAL})
+            castBy.dealDamageTo({ targets: [target], amount: this.skillData.damage.value * (1 + 0.1 * debuffAmount ), type: DamageType.PHYSICAL})
         })
     }
 }
@@ -400,7 +409,7 @@ export class Evasion extends Skill {
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Gain +60% dodge chance for a long duration."
+    description: string | null = "Gain +75% dodge chance for a long duration."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
@@ -461,13 +470,14 @@ export class CoughBomb extends Skill {
         imagePath: "/rogue/cough-bomb.png",
         buffDuration: 4 * 1000,
         range: SkillRange.RANGED,
-        damage: 10
+        damage: new DynamicSkillDataValue(4).modifiedBy('intelligence', 0.6).modifiedBy('dexterity', 0.3),
+        dexterityDamageModifier: 0.35,
     })
 
-    description: string | null = "Deal 10 poison damage to an enemy and put a random skill they have off cooldown on cooldown."
+    description: string | null = "Deal {damage} poison damage to an enemy and put a random skill they have off cooldown on cooldown."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ targets, type: this.skillData.damageType, amount: this.skillData.damage, threatModifier: 1.2 })
+        castBy.dealDamageTo({ targets, type: this.skillData.damageType, amount: this.skillData.damage.value, threatModifier: 1.2 })
 
         targets.forEach((target) => {
             const skillToDeactivate = target.skills.find((sk) => !sk.onCooldown && sk.cooldown > 0)

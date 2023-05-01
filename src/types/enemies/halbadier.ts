@@ -6,7 +6,7 @@ import EnergyBar from '../energy-bar';
 import Healthbar from '../health-bar';
 import DamageType from '../damage-type';
 import CharacterStats, { CoreStats } from '../character-stats';
-import SkillData from '../skill-data';
+import SkillData, { DynamicSkillDataValue } from '../skill-data';
 import PiercedEarsBuff from '../buffs/pierced-ears'
 import FlyingBuff from '../buffs/flying'
 import ParryBuff from '../buffs/parry';
@@ -55,11 +55,11 @@ class Poke extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: 6
+        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 0.8)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -73,10 +73,10 @@ class OverheadSlash extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: 14
+        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 1.2)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL })
     }
 }

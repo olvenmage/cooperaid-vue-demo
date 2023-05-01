@@ -11,7 +11,7 @@ interface BlessedWeaponBuffParams {
     damageAmount: number
 }
 
-export default class BlessedWeaponBuff extends Buff implements StatMutatingBuff {
+export default class BlessedWeaponBuff extends Buff {
     duration: number = 5 * 1000
 
     public imagePath: string | null = "/skills/paladin/blessed-weapon.png"
@@ -23,11 +23,6 @@ export default class BlessedWeaponBuff extends Buff implements StatMutatingBuff 
         super()
         this.duration = params.duration
         this.params = params
-    }
-
-    mutateStats(stats: CharacterStats): CharacterStats {
-        stats.derived.attackDamage.set(stats.derived.attackDamage.value + this.params.damageAmount)
-        return stats
     }
 
     override startEffect(character: Character): void {
@@ -43,8 +38,9 @@ export default class BlessedWeaponBuff extends Buff implements StatMutatingBuff 
     }
 
     convertDamageType(trigger: CharacterTriggerPayload<SkillData>) {
-        if (trigger.character.id != this.attachedCharacter?.id && trigger.damageType == DamageType.PHYSICAL) {
+        if (trigger.damageType == DamageType.PHYSICAL) {
             trigger.damageType = DamageType.MAGICAL
+            trigger.damage.value += this.params.damageAmount
             if (this.givenBy?.classBar) {
                 this.givenBy.classBar.increase(3)
             }

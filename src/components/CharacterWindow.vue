@@ -39,9 +39,6 @@ function toggleAI() {
 }
 
 function addDamageFloat(trigger: OnDamageTrigger) {
-  console.log("FLOATIE!")
-  console.log(`dodged: ${trigger.isDodged}`)
-  console.log("----")
   if (trigger.actualDamage <= 0 && !trigger.isDodged) {
     return 
   }

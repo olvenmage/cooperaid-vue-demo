@@ -6,7 +6,7 @@ import DamageType from '../damage-type';
 import randomRange from '@/utils/randomRange';
 import MeltedArmorBuff from '../buffs/melted-armor';
 import CharacterStats, { CoreStats } from '../character-stats';
-import SkillData from '../skill-data';
+import SkillData, { DynamicSkillDataValue } from '../skill-data';
 import AggressiveBuff from '../buffs/aggressive';
 import StunnedBuff from '../buffs/stunned';
 
@@ -40,13 +40,13 @@ export class DragonThrash extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
         imagePath: null,
-        buffDuration: 1 * 1000,
+        buffDuration: 0.75 * 1000,
         range: SkillRange.MELEE,
-        damage: 13
+        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 1.1)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        const results = castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
+        const results = castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL })
 
         for (const result of results) {
             if (!result.isDodged) {
@@ -68,11 +68,11 @@ export class DragonSwipe extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: 12
+        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 1.1)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -107,13 +107,14 @@ export class FireBreath extends Skill {
         damageType: DamageType.MAGICAL,
         imagePath: null,
         range: SkillRange.RANGED,
+        damage: new DynamicSkillDataValue(6).modifiedBy('intelligence', 1)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
         const dragonIdentity = castBy.identity
         if (dragonIdentity instanceof DragonBoss) {
             castBy.dealDamageTo({
-                amount: randomRange(18, 18 + dragonIdentity.stackingFireDamage),
+                amount: randomRange(this.skillData.damage.value, this.skillData.damage.value + dragonIdentity.stackingFireDamage),
                 targets,
                 type: DamageType.MAGICAL,
                 noCrit: true

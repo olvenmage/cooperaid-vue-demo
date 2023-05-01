@@ -257,6 +257,9 @@ export default abstract class Skill {
             return false;
         }
 
+        this.skillData.damage.applyStats(castBy.stats.core)
+        this.skillData.healing.applyStats(castBy.stats.core)
+
         this.casted = false
         this.castingSkillData = this.baseSkillData.clone()
         this.currentTargets = getTargets()
@@ -281,10 +284,6 @@ export default abstract class Skill {
     }
 
     doCast(castBy: Character, targets: Character[]) {
-        if (this.castingSkillData?.damageType == DamageType.PHYSICAL) {
-            this.castingSkillData.damage += castBy.stats.derived.attackDamage.value
-        }
-
         if (this.castingSkillData) {
             castBy.triggers.publish(CHARACTER_TRIGGERS.BEFORE_SKILL_CAST, this.castingSkillData)
         }
@@ -339,7 +338,7 @@ export default abstract class Skill {
             canCast: castBy ? this.canCast(castBy) : true,
             energyCost: this.skillData.energyCost,
             validTargets: battle && castBy ? battle.combatants.filter((cb) => this.isTargetValid(castBy, cb)).map((c) => c.id) : [],
-            description: this.description,
+            description: (this.description ?? '').replace('{damage}', this.skillData.damage.getFormulaText(castBy)).replace('{healing}', this.skillData.healing.getFormulaText(castBy)),
             imagePath: this.skillData.imagePath ?? null,
             targetType: this.skillData.targetType as unknown as CharacterSkillTargetType,
             cooldown: displayNumber(this.cooldown),

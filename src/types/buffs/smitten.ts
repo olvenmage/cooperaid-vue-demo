@@ -7,6 +7,7 @@ import type OnDamageTrigger from '../triggers/on-damage-trigger';
 
 interface SmittenBuffParams {
     duration: number
+    healing: number
     branding?: boolean
 }
 
@@ -42,9 +43,9 @@ export default class SmittenBuff extends Buff {
 
         if (validDamageToEnemy && trigger.school != DamageSchool.HOLY && (trigger.damageType == DamageType.PHYSICAL || trigger.damageType == DamageType.MAGICAL)) {
             if (this.params.branding) {
-                this.givenBy?.dealDamageTo({ amount: 6, targets: [trigger.character], type: DamageType.MAGICAL, school: DamageSchool.HOLY, noCrit: true, minAmount: 4 })
+                this.givenBy?.dealDamageTo({ amount: this.params.healing * 2, targets: [trigger.character], type: DamageType.MAGICAL, school: DamageSchool.HOLY, noCrit: true, minAmount: 4 })
             } else {
-                trigger.damagedBy?.restoreHealth(3, this.givenBy, 0.5)
+                trigger.damagedBy?.restoreHealth(this.params.healing, this.givenBy, 0.5)
             }
 
             if (this.givenBy?.classBar) {

@@ -54,8 +54,8 @@ export default class BloodLustBuff extends Buff {
     }
 
     increaseNextAttack(trigger: CharacterTriggerPayload<SkillData>) {
-        if (trigger.damageType == DamageType.PHYSICAL && trigger.damage > 0) {
-            trigger.damage += this.params.healthConsumed
+        if (trigger.damageType == DamageType.PHYSICAL && trigger.damage.value > 0) {
+            trigger.damage.value += this.params.healthConsumed
             this.endEffect(trigger.character)
         }
     }

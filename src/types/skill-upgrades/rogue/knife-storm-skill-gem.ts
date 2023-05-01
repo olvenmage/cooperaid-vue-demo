@@ -15,7 +15,7 @@ export default class KnifeStormSkillGem extends SkillUpgradeGem {
     }
 
     applyUpgrade(item: Skill) {
-        item.baseSkillData.damage += 3
+        item.baseSkillData.damage.increaseInitialValue(3)
         item.baseSkillData.targetType = TargetType.TARGET_ALL_ENEMIES
     }
 }

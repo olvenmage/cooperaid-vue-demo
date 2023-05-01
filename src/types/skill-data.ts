@@ -4,6 +4,8 @@ import type { CharacterSkill, CharacterSkillTargetType } from './state/character
 import type DamageType from './damage-type';
 import type OnDamageTrigger from './triggers/on-damage-trigger';
 import { AiTargetting, SkillTag, TargetType, SkillRange } from './skill';
+import type { CoreStats, StatType } from './character-stats';
+import CharacterStats from './character-stats';
 
 export interface SkillDataParams {
     name: string,
@@ -17,13 +19,101 @@ export interface SkillDataParams {
     interuptsOnDamageTaken?: boolean
     castingIncrementer?: number
     canCastOnCooldown?: boolean
-    damage?: number
-    healing?: number
+    damage?: DynamicSkillDataValue
+    healing?: DynamicSkillDataValue
     damageType: DamageType
     buffDuration?: number
     maxStacks?: number,
     extraCrit?: number,
-    tags?: SkillTag[]
+    tags?: SkillTag[],
+    strengthDamageModifier?: number
+    intelligenceDamageModifier?: number
+    dexterityDamageModifier?: number
+    constitutionDamageModifier?: number
+}
+
+export class DynamicSkillDataValue {
+    private initialValue: number
+    public statModifiers: Record<StatType, number> = {
+        armor: 0,
+        dexterity: 0,
+        constitution: 0,
+        strength: 0,
+        intelligence: 0
+    }
+
+    constructor(public value: number = 0) {
+        this.initialValue = value
+    }
+
+    private getAppliedValue(statType: StatType, coreStats: CoreStats) {
+        const modifier = this.statModifiers[statType as StatType]
+
+        if (statType === 'armor') {
+            const armor = new CharacterStats(coreStats).derived.armor.value * modifier
+
+            return armor
+        } else {
+            // is goed or
+            return coreStats[statType as StatType].value * modifier
+        }
+    }
+
+    applyStats(coreStats: CoreStats) {
+        let modifiedValue = this.initialValue
+
+        for (const statType in this.statModifiers) {
+           modifiedValue += this.getAppliedValue(statType as StatType, coreStats)
+        }
+
+        this.value = modifiedValue
+    }
+
+    increaseInitialValue(num: number) {
+        this.initialValue += num
+    }
+
+    modifiedBy(stat: StatType, modifer: number) {
+        this.statModifiers[stat] += modifer
+        return this
+    }
+
+    clone() {
+        const cloned = new DynamicSkillDataValue(this.value)
+
+        cloned.statModifiers = Object.assign({}, this.statModifiers)
+
+        return cloned
+    }
+
+    getFormulaText(castBy: Character|null): string {
+        let amount = this.initialValue
+
+        let text = "";
+
+        if (amount != 0) {
+            text = `${this.initialValue}`
+        }
+
+        for (const statType in this.statModifiers) {
+            const modifier = this.statModifiers[statType as StatType]
+
+            if (modifier > 0) {
+                if (castBy) {
+                    const formatted = Math.round(this.getAppliedValue(statType as StatType, castBy.stats.core))
+                    amount += formatted
+
+                    text += ` <span class="${statType}-color">(+${formatted}) [${modifier * 100}%]</span>`
+                } else {
+                    text += ` +${modifier * 100}% ${statType}`
+                }
+            }
+        }
+
+        text += ` = ${amount}`
+
+        return text
+    }
 }
 
 export default class SkillData {
@@ -43,14 +133,18 @@ export default class SkillData {
 
     castingIncrementer
     canCastOnCooldown
-    damage: number = 0
-    healing: number = 0
+    damage: DynamicSkillDataValue
+    healing: DynamicSkillDataValue
     buffDuration: number
     maxStacks: number
     damageType: DamageType
     tags: SkillTag[]
     range: SkillRange
 
+    strengthDamageModifier: number = 0
+    intelligenceDamageModifier: number = 0
+    dexterityDamageModifier: number = 0
+    constitutionDamageModifier: number = 0
 
     private baseParams: SkillDataParams
     private currentBaseParams: SkillDataParams
@@ -79,12 +173,16 @@ export default class SkillData {
         this.interuptsOnDamageTaken = params.interuptsOnDamageTaken ?? false
         this.castingIncrementer = params.castingIncrementer ?? 100
         this.canCastOnCooldown = params.canCastOnCooldown ?? false
-        this.damage = params.damage ?? 0
-        this.healing = params.healing ?? 0
+        this.damage = params.damage ?? new DynamicSkillDataValue(0)
+        this.healing = params.healing ?? new DynamicSkillDataValue(0)
         this.damageType = params.damageType ?? null
         this.buffDuration = params.buffDuration ?? 0
         this.maxStacks = params.maxStacks ?? 0
         this.extraCrit = params.extraCrit ?? 0
+        this.strengthDamageModifier = params.strengthDamageModifier ?? 0
+        this.intelligenceDamageModifier = params.intelligenceDamageModifier ?? 0
+        this.dexterityDamageModifier = params.dexterityDamageModifier ?? 0
+        this.constitutionDamageModifier = params.constitutionDamageModifier ?? 0
     }
 
     resetToBase() {
@@ -131,16 +229,22 @@ export default class SkillData {
         this.interuptsOnDamageTaken = params.interuptsOnDamageTaken ?? false
         this.castingIncrementer = params.castingIncrementer ?? 100
         this.canCastOnCooldown = params.canCastOnCooldown ?? false
-        this.damage = params.damage ?? 0
-        this.healing = params.healing ?? 0
+        this.damage = params.damage ?? new DynamicSkillDataValue(0)
+        this.healing = params.healing ?? new DynamicSkillDataValue(0)
         this.damageType = params.damageType ?? null
         this.buffDuration = params.buffDuration ?? 0
         this.maxStacks = params.maxStacks ?? 0
         this.extraCrit = params.extraCrit ?? 0
+        this.strengthDamageModifier = params.strengthDamageModifier ?? 0
+        this.intelligenceDamageModifier = params.intelligenceDamageModifier ?? 0
+        this.dexterityDamageModifier = params.dexterityDamageModifier ?? 0
+        this.constitutionDamageModifier = params.constitutionDamageModifier ?? 0
     }
 
     clone(): SkillData {
         const newSkillData = new SkillData(this.baseParams)
+        newSkillData.damage = this.baseParams.damage?.clone() ?? new DynamicSkillDataValue(0)
+        newSkillData.healing = this.baseParams.healing?.clone() ?? new DynamicSkillDataValue(0)
 
         if (this.isTransformed) {
             newSkillData.transform(this.currentParams)

@@ -6,7 +6,7 @@ import EnergyBar from '../energy-bar';
 import Healthbar from '../health-bar';
 import DamageType from '../damage-type';
 import CharacterStats, { CoreStats } from '../character-stats';
-import SkillData from '../skill-data';
+import SkillData, { DynamicSkillDataValue } from '../skill-data';
 
 export default class Goblin extends Identity {
     public name = "Goblin"
@@ -34,11 +34,11 @@ class GoblinClobber extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: 12
+        damage: new DynamicSkillDataValue(5).modifiedBy('strength', 1),
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -53,10 +53,10 @@ class GoblinBite extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: 4
+        damage: new DynamicSkillDataValue(3).modifiedBy('strength', 0.25).modifiedBy('dexterity', 0.25),
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL })
     }
 }

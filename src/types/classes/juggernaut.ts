@@ -5,7 +5,7 @@ import DamageType from '../damage-type';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import ShieldBlockBuff from '../buffs/shield-block';
 import CharacterStats, { CoreStats } from '../character-stats';
-import SkillData from '../skill-data';
+import SkillData, { DynamicSkillDataValue } from '../skill-data';
 import ShieldShatteredBuff from '../buffs/shield-shattered';
 import ArmorPower from '../power/armor-power';
 import RetaliationBar from '../special-bar/retaliation-bar';
@@ -24,6 +24,7 @@ import ForcefulShieldShatterSkillGem from '../skill-upgrades/juggernaut/forceful
 export default class Juggernaut extends PlayerIdentity {
     public name = "Juggernaut"
     public baseStats = new CoreStats({
+        isPlayer: true,
         baseCrit: GameSettings.basePlayerCritChance,
         constitution: 18,
         strength: 12,
@@ -93,14 +94,15 @@ export class Bash extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         imagePath: "/juggernaut/bash.png",
         range: SkillRange.MELEE,
-        damage: 2
+        damage: new DynamicSkillDataValue(1).modifiedBy('strength', 0.7).modifiedBy('armor', 0.7),
+        strengthDamageModifier: 0.4,
     })
 
-    description: string | null = "Basic. Deal 2 + <ARMOR> damage to an enemy"
+    description: string | null = "Basic. Deal {damage} damage to an enemy"
 
     castSkill(castBy: Character, targets: Character[]): void {
         castBy.dealDamageTo({
-            amount: this.skillData.damage + castBy.stats.derived.armor.value,
+            amount: this.skillData.damage.value,
             targets,
             type: this.skillData.damageType,
             threatModifier: 1.2,
@@ -118,13 +120,14 @@ export class BodySlam extends Skill {
         damageType: DamageType.PHYSICAL,
         castTime: 500,
         imagePath: "/juggernaut/body-slam.png",
+        damage: new DynamicSkillDataValue(0).modifiedBy('armor', 2),
         range: SkillRange.MELEE,
     })
 
-    description: string | null = "Basic. Body slam the target, you deal twice your armor in damage to them, but they also deal damage to you based on their armor."
+    description: string | null = "Basic. Body slam the target, dealing {damage} damage to them, but they also deal damage to you based on their armor."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: castBy.stats.derived.armor.value * 2, targets, type: DamageType.PHYSICAL, threatModifier: 1.2})
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL, threatModifier: 1.2})
 
         targets.forEach((target) => {
             target.dealDamageTo({ amount: target.stats.derived.armor.value, targets: [castBy], type: this.skillData.damageType, threatModifier: 1.2})
@@ -142,14 +145,14 @@ export class Overpower extends Skill {
         castTime: 1000,
         imagePath: "/juggernaut/overpower.png",
         range: SkillRange.MELEE,
-        damage: 12
+        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.7).modifiedBy('constitution', 0.5),
     })
 
-    description: string | null = "Deal 12 damage to a target. If you have more armor than the target, interupt spell casting."
+    description: string | null = "Deal {damage} damage to a target. If you have more armor than the target, interupt spell casting."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            castBy.dealDamageTo({ amount: this.skillData.damage, targets: [target], type: this.skillData.damageType, threatModifier: 1.2})
+            castBy.dealDamageTo({ amount: this.skillData.damage.value, targets: [target], type: this.skillData.damageType, threatModifier: 1.2})
 
             if (castBy.stats.derived.armor.value > target.stats.derived.armor.value && target.castingSkill) {
                 target.castingSkill.interupt()
@@ -165,20 +168,20 @@ export class ShieldBlock extends Skill {
         cooldown: 6 * 1000,
         targetType: TargetType.TARGET_SELF,
         damageType: DamageType.PHYSICAL,
-        damage: 5,
+        damage: new DynamicSkillDataValue(1).modifiedBy('constitution', 0.5),
         castTime: 250,
         imagePath: "/juggernaut/shield-block.png",
         buffDuration: 5 * 1000,
         range: SkillRange.MELEE,
     })
 
-    description: string | null = "Gain 8 Armor and your magic armor is equal to your armor until the next time you get attacked, deals 5 damage back."
+    description: string | null = "Gain 8 Armor and your magic armor is equal to your armor until the next time you get attacked, deals {damage} damage back."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             target.addBuff(new ShieldBlockBuff({
                 duration: this.skillData.buffDuration,
-                damage: this.skillData.damage,
+                damage: this.skillData.damage.value,
                 durability: this.hasGem(DurableShieldBlockSkillGem) ? 2 : 1
             }), castBy)
         })
@@ -198,7 +201,7 @@ export class Shatter extends Skill {
         range: SkillRange.MELEE,
     })
 
-    description: string | null = "Shatter an enemy's weapon, reducing their attack damage by 4."
+    description: string | null = "Shatter an enemy's weapon, reducing their physical damage dealt by 30%"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
@@ -292,13 +295,13 @@ export class ShockWave extends Skill {
         imagePath: "/juggernaut/shock-wave.png",
         range: SkillRange.MELEE,
         buffDuration: 0.5 * 1000,
-        damage: 6
+        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.8),
     })
 
-    description: string | null = "Deal 6 damage to all enemies and stun them for a duration based on your strength."
+    description: string | null = "Deal {damage} damage to all enemies and stun them for a duration based on your strength."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: this.skillData.damageType, threatModifier: 1 })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: this.skillData.damageType, threatModifier: 1 })
 
         targets.forEach((target) => {
             target.addBuff(new ShockWaveBuff({

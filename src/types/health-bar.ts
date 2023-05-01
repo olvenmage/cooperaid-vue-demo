@@ -8,6 +8,10 @@ export default class Healthbar {
     }
 
     increase(amount: number): number {
+        if (typeof amount == 'undefined') {
+            return 0
+        }
+
         const oldAMount = this.current
         this.current = Math.min(this.current + amount, this.max)
 

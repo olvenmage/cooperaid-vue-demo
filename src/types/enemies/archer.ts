@@ -4,7 +4,7 @@ import Identity from '../identity';
 import Skill, { AiTargetting, SkillRange, TargetType } from '../skill';
 import DamageType from '../damage-type';
 import CharacterStats, { CoreStats } from '../character-stats';
-import SkillData from '../skill-data';
+import SkillData, { DynamicSkillDataValue } from '../skill-data';
 import RapidFireBuff from '../buffs/rapid-fire';
 
 export default class Archer extends Identity {
@@ -53,11 +53,11 @@ class Shoot extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.RANGED,
-        damage: 8
+        damage: new DynamicSkillDataValue(2).modifiedBy('dexterity', 0.3).modifiedBy('strength', 0.3)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -72,10 +72,10 @@ class Assasinate extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         imagePath: null,
         range: SkillRange.RANGED,
-        damage: 18
+        damage: new DynamicSkillDataValue(2).modifiedBy('dexterity', 0.6).modifiedBy('strength', 0.6)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL })
     }
 }

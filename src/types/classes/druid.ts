@@ -4,7 +4,7 @@ import PlayerIdentity, { PlayerClass } from '../player-identity'
 import DamageType from '../damage-type';
 import CharacterStats, { CoreStats } from '../character-stats';
 import type EmpowerableSKill from '../skill-types/empowerable-skill';
-import SkillData from '../skill-data';
+import SkillData, { DynamicSkillDataValue } from '../skill-data';
 import FerocityBar from '../special-bar/ferocity-bar'
 import ThornsBuff from '../buffs/thorns-buff';
 import ThickSkinBuff from '../buffs/thick-skin';
@@ -29,6 +29,7 @@ import GuardingScalesSkillGem from '../skill-upgrades/druid/guarding-scales-skil
 export default class Druid extends PlayerIdentity {
     public name = "Druid"
     public baseStats = new CoreStats({
+        isPlayer: true,
         baseCrit: GameSettings.basePlayerCritChance,
         constitution: 11,
         strength: 12,
@@ -100,7 +101,7 @@ export class CommandNature extends Skill implements EmpowerableSKill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
-            castBy.dealDamageTo({ amount: this.skillData.damage, type: this.skillData.damageType!, targets, threatModifier: 1.5})
+            castBy.dealDamageTo({ amount: this.skillData.damage.value, type: this.skillData.damageType!, targets, threatModifier: 1.5})
         } else {
             targets.forEach((target) => {
                 target.addBuff(new CommandNatureArmorBuff({
@@ -136,7 +137,7 @@ export class CommandNature extends Skill implements EmpowerableSKill {
             castTime: 1000,
             damageType: DamageType.PHYSICAL,
             range: SkillRange.MELEE,
-            damage: 10
+            damage: new DynamicSkillDataValue(5).modifiedBy('strength', 0.8)
         })
 
         this.empowered = true
@@ -160,20 +161,20 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
         damageType: DamageType.PHYSICAL,
         maxStacks: 4,
         range: SkillRange.MELEE,
-        damage: 8
+        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.8),
     })
 
-    description: string | null = "Basic. Deal 8 physical damage to an enemy, or deal 1 piercing damage to an ally and give them a stacking cast speed buff"
+    description: string | null = "Basic. Deal {damage} physical damage to an enemy, or deal 1 piercing damage to an ally and give them a stacking cast speed buff"
 
     empowered = false
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
-            castBy.dealDamageTo({ amount: this.skillData.damage, type: this.skillData.damageType, targets, threatModifier: 1.3})
+            castBy.dealDamageTo({ amount: this.skillData.damage.value, type: this.skillData.damageType, targets, threatModifier: 1.3})
         } else {
             targets.forEach((target) => {
                 if (target.isEnemyTo(castBy)) {
-                    castBy.dealDamageTo({ amount: this.skillData.damage, type: this.skillData.damageType!, targets: [target]})
+                    castBy.dealDamageTo({ amount: this.skillData.damage.value, type: this.skillData.damageType!, targets: [target]})
                 } else {
                     castBy.dealDamageTo({ amount: 1, minAmount: 1, type: DamageType.BLEED, targets: [target], noCrit: true  })
                     target.addBuff(new PrimalStrikedBuff(this.skillData.buffDuration), castBy)
@@ -202,7 +203,7 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
             castTime: 1000,
             damageType: DamageType.PHYSICAL,
             range: SkillRange.MELEE,
-            damage: 10
+            damage: new DynamicSkillDataValue(5).modifiedBy('strength', 0.8),
         })
 
         this.empowered = true
@@ -233,7 +234,7 @@ export class Thorns extends Skill implements EmpowerableSKill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (this.skillData.isTransformed) {
-            castBy.dealDamageTo({ amount: this.skillData.damage, minAmount: 1, targets, type: this.skillData.damageType })
+            castBy.dealDamageTo({ amount: this.skillData.damage.value, minAmount: 1, targets, type: this.skillData.damageType })
         } else {
             targets.forEach((target) => {
                 target.addBuff(new ThornsBuff(this.skillData.buffDuration), castBy)
@@ -254,7 +255,7 @@ export class Thorns extends Skill implements EmpowerableSKill {
             targetType: TargetType.TARGET_ALL_ENEMIES,
             imagePath: "/druid/bear/sharp-spines.png",
             castTime: 1000,
-            damage: 1,
+            damage: new DynamicSkillDataValue(1).modifiedBy('strength', 0.5),
         })
 
         this.empowered = true
@@ -336,11 +337,11 @@ export class Regrowth extends Skill implements EmpowerableSKill {
         castTime: 500,
         imagePath: "/druid/regrowth.png",
         buffDuration: 12 * 1000,
-        healing: 20,
+        healing: new DynamicSkillDataValue(8).modifiedBy('intelligence', 1.2),
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Buff an ally to restore 20 health over time."
+    description: string | null = "Buff an ally to restore {healing} health over time."
 
     empowered = false
 
@@ -358,7 +359,7 @@ export class Regrowth extends Skill implements EmpowerableSKill {
             targets.forEach((target) => {
                 target.addBuff(new RegrowthBuff({
                     duration: this.skillData.buffDuration,
-                    totalHealAmount: this.skillData.healing
+                    totalHealAmount: this.skillData.healing.value
                 }), castBy)
             })
 
@@ -397,7 +398,8 @@ export class Entangle extends Skill implements EmpowerableSKill {
         imagePath: "/druid/entangle.png",
         castTime: 1000,
         damage: 8,
-        buffDuration: 3 * 1000
+        buffDuration: 3 * 1000,
+        intelligenceDamageModifier: 0.4
     })
 
     description: string | null = "Entangles an enemy for a short duration, dealing magical damage and reducing their energy regen and cast speed by 100%"

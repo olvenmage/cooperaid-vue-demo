@@ -12,6 +12,8 @@ export interface StatsOptionsConstructor {
     crit ?: number
 }
 
+export type StatType = 'dexterity'|'constitution'|'intelligence'|'strength'|'armor'
+
 class CharacterStat {
     private innerVal = 0
     private onChangedCallbacks: ((value: number, oldValue: number) => void)[] = []
@@ -43,6 +45,7 @@ interface CoreStatsObject {
     intelligence: number
     constitution: number
     baseCrit?: number
+    isPlayer?: boolean
 }
 
 export class CoreStats {
@@ -53,6 +56,8 @@ export class CoreStats {
     public constitution = new CharacterStat()
     public baseCrit = new CharacterStat()
 
+    isPlayer: boolean
+
     constructor(params: CoreStatsObject) {
         this.dexterity.set(params.dexterity)
         this.strength.set(params.strength)
@@ -60,12 +65,13 @@ export class CoreStats {
         this.constitution.set(params.constitution)
         this.baseHealth.set(params.baseHealth ?? GameSettings.baseHealth)
         this.baseCrit.set(params.baseCrit ?? GameSettings.baseMonsterCritChance)
+        this.isPlayer = params.isPlayer ?? false
     }
 
     setDerivedStats(derivedStats: DerivedStats)  {
         derivedStats.energyRegenHaste.set(this.dexterity.value * GameSettings.derivedStatsOptions.eneryRegenPerDex)
         derivedStats.critChance.set(this.baseCrit.value + Math.floor(this.dexterity.value / GameSettings.derivedStatsOptions.dexPerCrit))
-        derivedStats.dodgeChance.set(Math.floor(this.dexterity.value / GameSettings.derivedStatsOptions.dexPerDodge))
+        // derivedStats.dodgeChance.set(Math.floor(this.dexterity.value / GameSettings.derivedStatsOptions.dexPerDodge))
 
         derivedStats.castSpeed.set(this.strength.value * GameSettings.derivedStatsOptions.castSpeedIncreasePerStr)
         derivedStats.attackDamage.set(Math.floor(this.strength.value / GameSettings.derivedStatsOptions.attackDamagePerStrength))
@@ -86,7 +92,8 @@ export class CoreStats {
             strength: this.strength.value,
             intelligence: this.intelligence.value,
             constitution: this.constitution.value,
-            baseHealth: this.baseHealth.value
+            baseHealth: this.baseHealth.value,
+            isPlayer: this.isPlayer,
         })
     }
 
@@ -100,7 +107,13 @@ export class CoreStats {
     }
 
     getMaxHealth() {
-        return this.baseHealth.value + this.constitution.value * GameSettings.derivedStatsOptions.maxHealthPerConst
+        let maxHealth = this.baseHealth.value + this.constitution.value * GameSettings.derivedStatsOptions.maxHealthPerConst
+
+        if (!this.isPlayer) {
+            maxHealth = Math.round(maxHealth * GameSettings.extraEnemyHealthModifier)
+        }
+
+        return maxHealth
     }
 
     getState(): CorePlayerStatsState {

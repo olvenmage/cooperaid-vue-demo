@@ -1,5 +1,5 @@
 import Game from '@/core/game';
-import Buff from '../buff';
+import Buff, { BuffPriority } from '../buff';
 import type Character from '../character';
 import type CharacterStats from '../character-stats';
 import type StatMutatingBuff from '../stat-mutating-buff';
@@ -9,6 +9,7 @@ import { CHARACTER_TRIGGERS, type CharacterTriggerPayload } from '../character-t
 export default class BlessingOfProtectionBuff extends Buff implements StatMutatingBuff {
     duration: number = 8 * 1000
     callback = this.giveHolyToPaladin.bind(this)
+    priority = BuffPriority.LATE_3
 
     public imagePath: string | null = "/skills/paladin/blessing-of-protection.png"
 
@@ -38,7 +39,7 @@ export default class BlessingOfProtectionBuff extends Buff implements StatMutati
     }
 
     mutateStats(stats: CharacterStats): CharacterStats {
-        stats.derived.armor.set(stats.derived.armor.value + 2)
+        stats.derived.armor.set(Math.round(stats.derived.armor.value * 1.3))
         return stats
     }
 }

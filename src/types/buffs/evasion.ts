@@ -48,7 +48,7 @@ export default class EvasionBuff extends Buff implements StatMutatingBuff {
             stats.derived.castSpeed.set(stats.derived.castSpeed.value + (10 * this.dodgeCount))
         }
 
-        stats.derived.dodgeChance.set(stats.derived.dodgeChance.value + 60)
+        stats.derived.dodgeChance.set(stats.derived.dodgeChance.value + 75)
         return stats
     }
 

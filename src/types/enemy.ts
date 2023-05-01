@@ -20,7 +20,6 @@ class Enemy {
 
     createCharacter(): Character {
         const stats = new CharacterStats(this.identity.baseStats.clone())
-        stats.derived.maxHealth.set(stats.derived.maxHealth.value * GameSettings.extraEnemyHealthModifier)
         
         const character = reactive(new Character(this.identity, false, null, null)) as Character
 

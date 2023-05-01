@@ -6,7 +6,7 @@ import EnergyBar from '../energy-bar';
 import Healthbar from '../health-bar';
 import DamageType from '../damage-type';
 import CharacterStats, { CoreStats } from '../character-stats';
-import SkillData from '../skill-data';
+import SkillData, { DynamicSkillDataValue } from '../skill-data';
 import PiercedEarsBuff from '../buffs/pierced-ears'
 import FlyingBuff from '../buffs/flying'
 
@@ -39,7 +39,7 @@ class BeakAttack extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: 10,
+        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 0.4).modifiedBy('dexterity', 0.4),
     })
 
     override canCast(castBy: Character): boolean {
@@ -51,7 +51,7 @@ class BeakAttack extends Skill {
     }
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -64,7 +64,7 @@ class SkyDive extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
         imagePath: null,
-        damage: 15,
+        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.5).modifiedBy('dexterity', 0.5),
         range: SkillRange.RANGED,
     })
 
@@ -77,7 +77,7 @@ class SkyDive extends Skill {
     }
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: DamageType.PHYSICAL })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL })
     }
 }
 
@@ -93,6 +93,7 @@ class Squawk extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.RANGED,
+        constitutionDamageModifier: 0.3,
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

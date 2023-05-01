@@ -9,7 +9,7 @@ import SavingGrace from '../buffs/saving-grace';
 import BlessingOfProtectionBuff from '../buffs/blessing-of-protection'
 import SmittenBuff from '../buffs/smitten';
 import CharacterStats, { CoreStats } from '../character-stats';
-import SkillData from '../skill-data';
+import SkillData, { DynamicSkillDataValue } from '../skill-data';
 import HolyPowerBar from '../special-bar/holy-power-bar';
 import type { AppSocketSubscription } from '@/app-socket/lib/core/types';
 import OverwhelmingMartyrdom from '../skill-upgrades/paladin/overwhelming-martyrdom';
@@ -29,6 +29,7 @@ import DivineJudgementBuff from '../buffs/divine-judgement';
 export default class Paladin extends PlayerIdentity {
     public name = "Paladin"
     public baseStats = new CoreStats({
+        isPlayer: true,
         baseCrit: GameSettings.basePlayerCritChance,
         constitution: 13,
         strength: 12,
@@ -85,19 +86,19 @@ export class HolyShock extends Skill {
         damageType: DamageType.MAGICAL,
         castTime: 750,
         imagePath: "/paladin/holy-shock.png",
-        healing: 8,
-        damage: 8,
+        healing: new DynamicSkillDataValue(2).modifiedBy('intelligence', 0.7),
+        damage: new DynamicSkillDataValue(2).modifiedBy('intelligence', 0.8),
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Basic. Deal 8 damage to an enemy or restore 8 health to an ally."
+    description: string | null = "Basic. Deal {damage} damage to an enemy or restore {healing} health to an ally."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             if (castBy.isEnemyTo(target)) {
-                castBy.dealDamageTo({ amount: this.skillData.damage, targets: [target], type: DamageType.MAGICAL})
+                castBy.dealDamageTo({ amount: this.skillData.damage.value, targets: [target], type: DamageType.MAGICAL})
             } else {
-                target.restoreHealth(this.skillData.healing, castBy, 1.0)
+                target.restoreHealth(this.skillData.healing.value, castBy, 1.0)
             }
 
             if (castBy.classBar != null) {
@@ -127,13 +128,13 @@ export class HolyStrike extends Skill {
         castTime: 500,
         imagePath: "/paladin/holy-strike.png",
         range: SkillRange.MELEE,
-        damage: 5,
+        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 0.65),
     })
 
-    description: string | null = "Basic. Deal 5 damage to an enemy and restore half of the actual damage dealt to the lowest health ally."
+    description: string | null = "Basic. Deal {damage} damage to an enemy and restore half of the actual damage dealt to the lowest health ally."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        const results = castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: this.skillData.damageType, threatModifier: 1.1 })
+        const results = castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: this.skillData.damageType, threatModifier: 1.1 })
 
         for (const result of results) {
             const battle = Game.currentBattle
@@ -172,21 +173,21 @@ export class OverwhelmingLight extends Skill {
         damageType: DamageType.MAGICAL,
         castTime: 1000,
         imagePath: "/paladin/overwhelming-light.png",
-        damage: 12,
+        damage: new DynamicSkillDataValue(4).modifiedBy('intelligence', 0.9),
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Deal 12 damage to any target, if they survive, heal them for double the amount."
+    description: string | null = "Deal {damage} damage to any target, if they survive, heal them for double the amount."
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
             if (this.hasGem(OverwhelmingMartyrdom)) {
-                castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, targets: [castBy], threatModifier: 0, noCrit: true })
+                castBy.dealDamageTo({ amount: this.skillData.damage.value, type: DamageType.MAGICAL, targets: [castBy], threatModifier: 0, noCrit: true })
             } else {
-                castBy.dealDamageTo({ amount: this.skillData.damage!, type: DamageType.MAGICAL, targets: [target], threatModifier: 0, noCrit: true })
+                castBy.dealDamageTo({ amount: this.skillData.damage.value, type: DamageType.MAGICAL, targets: [target], threatModifier: 0, noCrit: true })
             }
 
-            target.restoreHealth(this.skillData.damage! * 2, castBy, 0.6)
+            target.restoreHealth(this.skillData.damage.value * 2, castBy, 0.6)
         })
 
         if (castBy.classBar != null) {
@@ -195,11 +196,11 @@ export class OverwhelmingLight extends Skill {
     }
 
     override getCastPriority(castBy: Character, target: Character) {
-        if (castBy.isEnemyTo(target) && (target.healthBar.current < this.skillData.damage! || this.hasGem(OverwhelmingMartyrdom))) {
+        if (castBy.isEnemyTo(target) && (target.healthBar.current < this.skillData.damage.value || this.hasGem(OverwhelmingMartyrdom))) {
             return -50
         }
 
-        if (!castBy.isEnemyTo(target) && target.healthBar.current > this.skillData.damage!) {
+        if (!castBy.isEnemyTo(target) && target.healthBar.current > this.skillData.damage.value) {
             return -50
         }
 
@@ -216,24 +217,26 @@ export class Smite extends Skill {
         damageType: DamageType.MAGICAL,
         castTime: 1000,
         imagePath: "/paladin/smite.png",
-        damage: 10,
+        damage: new DynamicSkillDataValue(4).modifiedBy('intelligence', 0.7),
+        healing: new DynamicSkillDataValue(1).modifiedBy('intelligence', 0.3),
         buffDuration: 6 * 1000,
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Smite an enemy, dealing 10 magic damage and marking them. For a duration each ally restores 3 health when they attack it."
+    description: string | null = "Smite an enemy, dealing {damage} magic damage and marking them. For a duration each ally restores {healing} health when they attack it."
 
     castSkill(castBy: Character, targets: Character[]): void {
         if (castBy.classBar) {
             castBy.classBar.increase(12)
         }
 
-        castBy.dealDamageTo({ amount: this.skillData.damage!, targets, type: this.skillData.damageType })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: this.skillData.damageType })
 
         targets.forEach((target) => {
           
             target.addBuff(new SmittenBuff({
                 duration: this.skillData.buffDuration,
+                healing: this.skillData.healing.value,
                 branding: this.hasGem(BrandingSmiteSkillGem)
             }), castBy)
         })
@@ -253,7 +256,7 @@ export class BlessingOfProtection extends Skill {
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Buff an ally to give them 2 armor for a duration"
+    description: string | null = "Buff an ally to give them +30% armor for a duration"
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => { 
@@ -278,9 +281,10 @@ export class LayOnHands extends Skill {
         castTime: 500,
         imagePath: "/paladin/lay-on-hands.png",
         range: SkillRange.RANGED,
+        healing: new DynamicSkillDataValue(1).modifiedBy('intelligence', 0.15)
     })
 
-    description: string | null = "Spend all your energy to heal an ally for the amount * 3"
+    description: string | null = "Spend all your energy to heal an ally for the energy spent × {healing}"
 
     canCast(castBy: Character): boolean {
         if (castBy.energyBar.current == 0) {
@@ -294,7 +298,7 @@ export class LayOnHands extends Skill {
         targets.forEach((target) => {
             const consumeAmount = castBy.energyBar.current
             
-            target.restoreHealth(consumeAmount * 3, castBy, 0)
+            target.restoreHealth(consumeAmount * this.skillData.healing.value, castBy, 0)
 
             if (this.hasGem(RejuvenatingLight)) {
                 target.energyBar.increase(2)
@@ -334,9 +338,10 @@ export class BlessedWeapon extends Skill {
         imagePath: "/paladin/blessed-weapon.png",
         buffDuration: 10 * 1000,
         range: SkillRange.RANGED,
+        damage: new DynamicSkillDataValue(0).modifiedBy('intelligence', 0.25)
     })
 
-    description: string | null = "Buff an ally to give +3 attack damage and turns their damage into magic damage"
+    description: string | null = "Buff an ally to add {damage} damage to their physical attacks and turns it into magic damage"
 
     canCast(castBy: Character): boolean {
         if (castBy.energyBar.current == 0) {
@@ -350,7 +355,7 @@ export class BlessedWeapon extends Skill {
         targets.forEach((target) => {
             target.addBuff(new BlessedWeaponBuff({
                 duration: this.skillData.buffDuration,
-                damageAmount: this.hasGem(WeaponOfRightenousnessSkillGem) ? 6 : 3
+                damageAmount: this.hasGem(WeaponOfRightenousnessSkillGem) ? (this.skillData.damage.value * 2) : this.skillData.damage.value
             }), castBy)
         })
     }
@@ -370,11 +375,11 @@ export class PrayerOfHealing extends Skill {
         damageType: DamageType.MAGICAL,
         castTime: 1250,
         imagePath: "/paladin/prayer-of-healing.png",
-        healing: 8,
+        healing: new DynamicSkillDataValue(3).modifiedBy('intelligence', 0.7),
         range: SkillRange.RANGED,
     })
 
-    description: string | null = "Restore 8 health to all allies."
+    description: string | null = "Restore {healing} health to all allies."
 
     canCast(castBy: Character): boolean {
         if (castBy.energyBar.current == 0) {
@@ -386,7 +391,7 @@ export class PrayerOfHealing extends Skill {
 
     castSkill(castBy: Character, targets: Character[]): void {
         targets.forEach((target) => {
-            target.restoreHealth(this.skillData.healing, castBy, 0.8)
+            target.restoreHealth(this.skillData.healing.value, castBy, 0.8)
         })
 
         if (castBy.classBar) {
@@ -410,13 +415,14 @@ export class HammerOfJustice extends Skill {
         imagePath: "/paladin/hammer-of-justice.png",
         range: SkillRange.MELEE,
         buffDuration: 6 * 1000,
-        damage: 11,
+        damage: new DynamicSkillDataValue(2).modifiedBy('intelligence', 0.4).modifiedBy('strength', 0.5),
+        strengthDamageModifier: 0.5,
     })
 
-    description: string | null = "Deal 11 damage to an enemy and mark them for a duration. After the buff ends, stun the enemy based on how much damage you dealt to it."
+    description: string | null = "Deal {damage} damage to an enemy and mark them for a duration. After the buff ends, stun the enemy based on how much damage you dealt to it."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: this.skillData.damageType, threatModifier: 1.1 })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: this.skillData.damageType, threatModifier: 1.1 })
 
         for (const target of targets) {
             castBy.classBar?.increase(7)
@@ -446,16 +452,17 @@ export class DivineJudgement extends Skill {
         imagePath: "/paladin/divine-judgement.png",
         range: SkillRange.MELEE,
         buffDuration: 4 * 1000,
-        damage: 14,
+        damage: new DynamicSkillDataValue(2).modifiedBy('intelligence', 0.2).modifiedBy('strength', 0.7),
+        strengthDamageModifier: 0.6,
     })
 
-    description: string | null = "Call a divine judgement on an enemy, after a duration, deal 14 physical piercing damage to them."
+    description: string | null = "Call a divine judgement on an enemy, after a duration, deal {damage} physical piercing damage to them."
 
     castSkill(castBy: Character, targets: Character[]): void {
         for (const target of targets) {
             target.addBuff(new DivineJudgementBuff({
                 duration: this.skillData.buffDuration,
-                damage: this.skillData.damage,
+                damage: this.skillData.damage.value,
                 damageType: this.skillData.damageType
             }), castBy)
         }

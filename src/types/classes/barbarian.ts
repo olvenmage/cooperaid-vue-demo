@@ -5,7 +5,7 @@ import ClassBar from '../class-bar';
 import DamageType from '../damage-type';
 import type OnDamageTrigger from '../triggers/on-damage-trigger';
 import CharacterStats, { CoreStats } from '../character-stats';
-import SkillData from '../skill-data';
+import SkillData, { DynamicSkillDataValue } from '../skill-data';
 import NettedBuff from '../buffs/netted';
 import RageBar from '../special-bar/rage-bar';
 import BloodthirstyRampage from '../skill-upgrades/barbarian/bloodthirsty-rampage';
@@ -25,6 +25,7 @@ export default class Barbarian extends PlayerIdentity {
     public name = "Barbarian"
     public baseStats = new CoreStats({
         baseCrit: GameSettings.basePlayerCritChance,
+        isPlayer: true,
         constitution: 11,
         strength: 16,
         dexterity: 12,
@@ -32,7 +33,7 @@ export default class Barbarian extends PlayerIdentity {
     })
     public imagePath = "/classes/barbarian.png"
     public playerClass = PlayerClass.BARBARIAN
-    public basicSkills: Skill[] = [new AxeThrow(), new RecklessStrike(), new Shout()]
+    public basicSkills: Skill[] = [new RecklessStrike(), new Shout()]
     public color = "#E7623E";
     public description: string = "The Barbarian, different as they might be, are defined by their rage: unbridled, unquenchable, and unthinking fury. With unmatched combat prowess, they are willing to go to any length to ensure victory."
 
@@ -100,18 +101,18 @@ export class RecklessStrike extends Skill {
         damageType: DamageType.PHYSICAL,
         castTime: 500,
         imagePath: "/barbarian/reckless-strike.png",
-        damage: 10,
-        range: SkillRange.MELEE
+        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.75),
+        range: SkillRange.MELEE,
     })
 
-    description: string | null = "Basic. Recklessly Strike an enemy for 10 damage. Deals your attack damage in damage back to you."
+    description: string | null = "Basic. Recklessly Strike an enemy for {damage} damage. Deals your attack damage in damage back to you."
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: this.skillData.damage ?? 0, type: this.skillData.damageType, threatModifier: 0.85, targets })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, type: this.skillData.damageType, threatModifier: 0.85, targets })
     }
 
     beforeCast(castBy: Character): void {
-        castBy.takeDamage({ amount: castBy.stats.derived.attackDamage.value, damagedBy: castBy, type: DamageType.BLEED });
+        castBy.takeDamage({ amount: Math.floor(castBy.stats.core.strength.value * 0.25), damagedBy: castBy, type: DamageType.BLEED });
     }
 
     override canCast(castBy: Character): boolean {
@@ -141,13 +142,13 @@ export class EnragingBlow extends Skill {
         castTime: 1500,
         imagePath: "/barbarian/raging-blow.png",
         range: SkillRange.MELEE,
-        damage: 10
+        damage: new DynamicSkillDataValue(6).modifiedBy('strength', 0.7),
     })
 
-    description: string | null = "Deal 10 damage to an enemy, gain rage equal to the actual damage done."
+    description: string | null = "Deal {damage} damage to an enemy, gain rage equal to the actual damage done."
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
-        let damage = this.skillData.damage
+        let damage = this.skillData.damage.value
 
         if (this.socketedUpgrade instanceof RagingBlowSkillGem && castBy.classBar?.activated) {
             damage *= 1.5
@@ -172,15 +173,16 @@ export class Rampage extends Skill {
         damageType: DamageType.PHYSICAL,
         castTime: 1000,
         imagePath: "/barbarian/rampage.png",
-        damage: 8,
+        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.75),
         range: SkillRange.MELEE,
+        strengthDamageModifier: 0.6
     })
 
-    description: string | null = "Deal 8 to an enemy, deals up to double damage based on how low health you are. Increases threat caused the higher health you are."
+    description: string | null = "Deal {damage} to an enemy, deals up to double damage based on how low health you are. Increases threat caused the higher health you are."
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         const missingHealthPercentage = (castBy.healthBar.current / castBy.healthBar.max);
-        const damageToDeal = Math.ceil((this.skillData.damage ?? 10) * (2 - missingHealthPercentage))
+        const damageToDeal = Math.ceil((this.skillData.damage.value) * (2 - missingHealthPercentage))
         const threatModifier = 2.5 * missingHealthPercentage
 
         const damageResults = castBy.dealDamageTo({ amount: damageToDeal, targets, type: this.skillData.damageType!, threatModifier })
@@ -203,13 +205,13 @@ export class Shout extends Skill {
         castTime: 500,
         imagePath: "/barbarian/shout.png",
         range: SkillRange.RANGED,
-        damage: 6
+        damage: new DynamicSkillDataValue(3).modifiedBy('strength', 0.4).modifiedBy('constitution', 0.4),
     })
 
-    description: string | null = "Deal 8 piercing damage divided amongst all enemies, generates a lot of threat"
+    description: string | null = "Deal {damage} piercing damage divided amongst all enemies, generates a lot of threat"
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
-        const damage = Math.ceil(this.skillData.damage / targets.length)
+        const damage = Math.ceil(this.skillData.damage.value / targets.length)
 
         castBy.dealDamageTo({ amount: damage, targets, type: this.skillData.damageType!, threatModifier: 2, minAmount: damage })
 
@@ -229,13 +231,13 @@ export class Whirlwind extends Skill {
         castTime: 1250,
         imagePath: "/barbarian/whirlwind.png",
         range: SkillRange.MELEE,
-        damage: 12
+        damage: new DynamicSkillDataValue(6).modifiedBy('strength', 0.85),
     })
 
-    description: string | null = "Deal 12 damage to all enemies"
+    description: string | null = "Deal {damage} damage to all enemies"
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
-        castBy.dealDamageTo({ amount: this.skillData.damage, targets, type: this.skillData.damageType!, threatModifier: 0.9 })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: this.skillData.damageType!, threatModifier: 0.9 })
     }
 }
 
@@ -272,11 +274,12 @@ export class AxeThrow extends Skill {
         castTime: 250,
         imagePath: "/barbarian/axe-throw.png",
         range: SkillRange.RANGED,
+        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.5).modifiedBy('dexterity', 0.5),
     })
 
     COOLDOWN = 12 * 1000
 
-    description: string | null = "Deal 8 damage to an enemy, can be retrieved to reset cooldown"
+    description: string | null = "[BUGGED] Deal {damage} damage to an enemy, can be retrieved to reset cooldown"
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
         if (this.skillData.isTransformed) {
@@ -350,15 +353,15 @@ export class BloodStrike extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
         castTime: 1000,
-        damage: 6,
+        damage: new DynamicSkillDataValue(3).modifiedBy('strength', 0.65),
         imagePath: "/barbarian/blood-strike.png",
         range: SkillRange.MELEE,
     })
 
-    description: string | null = "Deal 6 damage to an enemy and restore the actual damage done in health to you."
+    description: string | null = "Deal {damage} damage to an enemy and restore the actual damage done in health to you."
 
     castSkill(castBy: Character, targets: Character[]): CastSkillResponse {
-        const results = castBy.dealDamageTo({ amount: this.skillData.damage, targets: targets, type: this.skillData.damageType })
+        const results = castBy.dealDamageTo({ amount: this.skillData.damage.value, targets: targets, type: this.skillData.damageType })
 
         for (const result of results) {
             castBy.restoreHealth(result.actualDamage, castBy, 0.3)

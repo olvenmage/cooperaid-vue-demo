@@ -20,11 +20,11 @@ abstract class PlayerIdentity extends Identity {
 
     abstract description: string
 
-    getPlayerIdentityState(): PlayerIdentityState {
+    getPlayerIdentityState(castBy: Character|null = null): PlayerIdentityState {
         return Object.assign({}, this.getState(), {
             description: this.description,
-            basicSkills: this.basicSkills.map((s) => s.getState(null, null)),
-            skills: this.skills.map((sk) => sk.getState(null, null))
+            basicSkills: this.basicSkills.map((s) => s.getState(castBy, null)),
+            skills: this.skills.map((sk) => sk.getState(castBy, null))
         }
         ) as PlayerIdentityState
     }

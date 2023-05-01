@@ -6,12 +6,12 @@ export default class HealingIncreaseSkillGem extends SkillUpgradeGem {
     public name = "Basic Healing Upgrade"
 
     applies(item: Skill): boolean {
-        return item.baseSkillData.healing > 0
+        return item.baseSkillData.healing.value > 0
     }
 
     applyUpgrade(item: Skill) {
-       if ( item.baseSkillData.healing > 0) {
-            item.baseSkillData.healing = Math.round(item.baseSkillData.healing * 1.2)
+       if ( item.baseSkillData.healing.value > 0) {
+            item.baseSkillData.healing.value = Math.round(item.baseSkillData.healing.value * 1.2)
        }
     }
 }
