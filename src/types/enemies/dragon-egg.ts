@@ -16,7 +16,7 @@ export default class DragonEgg extends Identity {
         constitution: 8,
         strength: 0,
         dexterity: 0,
-        intelligence: 0
+        intelligence: 6
     })
     public imagePath = "/enemies/dragon/dragon-egg.png"
 

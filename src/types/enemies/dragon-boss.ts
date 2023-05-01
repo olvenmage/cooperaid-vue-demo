@@ -15,7 +15,7 @@ export default class DragonBoss extends Identity {
     public baseStats = new CoreStats({
         baseHealth: 350,
         constitution: 30,
-        strength: 16,
+        strength: 18,
         dexterity: 12,
         intelligence: 18
     })

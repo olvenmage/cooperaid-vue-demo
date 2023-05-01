@@ -11,8 +11,9 @@ import SkillData, { DynamicSkillDataValue } from '../skill-data';
 export default class Goblin extends Identity {
     public name = "Goblin"
     public baseStats = new CoreStats({
-        constitution: 6,
-        strength: 8,
+        baseHealth: 45,
+        constitution: 8,
+        strength: 10,
         dexterity: 12,
         intelligence: 4
     })

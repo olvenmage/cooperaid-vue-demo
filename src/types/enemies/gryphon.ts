@@ -15,8 +15,8 @@ export default class Gryphon extends Identity {
     public baseStats = new CoreStats({
         baseHealth: 90,
         constitution: 20,
-        strength: 20,
-        dexterity: 24,
+        strength: 24,
+        dexterity: 22,
         intelligence: 15
     })
     public imagePath = "/enemies/gryphon.png"

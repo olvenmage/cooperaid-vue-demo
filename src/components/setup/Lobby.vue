@@ -38,7 +38,7 @@ const classes = [
 
 const playerAssignment: Record<number, Player|null> = reactive({
   0: null,
-  // 1: null,
+  1: null,
   // 2: null,
   // 3: null
 })

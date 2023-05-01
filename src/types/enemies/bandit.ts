@@ -13,8 +13,9 @@ import StunnedBuff from '../buffs/stunned';
 export default class Bandit extends Identity {
     public name = "Bandit"
     public baseStats = new CoreStats({
+        baseHealth: 50,
         constitution: 9,
-        strength: 10,
+        strength: 11,
         dexterity: 11,
         intelligence: 4
     })
