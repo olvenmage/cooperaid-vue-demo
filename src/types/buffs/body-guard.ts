@@ -66,6 +66,6 @@ export default class BodyGuardBuff extends Buff {
     }
 
     increaseDamage(trigger: CharacterTriggerPayload<SkillData>) {
-        trigger.damage *= 1.2
+        trigger.damage.value *= 1.2
     }
 }

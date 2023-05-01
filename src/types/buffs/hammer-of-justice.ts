@@ -77,10 +77,8 @@ export default class HammerOfJusticeBuff extends Buff implements StatMutatingBuf
     }
 
     buildStunDurationOnDamage(trigger: CharacterTriggerPayload<OnDamageTrigger>) {
-        console.log(`dmg: ${trigger.actualDamage}`)
         const fromFriendly = this.givenBy && (this.params.countsAllies && !trigger.damagedBy?.isEnemyTo(this.givenBy))
         if (trigger.actualDamage > 0 && (fromFriendly || trigger.damagedBy?.id == this.givenBy?.id)) {
-            console.log("DMG EDOAN OR")
             this.damageDealt += trigger.actualDamage
             this.givenBy?.classBar?.increase(2)
         }
