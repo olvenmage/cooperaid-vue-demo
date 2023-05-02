@@ -17,7 +17,7 @@ export default abstract class GameSettings {
     static startingEnergyPercentage = 0.5
     static generateEnergyWhileCasting = true
     static statPointsPerLevel = 4
-    static extraEnemyHealthModifier = 0.5
+    static extraEnemyHealthModifier = 0.8
     static derivedStatsOptions: StatConfigState = {
         // DEX
         eneryRegenPerDex: 1,
