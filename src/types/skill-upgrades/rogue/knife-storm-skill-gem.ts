@@ -5,7 +5,7 @@ import { TargetType } from "../../skill";
 import { FanOfKnives, SleepDart } from "@/types/classes/rogue";
 
 export default class KnifeStormSkillGem extends SkillUpgradeGem {
-    public description: string = "Deals 3 extra damage and divides it amongst 2 extra daggers but randomly targets enemies"
+    public description: string = "Deals +20% dexterity extra damage and divides it amongst 2 extra daggers but randomly targets enemies"
     public name = "Knife Storm"
 
     public imagePath = "/gems/rogue/uncommon.png"
@@ -15,7 +15,7 @@ export default class KnifeStormSkillGem extends SkillUpgradeGem {
     }
 
     applyUpgrade(item: Skill) {
-        item.baseSkillData.damage.increaseInitialValue(3)
+        item.baseSkillData.damage.statModifiers.dexterity += 0.2
         item.baseSkillData.targetType = TargetType.TARGET_ALL_ENEMIES
     }
 }

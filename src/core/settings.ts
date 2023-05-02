@@ -45,4 +45,10 @@ export default abstract class GameSettings {
         // how quickly the required xp per level should increase (higher values = larger gaps between levels) (Y)
         expIncreaseFactor: 2.5
     }
+    static goldRewardStages = [
+        { value: 100, time: 10 },
+        { value: 70, time: 12 },
+        { value: 50, time: 15 },
+        { value: 25, time: 0 },
+    ]
 }

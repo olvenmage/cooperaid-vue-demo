@@ -226,7 +226,7 @@ export class Backstab extends Skill {
         castTime: 500,
         imagePath: "/rogue/backstab.png",
         damageType: DamageType.PHYSICAL,
-        damage: new DynamicSkillDataValue(1).modifiedBy('strength', 0.4).modifiedBy('dexterity', 0.4),
+        damage: new DynamicSkillDataValue(1).modifiedBy('strength', 0.3).modifiedBy('dexterity', 0.3),
         range: SkillRange.MELEE,
         strengthDamageModifier: 0.5,
     })
@@ -257,7 +257,7 @@ export class Backstab extends Skill {
                     castBy.classBar.increase(5)
                 }
 
-                threatModifier += 0.5
+                threatModifier += 0.4
             }
 
             castBy.dealDamageTo({ targets: [target], type: this.skillData.damageType, amount: damage, threatModifier })
@@ -378,7 +378,7 @@ export class KillShot extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         castTime: 750,
         imagePath: "/rogue/killshot.png",
-        damage: new DynamicSkillDataValue(4).modifiedBy('dexterity', 0.5).modifiedBy('strength', 0.5),
+        damage: new DynamicSkillDataValue(2).modifiedBy('dexterity', 0.7).modifiedBy('strength', 0.7),
         range: SkillRange.RANGED,
         strengthDamageModifier: 0.35,
         dexterityDamageModifier: 0.35,
@@ -470,7 +470,7 @@ export class CoughBomb extends Skill {
         imagePath: "/rogue/cough-bomb.png",
         buffDuration: 4 * 1000,
         range: SkillRange.RANGED,
-        damage: new DynamicSkillDataValue(4).modifiedBy('intelligence', 0.6).modifiedBy('dexterity', 0.3),
+        damage: new DynamicSkillDataValue(3).modifiedBy('intelligence', 0.7).modifiedBy('dexterity', 0.3),
         dexterityDamageModifier: 0.35,
     })
 
