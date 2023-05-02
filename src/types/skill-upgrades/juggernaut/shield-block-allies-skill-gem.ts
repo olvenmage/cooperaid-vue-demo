@@ -2,6 +2,7 @@ import { ShieldBlock } from "@/types/classes/juggernaut";
 import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
 import { TargetType } from "../../skill";
+import type Character from "@/types/character";
 
 export default class ShieldBlockAlliesSkillGem extends SkillUpgradeGem {
     public description: string = "Allows Shield Block to be cast on allies"
@@ -13,7 +14,7 @@ export default class ShieldBlockAlliesSkillGem extends SkillUpgradeGem {
         return item instanceof ShieldBlock
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
        item.baseSkillData.targetType = TargetType.TARGET_FRIENDLY
     }
 }

@@ -1,4 +1,4 @@
-import Character from "./character"
+import type Character from "./character"
 import type Identity from "./identity"
 import Item from "./item"
 import type Player from "./player"
@@ -11,7 +11,7 @@ export default abstract class UpgradeGem<T> extends Item {
     public abstract description: string
     public goldValue: number = 10
 
-    abstract applyUpgrade(item: T): void
+    abstract applyUpgrade(character: Character, item: T): void
     abstract applies(item: T): boolean
 
     imagePath: string|null = null
@@ -22,7 +22,8 @@ export default abstract class UpgradeGem<T> extends Item {
             name: this.name,
             description: this.description,
             imagePath: this.getImagePath(playerClass),
-            appliesTo: skills.filter((sk) => this.applies(sk)).map((sk) => sk.id)
+            appliesTo: skills.filter((sk) => this.applies(sk)).map((sk) => sk.id),
+            goldValue: this.goldValue
         }
     }
 

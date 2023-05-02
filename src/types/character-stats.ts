@@ -12,11 +12,15 @@ export interface StatsOptionsConstructor {
     crit ?: number
 }
 
-export type StatType = 'dexterity'|'constitution'|'intelligence'|'strength'|'armor'
+export type StatType = 'dexterity'|'constitution'|'intelligence'|'strength'|'armor'|'baseHealth'|'no_type'
 
 class CharacterStat {
     private innerVal = 0
     private onChangedCallbacks: ((value: number, oldValue: number) => void)[] = []
+
+    constructor(public type: StatType) {
+
+    }
 
     get value() {
         return this.innerVal
@@ -49,12 +53,12 @@ interface CoreStatsObject {
 }
 
 export class CoreStats {
-    public baseHealth = new CharacterStat()
-    public dexterity = new CharacterStat()
-    public strength = new CharacterStat()
-    public intelligence = new CharacterStat()
-    public constitution = new CharacterStat()
-    public baseCrit = new CharacterStat()
+    public baseHealth = new CharacterStat('baseHealth')
+    public dexterity = new CharacterStat('dexterity')
+    public strength = new CharacterStat('strength')
+    public intelligence = new CharacterStat('intelligence')
+    public constitution = new CharacterStat('constitution')
+    public baseCrit = new CharacterStat('no_type')
 
     isPlayer: boolean
 
@@ -97,6 +101,12 @@ export class CoreStats {
         })
     }
 
+    getHighest(): CharacterStat {
+        const stats = [this.dexterity, this.strength, this.constitution, this.intelligence]
+
+        return stats.sort((s1, s2) => Math.sign(s2.value - s1.value))[0]
+    }
+
     recalculateBasedOn(stats: CoreStats) {
         this.baseHealth.recalculate(stats.baseHealth.value)
         this.dexterity.recalculate(stats.dexterity.value)
@@ -128,22 +138,22 @@ export class CoreStats {
 }
 
 class DerivedStats {
-    energyRegenHaste = new CharacterStat()
-    critChance = new CharacterStat()
-    dodgeChance = new CharacterStat()
+    energyRegenHaste = new CharacterStat('no_type')
+    critChance = new CharacterStat('no_type')
+    dodgeChance = new CharacterStat('no_type')
 
-    castSpeed = new CharacterStat()
-    attackDamage = new CharacterStat()
+    castSpeed = new CharacterStat('no_type')
+    attackDamage = new CharacterStat('no_type')
 
-    cooldownReduction = new CharacterStat()
-    maxEnergy = new CharacterStat()
-    magicalArmor = new CharacterStat()
+    cooldownReduction = new CharacterStat('no_type')
+    maxEnergy = new CharacterStat('no_type')
+    magicalArmor = new CharacterStat('no_type')
 
-    armor = new CharacterStat()
-    maxHealth = new CharacterStat()
-    hardiness = new CharacterStat()
+    armor = new CharacterStat('armor')
+    maxHealth = new CharacterStat('no_type')
+    hardiness = new CharacterStat('no_type')
 
-    initiative = new CharacterStat()
+    initiative = new CharacterStat('no_type')
 
     getState(): DerivedStatsState {
         return {

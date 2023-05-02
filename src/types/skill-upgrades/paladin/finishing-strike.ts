@@ -2,6 +2,7 @@ import { ShieldBlock } from "@/types/classes/juggernaut";
 import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
 import { HolyStrike, OverwhelmingLight } from "@/types/classes/paladin";
+import type Character from "@/types/character";
 
 export default class FinishingStrikeSkilGem extends SkillUpgradeGem {
     public description: string = "Holy strike heals for tripple the amount if it's the last hit on the target."
@@ -13,6 +14,6 @@ export default class FinishingStrikeSkilGem extends SkillUpgradeGem {
         return item instanceof HolyStrike
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
     }
 }

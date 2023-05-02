@@ -57,7 +57,7 @@ export default class Character {
         this.identity = identity;
 
         if (characterSkills == null) {
-            characterSkills = new CharacterSkills(identity.skills, null)
+            characterSkills = new CharacterSkills(this, identity.skills, null)
         }
 
         if (stats == null) {
@@ -76,6 +76,33 @@ export default class Character {
         this.buffs.onBuffsChanged(() => this.recalculateStats())
         this.characterPowers.onPowersChanged(() => this.recalculateStats())
         this.recalculateStats()
+    }
+    
+    static fromPlayer(player: Player): Character {
+        const charStats = new CharacterStats(player.coreStats)
+        const character = reactive(new Character(player.playerClass!, true, null, charStats)) as Character
+
+        const charSkills = new CharacterSkills(character, player.skills, player.basicSkill)
+        charSkills.resetCooldowns()
+
+        character.characterSkills = charSkills
+
+
+        character.healthBar = player.healthBar
+        character.id = player.id
+
+        character.player = player
+
+        if (player.aiEnabled) {
+            character.enableAI()
+        }
+
+        character.identity.onCreated(character)
+        character.classBar?.decrease(100)
+        character.checkDeath()
+
+        return character
+
     }
 
     recalculateStats() {

@@ -7,6 +7,7 @@ import Game from "./game"
 import GameSettings from "./settings"
 import { pubUpdateBattleState } from "../client-socket/OutgoingMessages"
 import { subCastSkill } from "../client-socket/IncomingMessages"
+import { reactive } from "vue"
 
 const settings = {
     enemyInteractSpeed: 1
@@ -16,17 +17,36 @@ export interface CombatFinishedParameters {
     playersWon: boolean
 }
 
+export interface GoldStage {
+    index: number,
+    counter: number,
+    goldAmount: number,
+    totalTime: number,
+    value: number
+    complete: boolean
+}
+
 export default class Battle {
     public enemies: Character[]
 
     private runAiInterval = 0
     private checkAliveInterval = 0
     private syncClientsInterval = 0
+    private incrementGoldStageCounterInterval = 0
 
     public combatants: Character[] = [];
     private onCombatFinishedListeners: ((params: CombatFinishedParameters) => void)[] = []
 
-    constructor(enemies: Enemy[]) {
+    goldStage = reactive({
+        index: 0,
+        counter: 0,
+        goldAmount: 0,
+        totalTime: 0,
+        value: 0,
+        complete: false
+    }) as GoldStage
+
+    constructor(enemies: Enemy[], private gold: number) {
         this.enemies = enemies.map((player) => player.createCharacter())
 
         this.combatants = [
@@ -50,6 +70,12 @@ export default class Battle {
 
         this.syncClientsInterval  =setInterval(() => {
             this.syncClients()
+        }, 200)
+
+
+        this.setGoldStateFromSettings(GameSettings.goldRewardStages[0])
+        this.incrementGoldStageCounterInterval = setInterval(() => {
+            this.incrementGoldStageCounter()
         }, 200)
 
         const unsubscribe = Game.eventBus.subscribe(globalThreatEvent, event => {
@@ -90,6 +116,7 @@ export default class Battle {
         clearInterval(this.checkAliveInterval)
         clearInterval(this.runAiInterval)
         clearInterval(this.syncClientsInterval)
+        clearInterval(this.incrementGoldStageCounterInterval)
 
         this.onCombatFinishedListeners.forEach((cb) => cb(combatFinishedParams))
         this.onCombatFinishedListeners = [];
@@ -121,10 +148,46 @@ export default class Battle {
         const anyEnemiesAlive = this.combatants.some((enemy) => !enemy.isFriendly && !enemy.dead)
 
         if (!anyEnemiesAlive) {
+            const gold = Math.round((this.goldStage.value / 100) * this.gold)
+
+            console.log(`gained ${gold} gold`)
+
+            Game.players.value.forEach((player) => player.resources.gold += gold)
+
             this.stopCombat({
                 playersWon: true
             })
+
+            Game.players
         }
+    }
+
+    private incrementGoldStageCounter() {
+        if (this.goldStage.complete) {
+            return;
+        }
+
+        this.goldStage.counter += 200
+
+        if (this.goldStage.counter >= this.goldStage.totalTime) {
+            const nextStage = GameSettings.goldRewardStages[this.goldStage.index + 1]
+
+            if (nextStage) {
+                this.goldStage.counter = 0;
+                this.setGoldStateFromSettings(nextStage)
+                this.goldStage.index += 1;
+                return;
+            } else {
+                this.goldStage.complete = true;
+            }
+        } 
+    }
+
+    private setGoldStateFromSettings(settingsGoldState: { value: number, time: number}) {
+        this.goldStage.totalTime = (settingsGoldState.time * 1000) / GameSettings.speedFactor
+        this.goldStage.goldAmount = Math.round((settingsGoldState.value / 100) * this.gold)
+        this.goldStage.value = settingsGoldState.value
+        this.goldStage.complete = false
     }
 
     private runAI() {

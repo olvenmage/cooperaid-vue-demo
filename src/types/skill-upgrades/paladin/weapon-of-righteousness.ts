@@ -3,6 +3,7 @@ import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
 import { BlessedWeapon } from "@/types/classes/paladin";
 import { TargetType } from "../../skill";
+import type Character from "@/types/character";
 
 export default class WeaponOfRightenousnessSkillGem extends SkillUpgradeGem {
     public description: string = "Blessed Weapon can now only be cast on yourself but adds double the damage."
@@ -14,7 +15,7 @@ export default class WeaponOfRightenousnessSkillGem extends SkillUpgradeGem {
         return item instanceof BlessedWeapon
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
         item.baseSkillData.targetType = TargetType.TARGET_SELF
     }
 }

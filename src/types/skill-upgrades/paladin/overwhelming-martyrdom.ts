@@ -2,6 +2,7 @@ import { ShieldBlock } from "@/types/classes/juggernaut";
 import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
 import { OverwhelmingLight } from "@/types/classes/paladin";
+import type Character from "@/types/character";
 
 export default class OverwhelmingMartyrdom extends SkillUpgradeGem {
     public description: string = "Overwhelming light now always deals the damage to you instead of the target."
@@ -13,6 +14,6 @@ export default class OverwhelmingMartyrdom extends SkillUpgradeGem {
         return item instanceof OverwhelmingLight
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
     }
 }

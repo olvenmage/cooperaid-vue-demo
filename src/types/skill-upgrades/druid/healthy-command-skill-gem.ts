@@ -3,6 +3,7 @@ import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
 import { TargetType } from "../../skill";
 import { CommandNature } from "@/types/classes/druid";
+import type Character from "@/types/character";
 
 export default class HealthyCommandNatureSkillGem extends SkillUpgradeGem {
     public description: string = "Command Nature now restores 3 health per stack when it expires."
@@ -14,6 +15,6 @@ export default class HealthyCommandNatureSkillGem extends SkillUpgradeGem {
         return item instanceof CommandNature
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
     }
 }

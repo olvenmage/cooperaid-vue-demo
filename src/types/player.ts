@@ -97,7 +97,7 @@ class Player {
     public playerColor: string
     public playerNumber: number
 
-    private aiEnabled = false
+    public aiEnabled = false
 
     public combatCharacter: Character|null = null
     public skills: Skill[] = []
@@ -176,28 +176,9 @@ class Player {
             throw Error("Can't create character without player identity")
         }
 
-        const charSkills = new CharacterSkills(this.skills, this.basicSkill)
-        const charStats = new CharacterStats(this.coreStats)
-
-        charSkills.resetCooldowns()
-        const character = reactive(new Character(this.playerClass, true, charSkills, charStats)) as Character
-
-        character.healthBar = this.healthBar
-        character.id = this.id
-
-        character.player = this
-
-        this.combatCharacter = character
+        this.combatCharacter = Character.fromPlayer(this)
         
-        if (this.aiEnabled) {
-            character.enableAI()
-        }
-
-        character.identity.onCreated(character)
-        character.classBar?.decrease(100)
-        character.checkDeath()
-
-        return character
+        return this.combatCharacter
     }
 
     getState(): PlayerState {

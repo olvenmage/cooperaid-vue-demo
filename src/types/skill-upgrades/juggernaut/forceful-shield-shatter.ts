@@ -1,6 +1,7 @@
 import { BodyGuard, ShieldBlock, ShieldShatter } from "@/types/classes/juggernaut";
 import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
+import type Character from "@/types/character";
 
 export default class ForcefulShieldShatterSkillGem extends SkillUpgradeGem {
     public description: string = "Shield shatter is now affected by Attack Damage"
@@ -12,6 +13,6 @@ export default class ForcefulShieldShatterSkillGem extends SkillUpgradeGem {
         return item instanceof ShieldShatter
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
     }
 }

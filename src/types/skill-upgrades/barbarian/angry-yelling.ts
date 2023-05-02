@@ -3,6 +3,7 @@ import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
 import { OverwhelmingLight } from "@/types/classes/paladin";
 import { Rampage, Shout } from "@/types/classes/barbarian";
+import type Character from "@/types/character";
 
 export default class AngryYellingSkillGem extends SkillUpgradeGem {
     public description: string = "Shout generates 2 rage per enemy affected"
@@ -14,6 +15,6 @@ export default class AngryYellingSkillGem extends SkillUpgradeGem {
         return item instanceof Shout
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
     }
 }

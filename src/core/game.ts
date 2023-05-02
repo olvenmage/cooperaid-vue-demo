@@ -121,19 +121,18 @@ export default abstract class Game {
         this.setState(GameState.VICTORY)
     }
 
-    static startCombat(enemies: Enemy[]): Promise<CombatFinishedParameters> {
+    static startCombat(enemies: Enemy[], gold: number): Promise<CombatFinishedParameters> {
         if (this.currentBattle != null) {
             throw new Error("Can't start combat with existing combat still going")
         }
 
-        this.currentBattle = new Battle(enemies.map((char) => reactive(char)) as Enemy[]);
+        this.currentBattle = new Battle(enemies.map((char) => reactive(char)) as Enemy[], gold);
         this.currentBattle.startCombat()
 
         this.setState(GameState.IN_COMBAT)
 
         return new Promise((resolve, reject) => {
             this.currentBattle!.onCombatFinished((params: CombatFinishedParameters) => {
-                console.log("combat finished")
                 this.exitCombat()
 
                 resolve(params)

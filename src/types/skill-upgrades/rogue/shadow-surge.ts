@@ -3,6 +3,7 @@ import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
 import { TargetType } from "../../skill";
 import { FanOfKnives, ShadowStep, SleepDart } from "@/types/classes/rogue";
+import type Character from "@/types/character";
 
 export default class ShadowSurge extends SkillUpgradeGem {
     public description: string = "Every skill you interupt with Shadowstep grants 1 energy."
@@ -14,6 +15,6 @@ export default class ShadowSurge extends SkillUpgradeGem {
         return item instanceof ShadowStep
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
     }
 }

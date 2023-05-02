@@ -20,7 +20,7 @@ const banditEncounter = new CombatEncounter([
   new Enemy(new Bandit()),
   new Enemy(new Bandit()),
   new Enemy(new Bandit()),
-], 9, 5)
+], 9, 12)
 
 const randomEmpire = () => {
   return pickRandom([new Halbadier(), new Archer(), new Healer()]) as Identity
@@ -32,7 +32,7 @@ const mainRoute: Encounter[] = [
       new Enemy(new Goblin()),
       new Enemy(new Goblin()),
       new Enemy(new Goblin()),
-    ], 5, 4),
+    ], 5, 10),
     new RewardEncounter(),
     banditEncounter,
     new RewardEncounter(),
@@ -42,14 +42,14 @@ const mainRoute: Encounter[] = [
         new Enemy(randomEmpire()),
         new Enemy(randomEmpire()),
         new Enemy(randomEmpire()),
-      ], 14, 8
+      ], 14, 16
     ),
     new RewardEncounter(),
     new ShopEncounter(),
     new CombatEncounter(
       [
         new Enemy(new Gryphon()),
-      ], 17, 8
+      ], 17, 16
     ),
     new RewardEncounter(),
     new CombatEncounter(
@@ -58,7 +58,7 @@ const mainRoute: Encounter[] = [
         new Enemy(randomEmpire()),
         new Enemy(new Gryphon()),
         new Enemy(new Archer())
-      ], 20, 10
+      ], 20, 20
     ),
     new RewardEncounter(),
     new ShopEncounter(),

@@ -8,7 +8,7 @@ export default class CharacterSkills {
 
     onSkillsChangedCallbacks: (() => void)[] = []
 
-    constructor(skills: Skill[], basicSkill: Skill|null) {
+    constructor(private character: Character, skills: Skill[], basicSkill: Skill|null) {
         if (basicSkill) {
             this.collection.push(basicSkill)
         }
@@ -38,7 +38,7 @@ export default class CharacterSkills {
             skill.skillData.resetToBase()
             
             if (skill.socketedUpgrade) {
-                skill.socketedUpgrade.applyUpgrade(skill)
+                skill.socketedUpgrade.applyUpgrade(this.character, skill)
             }
         })
     }

@@ -2,6 +2,7 @@ import { ShieldBlock } from "@/types/classes/juggernaut";
 import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
 import { Smite } from "@/types/classes/paladin";
+import type Character from "@/types/character";
 
 export default class BrandingSmiteSkillGem extends SkillUpgradeGem {
     public description: string = "Smite now deals 6 damage instead of healing for 2 when the enemy is hit"
@@ -13,6 +14,6 @@ export default class BrandingSmiteSkillGem extends SkillUpgradeGem {
         return item instanceof Smite
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
     }
 }

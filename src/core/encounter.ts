@@ -18,7 +18,7 @@ export class CombatEncounter extends Encounter {
     }
 
     async startEncounter(): Promise<EncounterFinishedResponse> {
-        const result = await Game.startCombat(this.enemies)
+        const result = await Game.startCombat(this.enemies, this.gold)
 
         return new Promise(async (resolve, reject) => {
             if (!result.playersWon) {
@@ -29,7 +29,6 @@ export class CombatEncounter extends Encounter {
 
             Game.exitCombat()
 
-            Game.players.value.forEach((player) => player.resources.gold += this.gold)
 
             await Game.handoutExp(this.exp)
 

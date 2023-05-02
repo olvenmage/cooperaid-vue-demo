@@ -2,6 +2,7 @@ import { ShieldBlock } from "@/types/classes/juggernaut";
 import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
 import { Dismantle } from "@/types/classes/rogue";
+import type Character from "@/types/character";
 
 export default class NullifyingDismantleSkillGem extends SkillUpgradeGem {
     public description: string = "Dismantle now also removes magical amror"
@@ -13,6 +14,6 @@ export default class NullifyingDismantleSkillGem extends SkillUpgradeGem {
         return item instanceof Dismantle
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
     }
 }

@@ -1,6 +1,7 @@
 import { BodyGuard, ShieldBlock } from "@/types/classes/juggernaut";
 import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
+import type Character from "@/types/character";
 
 export default class WingManSkillGem extends SkillUpgradeGem {
     public description: string = "Body Guard now also gives the ally +20% damage done for the duration"
@@ -12,6 +13,6 @@ export default class WingManSkillGem extends SkillUpgradeGem {
         return item instanceof BodyGuard
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
     }
 }

@@ -10,7 +10,7 @@ export default class CastTimeReductionSkillGem extends SkillUpgradeGem {
         return item.baseSkillData.castTime > 0
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
        if ( item.baseSkillData.damage != null) {
             item.baseSkillData.castTime *= 0.8
        }

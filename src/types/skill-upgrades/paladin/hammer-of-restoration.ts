@@ -3,6 +3,7 @@ import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
 import { BlessedWeapon, HammerOfJustice } from "@/types/classes/paladin";
 import { TargetType } from "../../skill";
+import type Character from "@/types/character";
 
 export default class HammerOfRestorationSkillGem extends SkillUpgradeGem {
     public description: string = "Hammer of Justice now restores the lowest health ally by 40% of the damage dealt during the debuff."
@@ -14,6 +15,6 @@ export default class HammerOfRestorationSkillGem extends SkillUpgradeGem {
         return item instanceof HammerOfJustice
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
     }
 }

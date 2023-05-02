@@ -46,9 +46,9 @@ export default abstract class GameSettings {
         expIncreaseFactor: 2.5
     }
     static goldRewardStages = [
-        { value: 100, time: 10 },
-        { value: 70, time: 12 },
-        { value: 50, time: 15 },
+        { value: 100, time: 12 },
+        { value: 70, time: 14 },
+        { value: 50, time: 16 },
         { value: 25, time: 0 },
     ]
 }

@@ -1,3 +1,4 @@
+import type Character from "@/types/character";
 import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
 
@@ -9,7 +10,7 @@ export default class BuffDurationSkillGem extends SkillUpgradeGem {
         return item.baseSkillData.buffDuration > 0
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
        if ( item.baseSkillData.damage != null) {
             item.baseSkillData.buffDuration *= 1.2
        }

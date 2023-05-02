@@ -4,6 +4,7 @@ import type Skill from '@/types/skill';
 import type Character from '../types/character';
 import BattlefieldCharacter from './BattlefieldCharacter.vue';
 import Game from '@/core/game';
+import GoldStage from './battlefield/GoldStage.vue';
 
 
 let castingSkill = ref<Skill|null>(null);
@@ -22,6 +23,7 @@ onMounted(() => {
 let enemies = Game.currentBattle?.enemies ?? []
 let players = Game.players.value
 
+let currentGoldStage = Game.currentBattle?.goldStage
 
 function startCast(skill: Skill, character: Character) {
   if (castingSkill.value || castingCharacter.value) {
@@ -95,6 +97,9 @@ function selectCharacter(selectedCharacter: Character) {
 <template>
   <section class="battlefield">
     <img class="background" src="/src/assets/combat-background.png">
+
+    <GoldStage class="gold-stage-counter" :stage="currentGoldStage"></GoldStage>
+
     <div class="enemy-box">
       <BattlefieldCharacter
         v-for="enemy in enemies"
@@ -146,6 +151,13 @@ function selectCharacter(selectedCharacter: Character) {
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
+}
+
+.gold-stage-counter {
+  position: absolute;
+  right: 40px;
+  top: 42%;
+
 }
 
 .player-box {

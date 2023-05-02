@@ -3,6 +3,7 @@ import type Skill from "../../skill";
 import SkillUpgradeGem from "../../skill-upgrade";
 import { TargetType } from "../../skill";
 import { SleepDart } from "@/types/classes/rogue";
+import type Character from "@/types/character";
 
 export default class ParalyzingDartSkillGem extends SkillUpgradeGem {
     public description: string = "Sleep Dart now also reduces energy regen speed by 50% on the target"
@@ -14,6 +15,6 @@ export default class ParalyzingDartSkillGem extends SkillUpgradeGem {
         return item instanceof SleepDart
     }
 
-    applyUpgrade(item: Skill) {
+    applyUpgrade(character: Character, item: Skill) {
     }
 }
