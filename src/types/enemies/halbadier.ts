@@ -49,7 +49,7 @@ class Parry extends Skill {
 class Poke extends Skill {
     public baseSkillData: SkillData = new SkillData({
         name: "Poke",
-        energyCost: 4,
+        energyCost: 5,
         cooldown: 0 * 1000,
         castTime: 3 * 1000,
         targetType: TargetType.TARGET_ENEMY,
@@ -74,7 +74,7 @@ class OverheadSlash extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 1.2)
+        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 1.2)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

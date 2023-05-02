@@ -64,7 +64,7 @@ class SkyDive extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
         imagePath: null,
-        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.5).modifiedBy('dexterity', 0.5),
+        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.55).modifiedBy('dexterity', 0.55),
         range: SkillRange.RANGED,
     })
 
@@ -94,10 +94,11 @@ class Squawk extends Skill {
         imagePath: null,
         range: SkillRange.RANGED,
         constitutionDamageModifier: 0.3,
+        damage: new DynamicSkillDataValue(1).modifiedBy('constitution', 0.3)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
-        castBy.dealDamageTo({ amount: 2, targets, type: DamageType.PHYSICAL, minAmount: 2 })
+        castBy.dealDamageTo({ amount: this.skillData.damage.value, targets, type: DamageType.PHYSICAL, minAmount: this.skillData.damage.value })
 
         targets.forEach((target) => {
             target.addBuff(new PiercedEarsBuff(), castBy)
