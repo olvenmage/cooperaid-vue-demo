@@ -14,7 +14,7 @@ export default class Bandage extends Skill {
         castTime: 1500,
         imagePath: "/neutral/bandage.png",
         interuptsOnDamageTaken: true,
-        healing: new DynamicSkillDataValue(2).modifiedBy('dexterity', 0.4).modifiedBy('constitution', 0.4),
+        healing: new DynamicSkillDataValue(2).modifiedBaseBy('dexterity', 0.4).modifiedBaseBy('constitution', 0.4),
         range: SkillRange.MELEE,
         damageType: DamageType.PHYSICAL,
         tags: [SkillTag.HEAL]

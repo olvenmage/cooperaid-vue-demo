@@ -295,6 +295,10 @@ export default class Character {
         this.energyBar.start(this)
     }
 
+    applyUpgrades() {
+        this.characterSkills.applyUpgrades()
+    }
+
     getState(battle: Battle|null = null): CharacterState {
         this.characterSkills.applyUpgrades()
         const basicSkill = this.skills[0]

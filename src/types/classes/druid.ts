@@ -137,7 +137,7 @@ export class CommandNature extends Skill implements EmpowerableSKill {
             castTime: 1000,
             damageType: DamageType.PHYSICAL,
             range: SkillRange.MELEE,
-            damage: new DynamicSkillDataValue(5).modifiedBy('strength', 1.1)
+            damage: new DynamicSkillDataValue(5).modifiedBaseBy('strength', 1.1)
         })
 
         this.empowered = true
@@ -161,7 +161,7 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
         damageType: DamageType.PHYSICAL,
         maxStacks: 4,
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 0.8),
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('strength', 0.8),
     })
 
     description: string | null = "Basic. Deal {damage} physical damage to an enemy, or deal 1 piercing damage to an ally and give them a stacking cast speed buff"
@@ -203,7 +203,7 @@ export class PrimalStrike extends Skill implements EmpowerableSKill {
             castTime: 1000,
             damageType: DamageType.PHYSICAL,
             range: SkillRange.MELEE,
-            damage: new DynamicSkillDataValue(5).modifiedBy('strength', 1.1),
+            damage: new DynamicSkillDataValue(5).modifiedBaseBy('strength', 1.1),
         })
 
         this.empowered = true
@@ -255,7 +255,7 @@ export class Thorns extends Skill implements EmpowerableSKill {
             targetType: TargetType.TARGET_ALL_ENEMIES,
             imagePath: "/druid/bear/sharp-spines.png",
             castTime: 1000,
-            damage: new DynamicSkillDataValue(1).modifiedBy('strength', 0.5),
+            damage: new DynamicSkillDataValue(1).modifiedBaseBy('strength', 0.5),
         })
 
         this.empowered = true
@@ -337,7 +337,7 @@ export class Regrowth extends Skill implements EmpowerableSKill {
         castTime: 500,
         imagePath: "/druid/regrowth.png",
         buffDuration: 12 * 1000,
-        healing: new DynamicSkillDataValue(8).modifiedBy('intelligence', 1.2),
+        healing: new DynamicSkillDataValue(8).modifiedBaseBy('intelligence', 1.2),
         range: SkillRange.RANGED,
     })
 

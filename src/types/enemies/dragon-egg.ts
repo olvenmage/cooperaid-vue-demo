@@ -82,7 +82,7 @@ export class WhelpBite extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 0.6)
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('strength', 0.6)
     })
 
 
@@ -101,7 +101,7 @@ export class Ember extends Skill {
         damageType: DamageType.MAGICAL,
         imagePath: null,
         range: SkillRange.RANGED,
-        damage: new DynamicSkillDataValue(5).modifiedBy('intelligence', 0.6)
+        damage: new DynamicSkillDataValue(5).modifiedBaseBy('intelligence', 0.6)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

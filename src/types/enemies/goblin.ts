@@ -35,7 +35,7 @@ class GoblinClobber extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(6).modifiedBy('strength', 1),
+        damage: new DynamicSkillDataValue(6).modifiedBaseBy('strength', 1),
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -54,7 +54,7 @@ class GoblinBite extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(3).modifiedBy('strength', 0.3).modifiedBy('dexterity', 0.3),
+        damage: new DynamicSkillDataValue(3).modifiedBaseBy('strength', 0.3).modifiedBaseBy('dexterity', 0.3),
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

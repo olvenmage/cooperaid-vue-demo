@@ -18,6 +18,8 @@ export default class PlayerSocketing {
         if (!this.active) {
             return
         }
+        this.player.combatCharacter?.applyUpgrades()
+
         const allSkills = [
             this.player.basicSkill!,
             ...this.player.skills

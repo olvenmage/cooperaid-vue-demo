@@ -39,7 +39,7 @@ class BeakAttack extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 0.4).modifiedBy('dexterity', 0.4),
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('strength', 0.4).modifiedBaseBy('dexterity', 0.4),
     })
 
     override canCast(castBy: Character): boolean {
@@ -64,7 +64,7 @@ class SkyDive extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
         imagePath: null,
-        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.55).modifiedBy('dexterity', 0.55),
+        damage: new DynamicSkillDataValue(4).modifiedBaseBy('strength', 0.55).modifiedBaseBy('dexterity', 0.55),
         range: SkillRange.RANGED,
     })
 
@@ -94,7 +94,7 @@ class Squawk extends Skill {
         imagePath: null,
         range: SkillRange.RANGED,
         constitutionDamageModifier: 0.3,
-        damage: new DynamicSkillDataValue(1).modifiedBy('constitution', 0.3)
+        damage: new DynamicSkillDataValue(1).modifiedBaseBy('constitution', 0.3)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

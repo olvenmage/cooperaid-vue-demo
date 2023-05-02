@@ -86,8 +86,8 @@ export class HolyShock extends Skill {
         damageType: DamageType.MAGICAL,
         castTime: 750,
         imagePath: "/paladin/holy-shock.png",
-        healing: new DynamicSkillDataValue(2).modifiedBy('intelligence', 0.7),
-        damage: new DynamicSkillDataValue(2).modifiedBy('intelligence', 0.8),
+        healing: new DynamicSkillDataValue(2).modifiedBaseBy('intelligence', 0.7),
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('intelligence', 0.8),
         range: SkillRange.RANGED,
     })
 
@@ -128,7 +128,7 @@ export class HolyStrike extends Skill {
         castTime: 500,
         imagePath: "/paladin/holy-strike.png",
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 0.65),
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('strength', 0.65),
     })
 
     description: string | null = "Basic. Deal {damage} damage to an enemy and restore half of the actual damage dealt to the lowest health ally."
@@ -173,7 +173,7 @@ export class OverwhelmingLight extends Skill {
         damageType: DamageType.MAGICAL,
         castTime: 1000,
         imagePath: "/paladin/overwhelming-light.png",
-        damage: new DynamicSkillDataValue(4).modifiedBy('intelligence', 0.9),
+        damage: new DynamicSkillDataValue(4).modifiedBaseBy('intelligence', 0.9),
         range: SkillRange.RANGED,
     })
 
@@ -217,8 +217,8 @@ export class Smite extends Skill {
         damageType: DamageType.MAGICAL,
         castTime: 1000,
         imagePath: "/paladin/smite.png",
-        damage: new DynamicSkillDataValue(4).modifiedBy('intelligence', 0.7),
-        healing: new DynamicSkillDataValue(1).modifiedBy('intelligence', 0.3),
+        damage: new DynamicSkillDataValue(4).modifiedBaseBy('intelligence', 0.7),
+        healing: new DynamicSkillDataValue(1).modifiedBaseBy('intelligence', 0.3),
         buffDuration: 6 * 1000,
         range: SkillRange.RANGED,
     })
@@ -281,7 +281,7 @@ export class LayOnHands extends Skill {
         castTime: 500,
         imagePath: "/paladin/lay-on-hands.png",
         range: SkillRange.RANGED,
-        healing: new DynamicSkillDataValue(1).modifiedBy('intelligence', 0.15)
+        healing: new DynamicSkillDataValue(1).modifiedBaseBy('intelligence', 0.15)
     })
 
     description: string | null = "Spend all your energy to heal an ally for the energy spent × {healing}"
@@ -338,7 +338,7 @@ export class BlessedWeapon extends Skill {
         imagePath: "/paladin/blessed-weapon.png",
         buffDuration: 10 * 1000,
         range: SkillRange.RANGED,
-        damage: new DynamicSkillDataValue(0).modifiedBy('intelligence', 0.25)
+        damage: new DynamicSkillDataValue(0).modifiedBaseBy('intelligence', 0.25)
     })
 
     description: string | null = "Buff an ally to add {damage} damage to their physical attacks and turns it into magic damage"
@@ -375,7 +375,7 @@ export class PrayerOfHealing extends Skill {
         damageType: DamageType.MAGICAL,
         castTime: 1250,
         imagePath: "/paladin/prayer-of-healing.png",
-        healing: new DynamicSkillDataValue(3).modifiedBy('intelligence', 0.7),
+        healing: new DynamicSkillDataValue(3).modifiedBaseBy('intelligence', 0.7),
         range: SkillRange.RANGED,
     })
 
@@ -415,7 +415,7 @@ export class HammerOfJustice extends Skill {
         imagePath: "/paladin/hammer-of-justice.png",
         range: SkillRange.MELEE,
         buffDuration: 6 * 1000,
-        damage: new DynamicSkillDataValue(2).modifiedBy('intelligence', 0.4).modifiedBy('strength', 0.5),
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('intelligence', 0.4).modifiedBaseBy('strength', 0.5),
         strengthDamageModifier: 0.5,
     })
 
@@ -452,7 +452,7 @@ export class DivineJudgement extends Skill {
         imagePath: "/paladin/divine-judgement.png",
         range: SkillRange.MELEE,
         buffDuration: 4 * 1000,
-        damage: new DynamicSkillDataValue(2).modifiedBy('intelligence', 0.2).modifiedBy('strength', 0.7),
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('intelligence', 0.2).modifiedBaseBy('strength', 0.7),
         strengthDamageModifier: 0.6,
     })
 

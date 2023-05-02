@@ -34,12 +34,23 @@ export interface SkillDataParams {
 
 export class DynamicSkillDataValue {
     private initialValue: number
+
+    private baseStatModifiers : Record<StatType, number> = {
+        armor: 0,
+        dexterity: 0,
+        constitution: 0,
+        strength: 0,
+        intelligence: 0,
+        no_type: 0,
+    }
+
     public statModifiers: Record<StatType, number> = {
         armor: 0,
         dexterity: 0,
         constitution: 0,
         strength: 0,
-        intelligence: 0
+        intelligence: 0,
+        no_type: 0,
     }
 
     constructor(public value: number = 0) {
@@ -53,6 +64,8 @@ export class DynamicSkillDataValue {
             const armor = stats.derived.armor.value * modifier
 
             return armor
+        } else if (statType == 'no_type') {
+            return 0
         } else {
             // is goed or
             return stats.core[statType as StatType].value * modifier
@@ -62,6 +75,7 @@ export class DynamicSkillDataValue {
     applyStats(stats: CharacterStats) {
         let modifiedValue = this.initialValue
 
+       
         for (const statType in this.statModifiers) {
            modifiedValue += this.getAppliedValue(statType as StatType, stats)
         }
@@ -69,8 +83,26 @@ export class DynamicSkillDataValue {
         this.value = modifiedValue
     }
 
+    resetToBase() {
+        this.statModifiers = {
+            dexterity: this.baseStatModifiers.dexterity,
+            strength: this.baseStatModifiers.strength,
+            armor: this.baseStatModifiers.armor,
+            constitution: this.baseStatModifiers.constitution, 
+            intelligence: this.baseStatModifiers.intelligence,
+            no_type: this.baseStatModifiers.no_type
+        }
+
+    }
+
     increaseInitialValue(num: number) {
         this.initialValue += num
+    }
+
+    modifiedBaseBy(stat: StatType, modifer: number) {
+        this.baseStatModifiers[stat] += modifer
+        this.statModifiers[stat] += modifer
+        return this
     }
 
     modifiedBy(stat: StatType, modifer: number) {
@@ -187,6 +219,8 @@ export default class SkillData {
 
     resetToBase() {
         this.applyParams(Object.assign({}, this.currentBaseParams))
+        this.damage.resetToBase()
+        this.healing.resetToBase()
     }
 
     transform(newParams: Partial<SkillDataParams>) {

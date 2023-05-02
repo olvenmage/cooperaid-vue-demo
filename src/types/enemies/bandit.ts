@@ -65,7 +65,7 @@ class Slice extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(2).modifiedBy('dexterity', 0.4).modifiedBy('strength', 0.4)
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('dexterity', 0.4).modifiedBaseBy('strength', 0.4)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -85,7 +85,7 @@ class KnockOut extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         range: SkillRange.MELEE,
         buffDuration: 2 * 1000,
-        damage: new DynamicSkillDataValue(2).modifiedBy('dexterity', 0.3).modifiedBy('strength', 0.4),
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('dexterity', 0.3).modifiedBaseBy('strength', 0.4),
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

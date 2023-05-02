@@ -12,7 +12,7 @@ export interface StatsOptionsConstructor {
     crit ?: number
 }
 
-export type StatType = 'dexterity'|'constitution'|'intelligence'|'strength'|'armor'|'baseHealth'|'no_type'
+export type StatType = 'dexterity'|'constitution'|'intelligence'|'strength'|'armor'|'no_type'
 
 class CharacterStat {
     private innerVal = 0
@@ -53,7 +53,7 @@ interface CoreStatsObject {
 }
 
 export class CoreStats {
-    public baseHealth = new CharacterStat('baseHealth')
+    public baseHealth = new CharacterStat('no_type')
     public dexterity = new CharacterStat('dexterity')
     public strength = new CharacterStat('strength')
     public intelligence = new CharacterStat('intelligence')

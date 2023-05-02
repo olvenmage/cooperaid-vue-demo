@@ -53,7 +53,7 @@ class Shoot extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.RANGED,
-        damage: new DynamicSkillDataValue(2).modifiedBy('dexterity', 0.3).modifiedBy('strength', 0.3)
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('dexterity', 0.3).modifiedBaseBy('strength', 0.3)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -72,7 +72,7 @@ class Assasinate extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         imagePath: null,
         range: SkillRange.RANGED,
-        damage: new DynamicSkillDataValue(2).modifiedBy('dexterity', 0.6).modifiedBy('strength', 0.6)
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('dexterity', 0.6).modifiedBaseBy('strength', 0.6)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

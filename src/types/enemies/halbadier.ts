@@ -56,7 +56,7 @@ class Poke extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 0.8)
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('strength', 0.8)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -74,7 +74,7 @@ class OverheadSlash extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 1.2)
+        damage: new DynamicSkillDataValue(4).modifiedBaseBy('strength', 1.2)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

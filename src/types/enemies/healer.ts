@@ -37,7 +37,7 @@ class CureWounds extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.RANGED,
-        healing: new DynamicSkillDataValue(2).modifiedBy('intelligence', 0.6)
+        healing: new DynamicSkillDataValue(2).modifiedBaseBy('intelligence', 0.6)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -57,7 +57,7 @@ class PrayerOfHealing extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.RANGED,
-        healing: new DynamicSkillDataValue(2).modifiedBy('intelligence', 0.7)
+        healing: new DynamicSkillDataValue(2).modifiedBaseBy('intelligence', 0.7)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

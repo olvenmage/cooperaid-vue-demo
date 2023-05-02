@@ -16,7 +16,7 @@ export default class KnifeStormSkillGem extends SkillUpgradeGem {
     }
 
     applyUpgrade(character: Character, item: Skill) {
-        item.baseSkillData.damage.statModifiers.dexterity += 0.2
+        item.baseSkillData.damage.modifiedBy('dexterity', 0.2)
         item.baseSkillData.targetType = TargetType.TARGET_ALL_ENEMIES
     }
 }

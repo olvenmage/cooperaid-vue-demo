@@ -94,7 +94,7 @@ export class Bash extends Skill {
         aiTargetting: AiTargetting.RANDOM,
         imagePath: "/juggernaut/bash.png",
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(1).modifiedBy('strength', 0.7).modifiedBy('armor', 0.7),
+        damage: new DynamicSkillDataValue(1).modifiedBaseBy('strength', 0.7).modifiedBaseBy('armor', 0.7),
         strengthDamageModifier: 0.4,
     })
 
@@ -120,7 +120,7 @@ export class BodySlam extends Skill {
         damageType: DamageType.PHYSICAL,
         castTime: 500,
         imagePath: "/juggernaut/body-slam.png",
-        damage: new DynamicSkillDataValue(0).modifiedBy('armor', 2),
+        damage: new DynamicSkillDataValue(0).modifiedBaseBy('armor', 2),
         range: SkillRange.MELEE,
     })
 
@@ -145,7 +145,7 @@ export class Overpower extends Skill {
         castTime: 1000,
         imagePath: "/juggernaut/overpower.png",
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.7).modifiedBy('constitution', 0.5),
+        damage: new DynamicSkillDataValue(4).modifiedBaseBy('strength', 0.7).modifiedBaseBy('constitution', 0.5),
     })
 
     description: string | null = "Deal {damage} damage to a target. If you have more armor than the target, interupt spell casting."
@@ -168,7 +168,7 @@ export class ShieldBlock extends Skill {
         cooldown: 6 * 1000,
         targetType: TargetType.TARGET_SELF,
         damageType: DamageType.PHYSICAL,
-        damage: new DynamicSkillDataValue(1).modifiedBy('constitution', 0.4),
+        damage: new DynamicSkillDataValue(1).modifiedBaseBy('constitution', 0.4),
         castTime: 250,
         imagePath: "/juggernaut/shield-block.png",
         buffDuration: 5 * 1000,
@@ -295,7 +295,7 @@ export class ShockWave extends Skill {
         imagePath: "/juggernaut/shock-wave.png",
         range: SkillRange.MELEE,
         buffDuration: 0.5 * 1000,
-        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.7),
+        damage: new DynamicSkillDataValue(4).modifiedBaseBy('strength', 0.7),
     })
 
     description: string | null = "Deal {damage} damage to all enemies and stun them for a duration based on your strength."

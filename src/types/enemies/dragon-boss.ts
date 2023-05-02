@@ -42,7 +42,7 @@ export class DragonThrash extends Skill {
         imagePath: null,
         buffDuration: 0.75 * 1000,
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 1.1)
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('strength', 1.1)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -68,7 +68,7 @@ export class DragonSwipe extends Skill {
         damageType: DamageType.PHYSICAL,
         imagePath: null,
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 1.1)
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('strength', 1.1)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {
@@ -107,7 +107,7 @@ export class FireBreath extends Skill {
         damageType: DamageType.MAGICAL,
         imagePath: null,
         range: SkillRange.RANGED,
-        damage: new DynamicSkillDataValue(6).modifiedBy('intelligence', 1)
+        damage: new DynamicSkillDataValue(6).modifiedBaseBy('intelligence', 1)
     })
 
     castSkill(castBy: Character, targets: Character[]): void {

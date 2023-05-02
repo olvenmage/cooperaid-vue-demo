@@ -101,7 +101,7 @@ export class RecklessStrike extends Skill {
         damageType: DamageType.PHYSICAL,
         castTime: 500,
         imagePath: "/barbarian/reckless-strike.png",
-        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 0.9),
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('strength', 0.9),
         range: SkillRange.MELEE,
     })
 
@@ -142,7 +142,7 @@ export class EnragingBlow extends Skill {
         castTime: 1500,
         imagePath: "/barbarian/raging-blow.png",
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(6).modifiedBy('strength', 0.7),
+        damage: new DynamicSkillDataValue(6).modifiedBaseBy('strength', 0.7),
     })
 
     description: string | null = "Deal {damage} damage to an enemy, gain rage equal to the actual damage done."
@@ -173,7 +173,7 @@ export class Rampage extends Skill {
         damageType: DamageType.PHYSICAL,
         castTime: 1000,
         imagePath: "/barbarian/rampage.png",
-        damage: new DynamicSkillDataValue(2).modifiedBy('strength', 1),
+        damage: new DynamicSkillDataValue(2).modifiedBaseBy('strength', 1),
         range: SkillRange.MELEE,
         strengthDamageModifier: 0.6
     })
@@ -205,7 +205,7 @@ export class Shout extends Skill {
         castTime: 500,
         imagePath: "/barbarian/shout.png",
         range: SkillRange.RANGED,
-        damage: new DynamicSkillDataValue(3).modifiedBy('strength', 0.4).modifiedBy('constitution', 0.4),
+        damage: new DynamicSkillDataValue(3).modifiedBaseBy('strength', 0.4).modifiedBaseBy('constitution', 0.4),
     })
 
     description: string | null = "Deal {damage} piercing damage divided amongst all enemies, generates a lot of threat"
@@ -231,7 +231,7 @@ export class Whirlwind extends Skill {
         castTime: 1250,
         imagePath: "/barbarian/whirlwind.png",
         range: SkillRange.MELEE,
-        damage: new DynamicSkillDataValue(6).modifiedBy('strength', 0.85),
+        damage: new DynamicSkillDataValue(6).modifiedBaseBy('strength', 0.85),
     })
 
     description: string | null = "Deal {damage} damage to all enemies"
@@ -274,7 +274,7 @@ export class AxeThrow extends Skill {
         castTime: 250,
         imagePath: "/barbarian/axe-throw.png",
         range: SkillRange.RANGED,
-        damage: new DynamicSkillDataValue(4).modifiedBy('strength', 0.5).modifiedBy('dexterity', 0.5),
+        damage: new DynamicSkillDataValue(4).modifiedBaseBy('strength', 0.5).modifiedBaseBy('dexterity', 0.5),
     })
 
     COOLDOWN = 12 * 1000
@@ -353,7 +353,7 @@ export class BloodStrike extends Skill {
         targetType: TargetType.TARGET_ENEMY,
         damageType: DamageType.PHYSICAL,
         castTime: 1000,
-        damage: new DynamicSkillDataValue(3).modifiedBy('strength', 0.65),
+        damage: new DynamicSkillDataValue(3).modifiedBaseBy('strength', 0.65),
         imagePath: "/barbarian/blood-strike.png",
         range: SkillRange.MELEE,
     })
