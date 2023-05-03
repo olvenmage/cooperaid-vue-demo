@@ -133,6 +133,13 @@ export default abstract class Skill {
             return false
         }
 
+        if (!target.stats) {
+            console.log(target)
+            console.log(target.identity.name)
+            console.log(target.stats)
+            console.log('----')
+        }
+
         if (this.skillData?.range === SkillRange.MELEE && target.stats.flying) {
             return false
         }

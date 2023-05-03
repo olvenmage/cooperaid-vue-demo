@@ -14,7 +14,7 @@ import ParryBuff from '../buffs/parry';
 export default class Halbadier extends Identity {
     public name = "Halbadier"
     public baseStats = new CoreStats({
-        baseHealth: 50,
+        baseHealth: 30,
         constitution: 20,
         strength: 16,
         dexterity: 8,

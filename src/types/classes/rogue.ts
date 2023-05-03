@@ -161,15 +161,17 @@ export class PoisonedStrike extends Skill {
         castTime: 500,
         imagePath: "/rogue/poisoned-strike.png",
         damageType: DamageType.PHYSICAL,
-        damage: new DynamicSkillDataValue(1).modifiedBaseBy('strength', 0.4).modifiedBaseBy('dexterity', 0.4),
+        damage: new DynamicSkillDataValue(1).modifiedBaseBy('strength', 0.35).modifiedBaseBy('dexterity', 0.35),
         buffDuration: 6 * 1000,
-        maxStacks: 3,
+        maxStacks: 100,
         range: SkillRange.MELEE,
     })
 
-    description: string | null = "Basic. Deal {damage} damage to an enemy and apply a stacking poison debuff for a medium duration (stacks 3 times)"
+    description: string | null = "Basic. Deal {damage} damage to an enemy and apply a stacking poison debuff for a medium duration"
 
     castSkill(castBy: Character, targets: Character[]): void {
+        const poisonDamage = new DynamicSkillDataValue(0).modifiedBaseBy('intelligence', 0.3).applyStats(castBy.stats).value
+
         castBy.dealDamageTo({ targets, type: this.skillData.damageType, amount: this.skillData.damage.value })
 
         targets.forEach((target) => {
@@ -177,7 +179,7 @@ export class PoisonedStrike extends Skill {
                 castBy.classBar.increase(2)
             }
            
-            target.addBuff(new PoisonBuff(1, this.skillData.buffDuration!, this.skillData.maxStacks!), castBy)
+            target.addBuff(new PoisonBuff(poisonDamage, this.skillData.buffDuration!, this.skillData.maxStacks!), castBy)
         })
     }
 }
@@ -477,6 +479,7 @@ export class CoughBomb extends Skill {
     description: string | null = "Deal {damage} poison damage to an enemy and put a random skill they have off cooldown on cooldown."
 
     castSkill(castBy: Character, targets: Character[]): void {
+        const poisonDamage = new DynamicSkillDataValue(0).modifiedBaseBy('intelligence', 0.3).applyStats(castBy.stats).value
         castBy.dealDamageTo({ targets, type: this.skillData.damageType, amount: this.skillData.damage.value, threatModifier: 1.2 })
 
         targets.forEach((target) => {
@@ -488,9 +491,9 @@ export class CoughBomb extends Skill {
             }
 
             if (this.socketedUpgrade instanceof ToxicBombsSkillGem) {
-                target.addBuff(new PoisonBuff(1, this.skillData.buffDuration!, 3), castBy)
-                target.addBuff(new PoisonBuff(1, this.skillData.buffDuration!, 3), castBy)
-                target.addBuff(new PoisonBuff(1, this.skillData.buffDuration!, 3), castBy)
+                target.addBuff(new PoisonBuff(poisonDamage, this.skillData.buffDuration!, 100), castBy)
+                target.addBuff(new PoisonBuff(poisonDamage, this.skillData.buffDuration!, 100), castBy)
+                target.addBuff(new PoisonBuff(poisonDamage, this.skillData.buffDuration!, 100), castBy)
             }
         })
     }

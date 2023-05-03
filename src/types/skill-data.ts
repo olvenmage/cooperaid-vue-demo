@@ -72,7 +72,7 @@ export class DynamicSkillDataValue {
         }
     }
 
-    applyStats(stats: CharacterStats) {
+    applyStats(stats: CharacterStats): this {
         let modifiedValue = this.initialValue
 
        
@@ -81,6 +81,8 @@ export class DynamicSkillDataValue {
         }
 
         this.value = modifiedValue
+
+        return this
     }
 
     resetToBase() {

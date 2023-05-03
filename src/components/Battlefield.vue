@@ -80,7 +80,7 @@ function selectCharacter(selectedCharacter: Character) {
     return
   }
 
-  if (!castingSkill.value.isTargetValid(castingCharacter.value, selectCharacter)) {
+  if (!castingSkill.value.isTargetValid(castingCharacter.value, selectedCharacter)) {
     return
   }
 

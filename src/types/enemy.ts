@@ -21,7 +21,7 @@ class Enemy {
     createCharacter(): Character {
         const stats = new CharacterStats(this.identity.baseStats.clone())
         
-        const character = reactive(new Character(this.identity, false, null, null)) as Character
+        const character = reactive(new Character(this.identity, false, null, stats)) as Character
 
         if (this.aiEnabled) {
             character.enableAI()

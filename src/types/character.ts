@@ -87,7 +87,6 @@ export default class Character {
 
         character.characterSkills = charSkills
 
-
         character.healthBar = player.healthBar
         character.id = player.id
 

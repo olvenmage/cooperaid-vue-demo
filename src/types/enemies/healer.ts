@@ -11,7 +11,7 @@ import StunnedBuff from '../buffs/stunned';
 export default class Healer extends Identity {
     public name = "Healer"
     public baseStats = new CoreStats({
-        baseHealth: 40,
+        baseHealth: 30,
         constitution: 10,
         strength: 8,
         dexterity: 12,

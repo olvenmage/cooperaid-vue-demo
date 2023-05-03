@@ -10,8 +10,8 @@ import RapidFireBuff from '../buffs/rapid-fire';
 export default class Archer extends Identity {
     public name = "Archer"
     public baseStats = new CoreStats({
-        baseHealth: 35,
-        constitution: 10,
+        baseHealth: 50,
+        constitution: 12,
         strength: 16,
         dexterity: 16,
         intelligence: 4
